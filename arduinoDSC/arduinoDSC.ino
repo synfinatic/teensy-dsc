@@ -1,13 +1,7 @@
+#include <Arduino.h>
+
 #include <digitalWriteFast.h>
-
 #include <PinChangeInt.h>
-
-// include the library code:
-#include <LiquidCrystal.h>
-
-// mstimer screws with PinChangeInt
-#include <MsTimer2.h>
-
 
 /*
   Arduino based Digital Setting Circle
@@ -52,8 +46,8 @@ volatile bool isUpdated = LOW;
 
 
 // encoder resolution - some cheap encoders have lower tics on the DEC (like my JMI's!)
-const int altRES = 10000;    // resolution of encoders
-const int azRES = 10000;    // resolution of encoders
+const int altRES = 8192;    // resolution of encoders
+const int azRES = -8192;    // resolution of encoders
 
 char beenAligned = 0;  
 
@@ -66,20 +60,8 @@ volatile bool _AltEncoderBSet;
 volatile long ALT_pos = altRES / 2;
 
 
-// timer stuff
-// TODO should be an int? multibyte variables updated with an interrupt are dangerous
-volatile unsigned long masterCount = 0;
-volatile unsigned long oldCount = 0;
-
-void timerRoutine() {
-  masterCount += 10;
-}
-
-
-// initialize the library with the numbers of the interface pins
-LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
-
 void setup() {
+  Serial.begin(115200);
 
   // initialize the encoder inputs
   pinMode(ALT_enc_A, INPUT);
@@ -99,17 +81,6 @@ void setup() {
 
   PCintPort::attachInterrupt(AZ_enc_A, azFuncA, CHANGE);
   PCintPort::attachInterrupt(AZ_enc_B, azFuncB, CHANGE);
-
-  Serial.begin(9600);
-
-  // backlight control
-  pinMode(10, OUTPUT);
-  analogWrite(10, 10);  // default LCD backlight brightness
-  lcd.begin(16, 2);
-
-  // 10ms period
-  MsTimer2::set(10, timerRoutine);
-  MsTimer2::start();
 }
 
 // ################### ALTITUDE DECODING FUNCTION ###################
@@ -122,7 +93,6 @@ void altFuncA() {
   isUpdated = HIGH;
 } 
 
-
 void altFuncB() {
   _AltEncoderASet = digitalReadFast(ALT_enc_A);   // read the input pin
   _AltEncoderBSet = digitalReadFast(ALT_enc_B) == HIGH;   // read the input pin
@@ -130,7 +100,6 @@ void altFuncB() {
   ALT_pos += (_AltEncoderASet == _AltEncoderBSet) ? +1 : -1;
   isUpdated = HIGH;
 } 
-
 
 // ################### AZIMUTH DECODING FUNCTION ###################
 
@@ -142,7 +111,6 @@ void azFuncA() {
   isUpdated = HIGH;
 } 
 
-
 void azFuncB() {
   _AzEncoderASet = digitalReadFast(AZ_enc_A);   // read the input pin
   _AzEncoderBSet = digitalReadFast(AZ_enc_B) == HIGH;   // read the input pin
@@ -151,161 +119,127 @@ void azFuncB() {
   isUpdated = HIGH;
 } 
 
-
 void loop() { 
+  
+  int inchar;
 
-  char inchar;
+  if (Serial.available() > 0) 
+  {
+    // get incoming byte:
+    inchar = Serial.read();
+    
+    if (inchar == 'Q')  //ascii for "Q"
+    {
+      //send out the encoder positions
+      printEncoderValue(AZ_pos, HIGH);
+      Serial.print("\t");
+      printEncoderValue(ALT_pos, HIGH);
+      Serial.println("\r");
+    }   
+/*
+else if (inchar == 'R' || inchar == 'Z' || inchar == 'I' || inchar == 'z')
+    {
+      // ignore command - just return proper code
+      if (inchar == 'R' || inchar == 'I')  
+        Serial.print("R");
+      else if (inchar == 'Z')
+        Serial.print("*"); 
+      else if (inchar == 'z')
+        Serial.print("r");
+    }
+*/
+    else if (inchar == 'r') 
+    {
+      // print out resolution - in future this may be configurable
+      printEncoderValue(azRES, HIGH);
+      Serial.print("\t");
+      printEncoderValue(altRES, HIGH);
+      Serial.println("\r");
 
-  // update every so often..
-  if ((masterCount - oldCount) > 250) {
-    lcd.setCursor(0, 0);
-    printEncoderValue(AZ_pos, HIGH, HIGH);
-    lcd.setCursor(8, 0);
-    printEncoderValue(ALT_pos, HIGH, HIGH);
-
-    lcd.setCursor(0, 1);
-    lcd.print(masterCount);
-    oldCount = masterCount;
-  }
-
-  if (!Serial.available())
-  {
-    delay(10);
-  }
-  inchar = Serial.read();
-
-  // throw away rest of command - we don't need it
-  Serial.flush();
-
-  if (inchar == 'Q')
-  {
-    printEncoderValue(AZ_pos, HIGH, LOW);
-    Serial.print("\t");
-    printEncoderValue(ALT_pos, HIGH, LOW);
-    Serial.print("\r");
-  }
-  else if (inchar == 'R' || inchar == 'Z' || inchar == 'I' || inchar == 'z')
-  {
-    // ignore command - just return proper code
-    if (inchar == 'R' || inchar == 'I')  
-      Serial.print("R");
-    else if (inchar == 'Z')
-      Serial.print("*"); 
-    else if (inchar == 'z')
-      Serial.print("r");
-  }
-  else if (inchar == 'r') 
-  {
-    // print out resolution - in future this may be configurable
-    printEncoderValue(azRES, LOW, LOW);
-    Serial.print("\t");
-    printEncoderValue(altRES, LOW, LOW);
-    Serial.print("\r");
-
-  }
-  else if (inchar == 'V')
-  {
-    //version
-    Serial.print("V 1.0.2\r");
-  }
-  else if (inchar == 'T')
-  {
-    // test mode - output resolutions and error count
-    printEncoderValue(azRES, LOW, LOW);
-    Serial.print(",");
-    printEncoderValue(altRES, LOW, LOW);
-    Serial.print(",00000\r");
-  }
-  else if (inchar == 'q')
-  {
-    // error count
-    Serial.print("00000\r");
-  }
-  else if (inchar == 'P')
-  {
-    // encoder power up
-    Serial.print("P");
-  }
-  else if (inchar == 'p')
-  {
-    // 
-    // dave eks error command
-    Serial.print("00");
-  } 
-  else if (inchar == 'h')
-  {
-    // report resolution in Dave Eks format
-    Serial.write(0xA0);
-    Serial.write(0x0F);
-    Serial.write(0xA0);
-    Serial.write(0x0F);
-  }
-  else if (inchar == 'y')
-  {
-    // report encoders in Dave Eks format
-    printHexEncoderValue(ALT_pos);
-    printHexEncoderValue(AZ_pos);
-  }  
-  else if (inchar == 'a')
-  {
-    if (beenAligned)
-      Serial.print("Y");
-    else
-      Serial.print("N");
-  }
-  else if (inchar == 'A')
-  {
-    beenAligned = 1;
+    }
+/*
+    else if (inchar == 'V')
+    {
+      //version
+      Serial.println("V 1.0.2\r");
+    }
+    else if (inchar == 'T')
+    {
+      // test mode - output resolutions and error count
+      printEncoderValue(azRES, LOW);
+      Serial.print(",");
+      printEncoderValue(altRES, LOW);
+      Serial.print(",00000\r\n");
+    }
+    else if (inchar == 'q')
+    {
+      // error count
+      Serial.print("00000\r\n");
+    }
+    else if (inchar == 'P')
+    {
+      // encoder power up
+      Serial.print("P");
+    }
+    else if (inchar == 'p')
+    {
+      // 
+      // dave eks error command
+      Serial.print("00");
+    } 
+    else if (inchar == 'h')
+    {
+      // report resolution in Dave Eks format
+      Serial.write(0xA0);
+      Serial.write(0x0F);
+      Serial.write(0xA0);
+      Serial.write(0x0F);
+    }
+    else if (inchar == 'y')
+    {
+      // report encoders in Dave Eks format
+      printHexEncoderValue(ALT_pos);
+      printHexEncoderValue(AZ_pos);
+    }  
+    else if (inchar == 'a')
+    {
+      if (beenAligned)
+        Serial.print("Y");
+      else
+        Serial.print("N");
+    }
+    else if (inchar == 'A')
+    {
+      beenAligned = 1;
+    }
+    */
   }
 }
 
-
 // print encoder value with leading zeros
-void printEncoderValue(long val, bool lead, bool toLCD)
+void printEncoderValue(long val, bool lead)
 {
   unsigned long aval; 
 
   if (lead) {
-    if (!toLCD) {
-      if (val < 0)
-        Serial.print("-");
-      else
-        Serial.print("+");
-    } 
-    else {
-      if (val < 0)
-        lcd.print("-");
-      else
-        lcd.print("+");
-    }      
+    if (val < 0)
+      Serial.print("-");
+    else
+      Serial.print("+");
   }
 
   aval = abs(val);
 
-  if (!toLCD) {
-    if (aval < 10) 
-      Serial.print("0000");
-    else if (aval < 100)
-      Serial.print("000");
-    else if (aval < 1000)
-      Serial.print("00");
-    else if (aval < 10000) 
-      Serial.print("0");
+  if (aval < 10) 
+    Serial.print("0000");
+  else if (aval < 100)
+    Serial.print("000");
+  else if (aval < 1000)
+    Serial.print("00");
+  else if (aval < 10000) 
+    Serial.print("0");
 
-    Serial.print(aval);  
-  } 
-  else {
-    if (aval < 10) 
-      lcd.print("0000");
-    else if (aval < 100)
-      lcd.print("000");
-    else if (aval < 1000)
-      lcd.print("00");
-    else if (aval < 10000) 
-      lcd.print("0");
-
-    lcd.print(aval);  
-  }    
+  Serial.print(aval);  
 }
 
 void printHexEncoderValue(long val)
