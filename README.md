@@ -1,4 +1,29 @@
-# Arduino DSC code for Arduino Uno
+# Arduino DSC code for Teensy 3.1
+Forked from [mdw123/arduino-dsc](https://github.com/mdw123/arduino-dsc)
+
+## Basic Features
+I wanted to do my own digital setting circles (DSC) for my [Apertura AD12](http://www.opticsmart.com/telescopes/dobsonian-telescopes/apertura-ad12-dobsonian-reflector-telescope.html).
+The main goals were:
+ * Nice PCB
+ * Support for at least 10K resolution via quadurature decoding
+ * WiFi to allow interfacing via my Apple iPad (unfortunately, Apple doesn't allow 
+   connecting to random bluetooth devices)
+ * Supporting at least SkySafari
+
+That will be version 1.0.  Future versions will hopefully support other features,
+but for now that will be enough for it to work for me.
+
+## Why Teensy 3.1
+Why the [Teensy 3.1](http://pjrc.com/store/teensy31.html) and not Arduino?
+ * It is *much* faster then the Arduino Uno (72Mhz vs 16Mhz)
+ * It supports interrupts on all digital pins which allows for higher resolution encoders
+ * Is 3.3V for interfacing with the WiFly module, but is 5V tollerant for interfacing
+    with encoders
+ * Has 3 hardware serial ports making interfacing with the WiFly easy
+ * It is cheaper ($20/ea)
+ * More memory & flash allows for future expansion (standalone DSC database?)
+
+# Original mdw123/arduino-dsc Readme
 
 ## July 27, 2013
 ### Changes
