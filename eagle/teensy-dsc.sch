@@ -6470,6 +6470,9 @@ SMT- SWCH-08247</description>
 <sheets>
 <sheet>
 <plain>
+<text x="33.02" y="144.78" size="2.54" layer="90">TeensyDSC v0.2
+http://synfin.net/teensydsc
+20140908</text>
 </plain>
 <instances>
 <instance part="U$1" gate="G$1" x="60.96" y="45.72"/>
@@ -7063,4 +7066,10 @@ SMT- SWCH-08247</description>
 </errors>
 </schematic>
 </drawing>
+<compatibility>
+<note version="6.3" minversion="6.2.2" severity="warning">
+Since Version 6.2.2 text objects can contain more than one line,
+which will not be processed correctly with this version.
+</note>
+</compatibility>
 </eagle>

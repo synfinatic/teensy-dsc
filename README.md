@@ -1,6 +1,13 @@
 # Arduino DSC code for Teensy 3.1
 Forked from [mdw123/arduino-dsc](https://github.com/mdw123/arduino-dsc)
 
+## Important Note
+
+This project is still heavily in development.  The PCB design is completely 
+untested so far and I haven't even tried compiling the code yet!  So don't
+be going and ordering this board off of OSHPark/etc just yet... unless of 
+course you want to help test!  If so, then please contact me.
+
 ## Basic Features
 I wanted to do my own digital setting circles (DSC) for my [Apertura AD12](http://www.opticsmart.com/telescopes/dobsonian-telescopes/apertura-ad12-dobsonian-reflector-telescope.html).
 The main goals were:
