@@ -32,20 +32,15 @@ UsedLibrary="/Users/aturner/Dropbox/Eagle/plbr/adafruit.lbr"
 UsedLibrary="/Users/aturner/Dropbox/Eagle/plbr/teensy.lbr"
 UsedLibrary="/Users/aturner/Dropbox/Eagle/plbr/teensypp.lbr"
 UsedLibrary="/Users/aturner/Dropbox/Eagle/plbr/xbee_r1.lbr"
+UsedLibrary="/Users/aturner/GIT/Eagle-Libraries/optocoupler.lbr"
 
 [Win_1]
-Type="Control Panel"
-Loc="360 248 959 647"
-State=2
-Number=0
-
-[Win_2]
 Type="Schematic Editor"
-Loc="360 248 1795 1103"
+Loc="92 27 1264 877"
 State=2
 Number=1
 File="teensy-dsc.sch"
-View="-78.9635 43.9996 114.524 164.28"
+View="-104.27 -26.6819 206.295 141.236"
 WireWidths=" 0 0.3048 0.6096 0.8128 1.016 1.27 1.4224 1.6764 1.778 1.9304 2.1844 2.54 3.81 6.4516 0.4064 0.1524"
 PadDiameters=" 0.254 0.3048 0.4064 0.6096 0.8128 1.016 1.27 1.4224 1.6764 1.778 1.9304 2.1844 2.54 3.81 6.4516 0"
 PadDrills=" 0.5 0.6 0.7 0.9 1 1.1 1.2 1.3 1.4 1.5 1.6 2 2.2 2.8 3.2 0.8"
@@ -61,7 +56,7 @@ DimensionExtWidths=" 0.127 0.254 0.1 0.13 0.26 0"
 DimensionExtLengths=" 1.27 2.54 1 2 3 0"
 DimensionExtOffsets=" 1.27 2.54 1 2 3 0"
 SmdSizes=" 0.3048 0.1524 0.4064 0.2032 0.6096 0.3048 0.8128 0.4064 1.016 0.508 1.27 0.6604 1.4224 0.7112 1.6764 0.8128 1.778 0.9144 1.9304 0.9652 2.1844 1.0668 2.54 1.27 3.81 1.9304 5.08 2.54 6.4516 3.2512 1.27 0.635"
-WireBend=0
+WireBend=3
 WireBendSet=31
 WireCap=1
 MiterStyle=0
@@ -84,8 +79,14 @@ ArcDirection=0
 AddLevel=2
 PadsSameType=0
 Layer=91
-Views=" 1: -78.9635 43.9996 114.524 164.28"
+Views=" 1: -104.27 -26.6819 206.295 141.236"
 Sheet="1"
+
+[Win_2]
+Type="Control Panel"
+Loc="360 403 1297 877"
+State=2
+Number=0
 
 [Desktop]
 Screen="1440 900"

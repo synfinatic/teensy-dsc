@@ -1,3 +1,4 @@
+Copyright (c) 2014 Aaron Turner
 Copyright (c) 2013 Matt Woodward
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
