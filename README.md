@@ -16,6 +16,7 @@ The main goals were:
  * WiFi to allow interfacing via my Apple iPad (unfortunately, Apple doesn't allow 
    connecting to random bluetooth devices)
  * Supporting at least SkySafari
+ * Powered via USB or 7-36V battery source
 
 That will be version 1.0.  Future versions will hopefully support other features,
 but for now that will be enough for it to work for me.
