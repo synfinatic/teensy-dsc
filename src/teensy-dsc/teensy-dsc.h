@@ -1,6 +1,7 @@
 #ifndef __TEENSY_DSC_H__
 #define __TEENSY_DSC_H__
 
+
 #define CHAN_A_RA  6
 #define CHAN_B_RA  5
 #define CHAN_A_DEC 4

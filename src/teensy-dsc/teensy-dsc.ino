@@ -10,6 +10,8 @@
 
 Encoder EncoderRA(CHAN_A_RA, CHAN_B_RA);
 Encoder EncoderDEC(CHAN_A_DEC, CHAN_B_DEC);
+WiFlySerial WiFly(XBEE_RX, XBEE_TX);
+
 long ra_value, dec_value;
 long ra_cps, dec_cps;
 
@@ -93,7 +95,6 @@ EncoderValue(long value, bool lead) {
     char sign;
     unsigned long a_value;
     int buff_pos = 0;
-
 
     if (lead) {
         if (value < 0) {
