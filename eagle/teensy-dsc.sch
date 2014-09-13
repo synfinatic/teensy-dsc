@@ -7221,12 +7221,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <packages>
 </packages>
 <symbols>
-<symbol name="5V">
-<wire x1="0.762" y1="1.27" x2="0" y2="2.54" width="0.254" layer="94"/>
-<wire x1="0" y1="2.54" x2="-0.762" y2="1.27" width="0.254" layer="94"/>
-<text x="-1.016" y="3.556" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="5V" x="0" y="0" visible="off" length="short" direction="sup" rot="R90"/>
-</symbol>
 <symbol name="3.3V">
 <wire x1="0.762" y1="1.27" x2="0" y2="2.54" width="0.254" layer="94"/>
 <wire x1="0" y1="2.54" x2="-0.762" y2="1.27" width="0.254" layer="94"/>
@@ -7238,20 +7232,14 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <text x="-2.54" y="-2.54" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="GND" x="0" y="2.54" visible="off" length="short" direction="sup" rot="R270"/>
 </symbol>
+<symbol name="5V">
+<wire x1="0.762" y1="1.27" x2="0" y2="2.54" width="0.254" layer="94"/>
+<wire x1="0" y1="2.54" x2="-0.762" y2="1.27" width="0.254" layer="94"/>
+<text x="-1.016" y="3.556" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="5V" x="0" y="0" visible="off" length="short" direction="sup" rot="R90"/>
+</symbol>
 </symbols>
 <devicesets>
-<deviceset name="5V" prefix="SUPPLY">
-<gates>
-<gate name="G$1" symbol="5V" x="0" y="0"/>
-</gates>
-<devices>
-<device name="">
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
 <deviceset name="3.3V" prefix="SUPPLY">
 <description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
 <gates>
@@ -7269,6 +7257,18 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
 <gates>
 <gate name="1" symbol="DGND" x="0" y="0"/>
+</gates>
+<devices>
+<device name="">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="5V" prefix="SUPPLY">
+<gates>
+<gate name="G$1" symbol="5V" x="0" y="0"/>
 </gates>
 <devices>
 <device name="">
@@ -13878,65 +13878,12 @@ We've spent an enormous amount of time creating and checking these footprints an
 <text x="-2.54" y="-2.54" size="1.778" layer="96">&gt;VALUE</text>
 <pin name="GND" x="0" y="2.54" visible="off" length="short" direction="sup" rot="R270"/>
 </symbol>
-<symbol name="5V">
-<wire x1="0.762" y1="1.27" x2="0" y2="2.54" width="0.254" layer="94"/>
-<wire x1="0" y1="2.54" x2="-0.762" y2="1.27" width="0.254" layer="94"/>
-<text x="-1.016" y="3.556" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="5V" x="0" y="0" visible="off" length="short" direction="sup" rot="R90"/>
-</symbol>
 </symbols>
 <devicesets>
 <deviceset name="GND" prefix="GND">
 <description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
 <gates>
 <gate name="1" symbol="GND" x="0" y="0"/>
-</gates>
-<devices>
-<device name="">
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="5V">
-<gates>
-<gate name="G$1" symbol="5V" x="0" y="0"/>
-</gates>
-<devices>
-<device name="">
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
-<library name="supply2">
-<description>&lt;b&gt;Supply Symbols&lt;/b&gt;&lt;p&gt;
-GND, VCC, 0V, +5V, -5V, etc.&lt;p&gt;
-Please keep in mind, that these devices are necessary for the
-automatic wiring of the supply signals.&lt;p&gt;
-The pin name defined in the symbol is identical to the net which is to be wired automatically.&lt;p&gt;
-In this library the device names are the same as the pin names of the symbols, therefore the correct signal names appear next to the supply symbols in the schematic.&lt;p&gt;
-&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
-<packages>
-</packages>
-<symbols>
-<symbol name="+12V">
-<wire x1="0" y1="1.905" x2="0" y2="0.635" width="0.1524" layer="94"/>
-<wire x1="-0.635" y1="1.27" x2="0.635" y2="1.27" width="0.1524" layer="94"/>
-<circle x="0" y="1.27" radius="1.27" width="0.254" layer="94"/>
-<text x="-2.54" y="3.175" size="1.778" layer="96">&gt;VALUE</text>
-<pin name="+12V" x="0" y="-2.54" visible="off" length="short" direction="sup" rot="R90"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="+12V" prefix="SUPPLY">
-<description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
-<gates>
-<gate name="+12V" symbol="+12V" x="0" y="0"/>
 </gates>
 <devices>
 <device name="">
@@ -14003,13 +13950,48 @@ In this library the device names are the same as the pin names of the symbols, t
 </deviceset>
 </devicesets>
 </library>
+<library name="supply2">
+<description>&lt;b&gt;Supply Symbols&lt;/b&gt;&lt;p&gt;
+GND, VCC, 0V, +5V, -5V, etc.&lt;p&gt;
+Please keep in mind, that these devices are necessary for the
+automatic wiring of the supply signals.&lt;p&gt;
+The pin name defined in the symbol is identical to the net which is to be wired automatically.&lt;p&gt;
+In this library the device names are the same as the pin names of the symbols, therefore the correct signal names appear next to the supply symbols in the schematic.&lt;p&gt;
+&lt;author&gt;Created by librarian@cadsoft.de&lt;/author&gt;</description>
+<packages>
+</packages>
+<symbols>
+<symbol name="+12V">
+<wire x1="0" y1="1.905" x2="0" y2="0.635" width="0.1524" layer="94"/>
+<wire x1="-0.635" y1="1.27" x2="0.635" y2="1.27" width="0.1524" layer="94"/>
+<circle x="0" y="1.27" radius="1.27" width="0.254" layer="94"/>
+<text x="-2.54" y="3.175" size="1.778" layer="96">&gt;VALUE</text>
+<pin name="+12V" x="0" y="-2.54" visible="off" length="short" direction="sup" rot="R90"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="+12V" prefix="SUPPLY">
+<description>&lt;b&gt;SUPPLY SYMBOL&lt;/b&gt;</description>
+<gates>
+<gate name="+12V" symbol="+12V" x="0" y="0"/>
+</gates>
+<devices>
+<device name="">
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
 <variantdefs>
 </variantdefs>
 <classes>
-<class number="0" name="default" width="0" drill="0">
+<class number="0" name="default" width="0.1524" drill="0">
 </class>
 <class number="1" name="5V" width="0.254" drill="0">
 <clearance class="1" value="0.127"/>
@@ -14026,15 +14008,8 @@ In this library the device names are the same as the pin names of the symbols, t
 <part name="M1" library="xbee_r1" deviceset="XBEE" device="RX-VN"/>
 <part name="J3" library="SparkFun-Connectors" deviceset="RJ45-8" device="PTH"/>
 <part name="U$3" library="SteelCaveRobotics-Power" deviceset="MCP1825" device="SOT-223-3" value="MCP1825SOT-223-3"/>
-<part name="C1" library="SparkFun-Capacitors" deviceset="1.0UF-25V-+80/-20(0805)" device="" value="1.0uF"/>
-<part name="SUPPLY1" library="SparkFun-Aesthetics" deviceset="5V" device=""/>
 <part name="GND2" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
-<part name="SUPPLY3" library="SparkFun-Aesthetics" deviceset="5V" device=""/>
-<part name="C2" library="SparkFun-Capacitors" deviceset="22UF-6.3V-20%(0805)" device="" value="4.7uF"/>
 <part name="GND3" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
-<part name="SUPPLY4" library="SparkFun-Aesthetics" deviceset="5V" device=""/>
-<part name="SUPPLY5" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
-<part name="SUPPLY6" library="SparkFun-Aesthetics" deviceset="5V" device=""/>
 <part name="GND4" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="GND5" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="SUPPLY7" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
@@ -14051,7 +14026,6 @@ In this library the device names are the same as the pin names of the symbols, t
 <part name="C7" library="SparkFun-Passives" deviceset="CAP" device="0805" value="0.1uF"/>
 <part name="GND7" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="GND8" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
-<part name="SUPPLY2" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
 <part name="GND9" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="X2" library="adafruit" deviceset="STEREOJACK" device=""/>
 <part name="J2" library="SparkFun-Connectors" deviceset="RJ11-6" device="PTH"/>
@@ -14065,17 +14039,25 @@ In this library the device names are the same as the pin names of the symbols, t
 <part name="J4" library="SparkFun-Connectors" deviceset="POWER_JACK" device="PTH"/>
 <part name="Q1" library="synfinatic" deviceset="IRLML6344" device="" value="IRLML6344"/>
 <part name="R15" library="resistor" deviceset="R-US_" device="M0805" value="13.3k"/>
-<part name="SUPPLY9" library="supply2" deviceset="+12V" device=""/>
 <part name="D5" library="adafruit" deviceset="DIODE" device="SOD-123" value="10V Z"/>
 <part name="GND15" library="SparkFun" deviceset="GND" device=""/>
-<part name="SUPPLY8" library="supply2" deviceset="+12V" device=""/>
 <part name="U$4" library="synfinatic" deviceset="OKI-78SR" device=""/>
 <part name="C8" library="resistor" deviceset="C-EU" device="C0805" value="10uF"/>
 <part name="C9" library="resistor" deviceset="C-EU" device="C0805" value="10uF"/>
-<part name="SUPPLY10" library="supply2" deviceset="+12V" device=""/>
 <part name="GND14" library="SparkFun" deviceset="GND" device=""/>
-<part name="U$5" library="SparkFun" deviceset="5V" device=""/>
 <part name="FRAME1" library="frames" deviceset="FRAME_A_L" device="" value="teensy-dsc"/>
+<part name="SUPPLY1" library="SparkFun-Aesthetics" deviceset="5V" device=""/>
+<part name="SUPPLY2" library="SparkFun-Aesthetics" deviceset="5V" device=""/>
+<part name="SUPPLY3" library="SparkFun-Aesthetics" deviceset="5V" device=""/>
+<part name="SUPPLY4" library="SparkFun-Aesthetics" deviceset="5V" device=""/>
+<part name="SUPPLY5" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
+<part name="SUPPLY6" library="SparkFun-Aesthetics" deviceset="5V" device=""/>
+<part name="SUPPLY8" library="supply2" deviceset="+12V" device=""/>
+<part name="SUPPLY9" library="supply2" deviceset="+12V" device=""/>
+<part name="SUPPLY10" library="SparkFun-Aesthetics" deviceset="3.3V" device=""/>
+<part name="SUPPLY11" library="supply2" deviceset="+12V" device=""/>
+<part name="C2" library="SparkFun-Capacitors" deviceset="22UF-6.3V-20%(0805)" device="" value="4.7uF"/>
+<part name="C1" library="SparkFun-Capacitors" deviceset="1.0UF-25V-+80/-20(0805)" device="" value="1.0uF"/>
 </parts>
 <sheets>
 <sheet>
@@ -14089,21 +14071,16 @@ http://synfin.net/teensydsc</text>
 <instance part="M1" gate="G$1" x="-66.04" y="50.8" rot="R180"/>
 <instance part="J3" gate="G$1" x="-48.26" y="157.48"/>
 <instance part="U$3" gate="G$1" x="-10.16" y="157.48"/>
-<instance part="C1" gate="G$1" x="7.62" y="154.94"/>
-<instance part="SUPPLY1" gate="G$1" x="-60.96" y="172.72"/>
 <instance part="GND2" gate="1" x="86.36" y="165.1"/>
-<instance part="SUPPLY3" gate="G$1" x="86.36" y="170.18"/>
-<instance part="C2" gate="G$1" x="-25.4" y="157.48" rot="R180"/>
 <instance part="GND3" gate="1" x="-10.16" y="144.78"/>
-<instance part="SUPPLY4" gate="G$1" x="-25.4" y="170.18"/>
-<instance part="SUPPLY5" gate="G$1" x="7.62" y="170.18"/>
-<instance part="SUPPLY6" gate="G$1" x="66.04" y="101.6"/>
 <instance part="GND4" gate="1" x="66.04" y="88.9"/>
 <instance part="GND5" gate="1" x="-33.02" y="73.66"/>
 <instance part="SUPPLY7" gate="G$1" x="-33.02" y="30.48" rot="R180"/>
 <instance part="JP1" gate="G$1" x="99.06" y="167.64"/>
 <instance part="GND6" gate="1" x="-63.5" y="144.78"/>
-<instance part="X1" gate="1" x="27.94" y="121.92"/>
+<instance part="X1" gate="1" x="27.94" y="121.92" smashed="yes">
+<attribute name="NAME" x="20.32" y="125.73" size="1.778" layer="95"/>
+</instance>
 <instance part="GND1" gate="1" x="7.62" y="109.22"/>
 <instance part="U$2" gate="G$1" x="114.3" y="58.42"/>
 <instance part="C3" gate="G$1" x="86.36" y="58.42"/>
@@ -14114,9 +14091,10 @@ http://synfin.net/teensydsc</text>
 <instance part="C7" gate="G$1" x="137.16" y="58.42"/>
 <instance part="GND7" gate="1" x="116.84" y="30.48"/>
 <instance part="GND8" gate="1" x="144.78" y="50.8"/>
-<instance part="SUPPLY2" gate="G$1" x="116.84" y="99.06"/>
 <instance part="GND9" gate="1" x="127" y="78.74"/>
-<instance part="X2" gate="1" x="88.9" y="121.92"/>
+<instance part="X2" gate="1" x="88.9" y="121.92" smashed="yes">
+<attribute name="NAME" x="81.28" y="125.73" size="1.778" layer="95"/>
+</instance>
 <instance part="J2" gate="G$1" x="-35.56" y="121.92"/>
 <instance part="GND11" gate="1" x="-68.58" y="109.22"/>
 <instance part="GND12" gate="1" x="-20.32" y="109.22"/>
@@ -14129,18 +14107,26 @@ http://synfin.net/teensydsc</text>
 <instance part="J4" gate="G$1" x="93.98" y="139.7"/>
 <instance part="Q1" gate="G$1" x="149.86" y="149.86"/>
 <instance part="R15" gate="G$1" x="139.7" y="160.02" rot="R90"/>
-<instance part="SUPPLY9" gate="+12V" x="139.7" y="172.72"/>
 <instance part="D5" gate="G$1" x="139.7" y="137.16" rot="R90"/>
 <instance part="GND15" gate="1" x="147.32" y="129.54"/>
-<instance part="SUPPLY8" gate="+12V" x="106.68" y="157.48"/>
 <instance part="U$4" gate="G$1" x="45.72" y="162.56"/>
 <instance part="C8" gate="G$1" x="27.94" y="154.94"/>
 <instance part="C9" gate="G$1" x="66.04" y="154.94"/>
-<instance part="SUPPLY10" gate="+12V" x="27.94" y="170.18"/>
 <instance part="GND14" gate="1" x="45.72" y="147.32"/>
-<instance part="U$5" gate="G$1" x="66.04" y="167.64"/>
 <instance part="FRAME1" gate="G$1" x="-104.14" y="-27.94"/>
 <instance part="FRAME1" gate="G$2" x="68.58" y="-27.94"/>
+<instance part="SUPPLY1" gate="G$1" x="-25.4" y="165.1"/>
+<instance part="SUPPLY2" gate="G$1" x="66.04" y="167.64"/>
+<instance part="SUPPLY3" gate="G$1" x="86.36" y="172.72"/>
+<instance part="SUPPLY4" gate="G$1" x="66.04" y="104.14"/>
+<instance part="SUPPLY5" gate="G$1" x="116.84" y="99.06"/>
+<instance part="SUPPLY6" gate="G$1" x="-60.96" y="172.72"/>
+<instance part="SUPPLY8" gate="+12V" x="139.7" y="172.72"/>
+<instance part="SUPPLY9" gate="+12V" x="27.94" y="170.18"/>
+<instance part="SUPPLY10" gate="G$1" x="7.62" y="165.1"/>
+<instance part="SUPPLY11" gate="+12V" x="106.68" y="157.48"/>
+<instance part="C2" gate="G$1" x="-25.4" y="154.94" rot="R180"/>
+<instance part="C1" gate="G$1" x="7.62" y="152.4"/>
 </instances>
 <busses>
 </busses>
@@ -14156,28 +14142,16 @@ http://synfin.net/teensydsc</text>
 <wire x1="-10.16" y1="149.86" x2="-10.16" y2="147.32" width="0.1524" layer="91"/>
 <pinref part="GND3" gate="1" pin="GND"/>
 <junction x="-10.16" y="149.86"/>
-<pinref part="C2" gate="G$1" pin="1"/>
-<wire x1="-25.4" y1="152.4" x2="-25.4" y2="149.86" width="0.1524" layer="91"/>
 <wire x1="-25.4" y1="149.86" x2="-10.16" y2="149.86" width="0.1524" layer="91"/>
 <wire x1="-10.16" y1="149.86" x2="7.62" y2="149.86" width="0.1524" layer="91"/>
+<pinref part="C2" gate="G$1" pin="1"/>
 <pinref part="C1" gate="G$1" pin="2"/>
-<wire x1="7.62" y1="149.86" x2="7.62" y2="152.4" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="M1" gate="G$1" pin="GND@10"/>
 <wire x1="-40.64" y1="81.28" x2="-33.02" y2="81.28" width="0.1524" layer="91"/>
 <wire x1="-33.02" y1="81.28" x2="-33.02" y2="76.2" width="0.1524" layer="91"/>
 <pinref part="GND5" gate="1" pin="GND"/>
-</segment>
-<segment>
-<pinref part="J3" gate="G$1" pin="8"/>
-<wire x1="-60.96" y1="149.86" x2="-63.5" y2="149.86" width="0.1524" layer="91"/>
-<pinref part="GND6" gate="1" pin="GND"/>
-<wire x1="-63.5" y1="149.86" x2="-63.5" y2="147.32" width="0.1524" layer="91"/>
-<wire x1="-60.96" y1="160.02" x2="-63.5" y2="160.02" width="0.1524" layer="91"/>
-<wire x1="-63.5" y1="160.02" x2="-63.5" y2="149.86" width="0.1524" layer="91"/>
-<junction x="-63.5" y="149.86"/>
-<pinref part="J3" gate="G$1" pin="4"/>
 </segment>
 <segment>
 <pinref part="GND4" gate="1" pin="GND"/>
@@ -14272,8 +14246,18 @@ http://synfin.net/teensydsc</text>
 <junction x="45.72" y="149.86"/>
 <pinref part="GND14" gate="1" pin="GND"/>
 </segment>
+<segment>
+<pinref part="J3" gate="G$1" pin="8"/>
+<wire x1="-60.96" y1="149.86" x2="-63.5" y2="149.86" width="0.1524" layer="91"/>
+<pinref part="GND6" gate="1" pin="GND"/>
+<wire x1="-63.5" y1="149.86" x2="-63.5" y2="147.32" width="0.1524" layer="91"/>
+<wire x1="-60.96" y1="160.02" x2="-63.5" y2="160.02" width="0.1524" layer="91"/>
+<wire x1="-63.5" y1="160.02" x2="-63.5" y2="149.86" width="0.1524" layer="91"/>
+<junction x="-63.5" y="149.86"/>
+<pinref part="J3" gate="G$1" pin="4"/>
+</segment>
 </net>
-<net name="3.3V" class="0">
+<net name="3.3V" class="1">
 <segment>
 <pinref part="M1" gate="G$1" pin="VCC@1"/>
 <wire x1="-40.64" y1="35.56" x2="-33.02" y2="35.56" width="0.1524" layer="91"/>
@@ -14281,21 +14265,22 @@ http://synfin.net/teensydsc</text>
 <pinref part="SUPPLY7" gate="G$1" pin="3.3V"/>
 </segment>
 <segment>
-<pinref part="C1" gate="G$1" pin="1"/>
-<pinref part="U$3" gate="G$1" pin="+3V3"/>
-<pinref part="SUPPLY5" gate="G$1" pin="3.3V"/>
-<wire x1="7.62" y1="160.02" x2="0" y2="160.02" width="0.1524" layer="91"/>
-<wire x1="7.62" y1="160.02" x2="7.62" y2="170.18" width="0.1524" layer="91"/>
-<junction x="7.62" y="160.02"/>
-</segment>
-<segment>
 <pinref part="U$2" gate="G$1" pin="VCC"/>
-<pinref part="SUPPLY2" gate="G$1" pin="3.3V"/>
 <wire x1="116.84" y1="78.74" x2="116.84" y2="93.98" width="0.1524" layer="91"/>
 <pinref part="C5" gate="G$1" pin="1"/>
-<wire x1="116.84" y1="93.98" x2="116.84" y2="99.06" width="0.1524" layer="91"/>
 <wire x1="127" y1="93.98" x2="116.84" y2="93.98" width="0.1524" layer="91"/>
 <junction x="116.84" y="93.98"/>
+<pinref part="SUPPLY5" gate="G$1" pin="3.3V"/>
+<wire x1="116.84" y1="93.98" x2="116.84" y2="99.06" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<wire x1="7.62" y1="157.48" x2="7.62" y2="160.02" width="0.1524" layer="91"/>
+<pinref part="SUPPLY10" gate="G$1" pin="3.3V"/>
+<pinref part="U$3" gate="G$1" pin="+3V3"/>
+<wire x1="7.62" y1="160.02" x2="7.62" y2="165.1" width="0.1524" layer="91"/>
+<wire x1="0" y1="160.02" x2="7.62" y2="160.02" width="0.1524" layer="91"/>
+<junction x="7.62" y="160.02"/>
+<pinref part="C1" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="XBEE_RST" class="0">
@@ -14644,28 +14629,6 @@ http://synfin.net/teensydsc</text>
 <label x="7.62" y="-2.54" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 </net>
-<net name="+12V" class="3">
-<segment>
-<pinref part="R15" gate="G$1" pin="2"/>
-<wire x1="139.7" y1="165.1" x2="139.7" y2="170.18" width="0.1524" layer="91"/>
-<pinref part="SUPPLY9" gate="+12V" pin="+12V"/>
-</segment>
-<segment>
-<pinref part="J4" gate="G$1" pin="PWR"/>
-<wire x1="96.52" y1="147.32" x2="106.68" y2="147.32" width="0.1524" layer="91"/>
-<wire x1="106.68" y1="147.32" x2="106.68" y2="154.94" width="0.1524" layer="91"/>
-<pinref part="SUPPLY8" gate="+12V" pin="+12V"/>
-</segment>
-<segment>
-<pinref part="C8" gate="G$1" pin="1"/>
-<wire x1="27.94" y1="157.48" x2="27.94" y2="162.56" width="0.1524" layer="91"/>
-<pinref part="SUPPLY10" gate="+12V" pin="+12V"/>
-<pinref part="U$4" gate="G$1" pin="IN"/>
-<wire x1="27.94" y1="162.56" x2="27.94" y2="167.64" width="0.1524" layer="91"/>
-<wire x1="38.1" y1="162.56" x2="27.94" y2="162.56" width="0.1524" layer="91"/>
-<junction x="27.94" y="162.56"/>
-</segment>
-</net>
 <net name="N$17" class="0">
 <segment>
 <pinref part="Q1" gate="G$1" pin="G"/>
@@ -14696,40 +14659,64 @@ http://synfin.net/teensydsc</text>
 </net>
 <net name="5V" class="1">
 <segment>
-<pinref part="U$4" gate="G$1" pin="OUT"/>
-<wire x1="53.34" y1="162.56" x2="66.04" y2="162.56" width="0.1524" layer="91"/>
-<pinref part="C9" gate="G$1" pin="1"/>
-<wire x1="66.04" y1="162.56" x2="66.04" y2="157.48" width="0.1524" layer="91"/>
-<wire x1="66.04" y1="162.56" x2="66.04" y2="167.64" width="0.1524" layer="91"/>
-<junction x="66.04" y="162.56"/>
-<pinref part="U$5" gate="G$1" pin="5V"/>
-</segment>
-<segment>
+<wire x1="-25.4" y1="157.48" x2="-25.4" y2="160.02" width="0.1524" layer="91"/>
+<pinref part="SUPPLY1" gate="G$1" pin="5V"/>
 <pinref part="U$3" gate="G$1" pin="IN"/>
-<pinref part="C2" gate="G$1" pin="2"/>
+<wire x1="-25.4" y1="160.02" x2="-25.4" y2="165.1" width="0.1524" layer="91"/>
 <wire x1="-20.32" y1="160.02" x2="-25.4" y2="160.02" width="0.1524" layer="91"/>
-<pinref part="SUPPLY4" gate="G$1" pin="5V"/>
-<wire x1="-25.4" y1="160.02" x2="-25.4" y2="170.18" width="0.1524" layer="91"/>
 <junction x="-25.4" y="160.02"/>
+<pinref part="C2" gate="G$1" pin="2"/>
 </segment>
 <segment>
-<pinref part="SUPPLY3" gate="G$1" pin="5V"/>
 <pinref part="JP1" gate="G$1" pin="VBUS"/>
 <wire x1="96.52" y1="170.18" x2="86.36" y2="170.18" width="0.1524" layer="91"/>
+<wire x1="86.36" y1="170.18" x2="86.36" y2="172.72" width="0.1524" layer="91"/>
+<pinref part="SUPPLY3" gate="G$1" pin="5V"/>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="VIN"/>
 <wire x1="60.96" y1="99.06" x2="66.04" y2="99.06" width="0.1524" layer="91"/>
-<wire x1="66.04" y1="99.06" x2="66.04" y2="101.6" width="0.1524" layer="91"/>
-<pinref part="SUPPLY6" gate="G$1" pin="5V"/>
+<wire x1="66.04" y1="99.06" x2="66.04" y2="104.14" width="0.1524" layer="91"/>
+<pinref part="SUPPLY4" gate="G$1" pin="5V"/>
+</segment>
+<segment>
+<pinref part="C9" gate="G$1" pin="1"/>
+<wire x1="66.04" y1="157.48" x2="66.04" y2="162.56" width="0.1524" layer="91"/>
+<pinref part="SUPPLY2" gate="G$1" pin="5V"/>
+<pinref part="U$4" gate="G$1" pin="OUT"/>
+<wire x1="66.04" y1="162.56" x2="66.04" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="162.56" x2="66.04" y2="162.56" width="0.1524" layer="91"/>
+<junction x="66.04" y="162.56"/>
 </segment>
 <segment>
 <pinref part="J3" gate="G$1" pin="2"/>
-<pinref part="SUPPLY1" gate="G$1" pin="5V"/>
-<wire x1="-60.96" y1="165.1" x2="-60.96" y2="172.72" width="0.1524" layer="91"/>
 <pinref part="J3" gate="G$1" pin="6"/>
-<junction x="-60.96" y="165.1"/>
 <wire x1="-60.96" y1="154.94" x2="-60.96" y2="165.1" width="0.1524" layer="91"/>
+<wire x1="-60.96" y1="165.1" x2="-60.96" y2="172.72" width="0.1524" layer="91"/>
+<junction x="-60.96" y="165.1"/>
+<pinref part="SUPPLY6" gate="G$1" pin="5V"/>
+</segment>
+</net>
+<net name="+12V" class="3">
+<segment>
+<pinref part="R15" gate="G$1" pin="2"/>
+<wire x1="139.7" y1="165.1" x2="139.7" y2="170.18" width="0.1524" layer="91"/>
+<pinref part="SUPPLY8" gate="+12V" pin="+12V"/>
+</segment>
+<segment>
+<pinref part="C8" gate="G$1" pin="1"/>
+<wire x1="27.94" y1="157.48" x2="27.94" y2="162.56" width="0.1524" layer="91"/>
+<pinref part="SUPPLY9" gate="+12V" pin="+12V"/>
+<pinref part="U$4" gate="G$1" pin="IN"/>
+<wire x1="27.94" y1="162.56" x2="27.94" y2="167.64" width="0.1524" layer="91"/>
+<wire x1="38.1" y1="162.56" x2="27.94" y2="162.56" width="0.1524" layer="91"/>
+<junction x="27.94" y="162.56"/>
+</segment>
+<segment>
+<pinref part="J4" gate="G$1" pin="PWR"/>
+<wire x1="96.52" y1="147.32" x2="106.68" y2="147.32" width="0.1524" layer="91"/>
+<wire x1="106.68" y1="147.32" x2="106.68" y2="154.94" width="0.1524" layer="91"/>
+<pinref part="SUPPLY11" gate="+12V" pin="+12V"/>
 </segment>
 </net>
 </nets>
@@ -14743,10 +14730,10 @@ http://synfin.net/teensydsc</text>
 <approved hash="202,1,-93.98,63.5,M1,VREF,,,,"/>
 <approved hash="104,1,-20.32,160.02,U$3,IN,5V,,,"/>
 <approved hash="104,1,0,160.02,U$3,+3V3,3.3V,,,"/>
-<approved hash="110,1,-60.96,167.64,5V,CHAN-B-AZ/RA,,,,"/>
 <approved hash="110,1,-60.96,160.02,5V,GND,,,,"/>
 <approved hash="110,1,-60.96,162.56,5V,CHAN-A-AZ/RA,,,,"/>
 <approved hash="110,1,-60.96,157.48,5V,CHAN-B-ALT/DEC,,,,"/>
+<approved hash="110,1,-60.96,167.64,5V,CHAN-B-AZ/RA,,,,"/>
 <approved hash="111,1,-60.96,167.64,5V,,,,,"/>
 <approved hash="111,1,-60.96,162.56,5V,,,,,"/>
 <approved hash="111,1,-60.96,160.02,5V,,,,,"/>
