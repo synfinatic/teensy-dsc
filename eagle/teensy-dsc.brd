@@ -133,8 +133,8 @@
 <hole x="4.953" y="46.228" drill="6.3754"/>
 <hole x="71.628" y="4.953" drill="6.3754"/>
 <hole x="71.628" y="46.228" drill="6.3754"/>
-<text x="17.78" y="2.54" size="1.778" layer="26">J2</text>
-<text x="31.75" y="2.54" size="1.778" layer="26">J1</text>
+<text x="17.78" y="2.54" size="1.778" layer="25">J2</text>
+<text x="31.75" y="2.54" size="1.778" layer="25">J1</text>
 <hole x="16.0782" y="25.527" drill="2.286"/>
 <hole x="60.5282" y="25.527" drill="2.286"/>
 <text x="24.765" y="38.1" size="1.016" layer="21" rot="R180">TeensyDSC v0.4
@@ -142,6 +142,10 @@ http://synfin.net/teensydsc
 20140912</text>
 <text x="66.04" y="44.45" size="1.016" layer="26" rot="MR0">S/N:</text>
 <rectangle x1="48.26" y1="43.18" x2="62.23" y2="48.26" layer="26"/>
+<text x="66.04" y="13.97" size="1.778" layer="25">Shutter</text>
+<text x="64.77" y="41.91" size="1.778" layer="25">Ctrl</text>
+<text x="46.99" y="3.81" size="1.778" layer="25">J3</text>
+<text x="33.02" y="38.1" size="1.016" layer="25">U$4</text>
 </plain>
 <libraries>
 <library name="SparkFun-Capacitors">
@@ -1920,7 +1924,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="36.449" y="45.466" size="1.27" layer="26" rot="MR0"/>
 </element>
 <element name="C9" library="resistor" package="C0805" value="10uF" x="30.48" y="40.64" smashed="yes" rot="MR180">
-<attribute name="NAME" x="29.591" y="39.624" size="1.27" layer="26" rot="MR180"/>
+<attribute name="NAME" x="28.956" y="42.799" size="1.27" layer="26" rot="MR180"/>
 </element>
 <element name="D5" library="adafruit" package="SOD-123" value="10V Z" x="64.77" y="13.97" rot="MR90"/>
 <element name="J1" library="SparkFun-Connectors" package="RJ11-6" value="RJ11-6PTH" x="27.94" y="2.54"/>
