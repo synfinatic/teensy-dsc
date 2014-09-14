@@ -18,7 +18,7 @@
 
 Encoder EncoderRA(CHAN_A_RA, CHAN_B_RA);
 Encoder EncoderDEC(CHAN_A_DEC, CHAN_B_DEC);
-AnySerial WiFlySerialPort(Serial3);
+AnySerial WiFlySerialPort(&Serial3);
 WiFlySerial WiFly(WiFlySerialPort);
 
 long ra_value, dec_value;

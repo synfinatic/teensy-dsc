@@ -3,49 +3,25 @@
 
 
 
-AnySerial::AnySerial(HardwareSerial &port) : 
-    hardware(port),
-#ifdef ENABLE_NEWSOFTSERIAL
-    newsoft(true),
-#endif
-    altsoft(true)
-{
+AnySerial::AnySerial(HardwareSerial *port) {
+    serialport.hardware = port;
     port_type = anyserial_hardware;
 }
 
-AnySerial::AnySerial() :
-    hardware(FakeHardwareSerial),
-#ifdef ENABLE_NEWSOFTSERIAL
-    newsoft(true),
-#endif
-    altsoft()
-{
+AnySerial::AnySerial(AltSoftSerial *port) {
+    serialport.altserial = port;
     port_type = anyserial_altsoft;
 }
 
-#ifdef ENABLE_NEWSOFTSERIAL
-AnySerial::AnySerial(uint8_t rx, uint8_t tx) :
-    hardware(FakeHardwareSerial),
-    newsoft(rx, tx),
-    altsoft(true)
-{
-    port_type = anyserial_newsoft;
-}
-#endif
 
 void
 AnySerial::begin(uint32_t baud) { 
     switch (port_type) {
         case anyserial_altsoft:
-            altsoft.begin(baud);
+            serialport.altserial->begin(baud);
             break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            newsoft.begin(baud);
-            break;
-#endif
         case anyserial_hardware:
-            hardware.begin(baud);
+            serialport.hardware->begin(baud);
             break;
     }
 }
@@ -55,15 +31,10 @@ void
 AnySerial::end() {
     switch (port_type) {
         case anyserial_altsoft:
-            altsoft.end();
+            serialport.altserial->end();
             break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            newsoft.end();
-            break;
-#endif
         case anyserial_hardware:
-            hardware.end();
+            serialport.hardware->end();
             break;
     }
 
@@ -74,15 +45,10 @@ AnySerial::peek() {
     int ret;
     switch (port_type) {
         case anyserial_altsoft:
-            ret = altsoft.peek();
+            ret = serialport.altserial->peek();
             break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            ret = newsoft.peek();
-            break;
-#endif
         case anyserial_hardware:
-            ret = hardware.peek();
+            ret = serialport.hardware->peek();
             break;
     }
 
@@ -94,15 +60,10 @@ AnySerial::read() {
     int ret;
     switch (port_type) {
         case anyserial_altsoft:
-            ret = altsoft.read();
+            ret = serialport.altserial->read();
             break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            ret = newsoft.read();
-            break;
-#endif
         case anyserial_hardware:
-            ret = hardware.read();
+            ret = serialport.hardware->read();
             break;
     }
 
@@ -114,15 +75,10 @@ AnySerial::available() {
     int ret;
     switch (port_type) {
         case anyserial_altsoft:
-            ret = altsoft.available();
+            ret = serialport.altserial->available();
             break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            ret = newsoft.available();
-            break;
-#endif
         case anyserial_hardware:
-            ret = hardware.available();
+            ret = serialport.hardware->available();
             break;
     }
 
@@ -133,13 +89,8 @@ void
 AnySerial::flushInput() {
     switch (port_type) {
         case anyserial_altsoft:
-            altsoft.flushInput();
+            serialport.altserial->flushInput();
             break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            newsoft.flushInput();
-            break;
-#endif
         case anyserial_hardware:
             // not implimented
             break;
@@ -150,13 +101,8 @@ void
 AnySerial::flushOutput() {
     switch (port_type) {
         case anyserial_altsoft:
-            altsoft.flushOutput();
+            serialport.altserial->flushOutput();
             break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            newsoft.flushOutput();
-            break;
-#endif
         case anyserial_hardware:
             // not implimented
             break;
@@ -166,18 +112,13 @@ AnySerial::flushOutput() {
 
 bool 
 AnySerial::listen() { 
-    bool ret;
+    bool ret = true;
     switch (port_type) {
         case anyserial_altsoft:
-            ret = altsoft.listen();
+            ret = serialport.altserial->listen();
             break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            ret = newsoft.listen();
-            break;
-#endif
         case anyserial_hardware:
-            ret = hardware.listen();
+            // not implimented
             break;
     }
 
@@ -186,18 +127,13 @@ AnySerial::listen() {
 
 bool 
 AnySerial::isListening() { 
-    bool ret;
+    bool ret = false;
     switch (port_type) {
         case anyserial_altsoft:
-            ret = altsoft.isListening();
+            ret = serialport.altserial->isListening();
             break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            ret = newsoft.isListening();
-            break;
-#endif
         case anyserial_hardware:
-            ret = hardware.isListening();
+            // not implimented
             break;
     }
 
@@ -209,13 +145,8 @@ AnySerial::overflow() {
     bool ret = false;
     switch (port_type) {
         case anyserial_altsoft:
-            ret = altsoft.overflow();
+            ret = serialport.altserial->overflow();
             break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            ret = newsoft.overflow();
-            break;
-#endif
         case anyserial_hardware:
             // not implimented
             break;
@@ -226,112 +157,60 @@ AnySerial::overflow() {
 
 int 
 AnySerial::library_version() { 
-    int ret;
+    int ret = 0;
     switch (port_type) {
         case anyserial_altsoft:
-            ret = altsoft.library_version();
+            ret = serialport.altserial->library_version();
             break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            ret = newsoft.library_version();
-            break;
-#endif
         case anyserial_hardware:
-            ret = hardware.library_version();
+            // not implimented
             break;
     }
 
     return ret;
 }
 
-/*
- *  Only valid for AltSoftSerial
- */
-void 
-AnySerial::init(uint32_t cycles_per_bit) {
+
+size_t 
+AnySerial::write(char *str) {
+    size_t ret = 0;
     switch (port_type) {
         case anyserial_altsoft:
-            altsoft.init(cycles_per_bit);
+            ret = serialport.altserial->write(str);
             break;
-        case anyserial_newsoft:
         case anyserial_hardware:
-            // not implimented
+            ret = serialport.hardware->write(str);
             break;
     }
+    return ret;
+}
+
+size_t 
+AnySerial::write(uint8_t *buff, size_t len) {
+    size_t ret = 0;
+    switch (port_type) {
+        case anyserial_altsoft:
+            ret = serialport.altserial->write(buff, len);
+            break;
+        case anyserial_hardware:
+            ret = serialport.hardware->write(buff, len);
+            break;
+    }
+    return ret;
+}
+
+AnySerial::~AnySerial() {
+    end();
 }
 
 void 
 AnySerial::writeByte(uint8_t byte) {
     switch (port_type) {
         case anyserial_altsoft:
-            altsoft.writeByte(byte);
+            serialport.altserial->write(&byte, 1);
             break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            newsoft.writeByte(byte);
-            break;
-#endif
         case anyserial_hardware:
-            hardware.writeByte(byte);
+            serialport.hardware->write(&byte, 1);
             break;
     }
-}
-
-size_t 
-AnySerial::write(char *str) {
-    size_t = ret;
-    switch (port_type) {
-        case anyserial_altsoft:
-            ret = altsoft.write(str);
-            break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            ret = newsoft.write(str);
-            break;
-#endif
-        case anyserial_hardware:
-            ret = hardware.write(str);
-            break;
-    }
-    return ret;
-}
-
-size_t 
-AnySerial::write(uint8_t buff, size_t len) {
-    size_t = ret;
-    switch (port_type) {
-        case anyserial_altsoft:
-            ret = altsoft.write(buff, len);
-            break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            ret = newsoft.write(buff, len);
-            break;
-#endif
-        case anyserial_hardware:
-            ret = hardware.write(buff, len);
-            break;
-    }
-    return ret;
-}
-
-void 
-AnySerial::end() {
-    switch (port_type) {
-        case anyserial_altsoft:
-            altsoft.end();
-            break;
-#ifdef ENABLE_NEWSOFTSERIAL
-        case anyserial_newsoft:
-            newsoft.end();
-            break;
-#endif
-        case anyserial_hardware:
-            hardware.end();
-            break;
-    }
-}
-
-AnySerial::~AnySerial() {
-    end();
 }

@@ -356,7 +356,7 @@ WiFlySerial::WiFlySerial(byte pinReceive, byte pinSend) : uart(pinReceive, pinSe
 }
 */
 
-WiFlySerial::WiFlySerial(AnySerial &port) {
+WiFlySerial::WiFlySerial(AnySerial &port) : uart(port) {
   
   // Set initial values for flags.  
   // On Arduino startup, WiFly state not known.
@@ -364,7 +364,6 @@ WiFlySerial::WiFlySerial(AnySerial &port) {
   bWiFlyConnectionOpen = false;
   fStatus = WIFLY_STATUS_OFFLINE ;
   strcpy(szWiFlyPrompt, WiFlyFixedPrompts[WIFLY_MSG_PROMPT2] );  // ">"
-  use_sw_serial = false; 
   iLocalPort = WIFLY_DEFAULT_LOCAL_PORT;
   iRemotePort = WIFLY_DEFAULT_REMOTE_PORT;
   
@@ -373,7 +372,6 @@ WiFlySerial::WiFlySerial(AnySerial &port) {
   
     // ensure a default sink.
   pDebugChannel = NULL;
-  uart = port; 
   pControl = WiFlyFixedPrompts[WIFLY_MSG_CLOSE];
   // set default uart transmission speed to same as WiFly default speed.
   uart.begin(WIFLY_DEFAULT_BAUD_RATE);
