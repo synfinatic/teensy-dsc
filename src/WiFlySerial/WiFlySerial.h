@@ -146,7 +146,7 @@ Copyright GPL 2.0 Tom Waldock 2011
 
 
 // WiFly-specific prompt codes
-static char* WiFlyFixedPrompts[N_PROMPTS] = { 
+static char * WiFlyFixedPrompts[] = { 
     "",
     "AOK", 
     "CMD", 
@@ -158,7 +158,7 @@ static char* WiFlyFixedPrompts[N_PROMPTS] = {
     "ERR:Connected" 
 };
 
-static uint16_t WiFlyFixedFlags[N_PROMPTS] = {
+static uint16_t WiFlyFixedFlags[] = {
     PROMPT_EXPECTED_TOKEN_FOUND, 
     PROMPT_AOK, 
     PROMPT_CMD_MODE, 

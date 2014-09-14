@@ -100,7 +100,6 @@ EncoderValue(long value, bool lead) {
     static char buff[BUFF_LEN];
     char sign;
     unsigned long a_value;
-    int buff_pos = 0;
 
     if (lead) {
         if (value < 0) {
@@ -108,7 +107,6 @@ EncoderValue(long value, bool lead) {
         } else {
             sign = '+';
         }
-        buff_pos = 1;
     }
 
     a_value = abs(value);

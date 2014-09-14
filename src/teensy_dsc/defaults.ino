@@ -8,7 +8,7 @@ get_eeprom_buffer() {
     if (buffer == NULL) {
         buffer = (char *)malloc(EEPROM_BUFFER_SIZE);
     }
-    memset(buffer, NULL, sizeof(buffer));
+    memset(buffer, 0, sizeof(buffer));
     return buffer;
 }
 

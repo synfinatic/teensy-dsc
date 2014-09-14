@@ -470,9 +470,7 @@ int WiFlySerial::ScanForPattern( char* responseBuffer, const int buflen,  const 
   char chResponse = 'A';
   int  bufpos = 0;
   int  bufsize = buflen -1;  //terminating null for bufsize
-  int  iPromptIndex = 0;
   boolean bWaiting = true;
-  boolean bReceivedCR = false;
   
  WiFlyFixedPrompts[WIFLY_MSG_EXPECTED] = (char*) pExpectedPrompt;
  WiFlyFixedPrompts[WIFLY_MSG_PROMPT] = (char*) szWiFlyPrompt;
