@@ -7,7 +7,8 @@
 #include <Streaming.h>
 #define ENCODER_OPTIMIZE_INTERRUPTS
 #include <Encoder.h>
-#include <AltSoftSerial.h>
+// #include <AltSoftSerial.h>
+// #include <SoftwareSerial.h>
 #include <AnySerial.h>
 #include <WiFlySerial.h>
 

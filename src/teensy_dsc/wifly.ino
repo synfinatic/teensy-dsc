@@ -7,7 +7,7 @@
 void 
 wifi_setup() {
     char * commands[] = {
-        "factory RESET",
+//        "factory RESET",
         LONG_PAUSE,
         "set uart mode 0x03",
         "set uart baudrate 115200",
@@ -37,7 +37,7 @@ wifi_setup() {
     WiFly.closeConnection();
 
     WiFly.flush();
-    while(WiFly.available()) {
+    while (WiFly.available()) {
         WiFly.read();
     }
 }
@@ -48,9 +48,9 @@ wifi_setup() {
  * The last entry needs to be DONE
  */
 void 
-wifi_execute_commands(char * commands[]) {
+wifi_execute_commands(char *commands[]) {
     int cmd = 0;
-    char * command = commands[cmd++];
+    char *command = commands[cmd];
     char bufRequest[REQUEST_BUFFER_SIZE];
 
     while (0 != strcmp(command, DONE)) {
