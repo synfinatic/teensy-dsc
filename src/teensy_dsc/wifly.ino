@@ -1,4 +1,4 @@
-#include "teensydsc.h"
+#include "teensy_dsc.h"
 #include "wifly.h"
 
 /*
@@ -33,7 +33,7 @@ wifi_setup() {
     };
 
     WiFly.getDeviceStatus();
-    execute_wifi_commands(commands);
+    wifi_execute_commands(commands);
     WiFly.closeConnection();
 
     WiFly.flush();

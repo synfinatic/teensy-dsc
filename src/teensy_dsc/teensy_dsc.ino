@@ -4,28 +4,34 @@
  * Copyright (c) 2014 Aaron Turner
  */
 
+#include <Streaming.h>
 #define ENCODER_OPTIMIZE_INTERRUPTS
 #include <Encoder.h>
-#include <Xbee.h>
+#include <AltSoftSerial.h>
+#include <AnySerial.h>
+#include <WiFlySerial.h>
+
+#include "defaults.h"
+#include "teensy_dsc.h"
+#include "wifly.h"
+#include "utils.h"
 
 Encoder EncoderRA(CHAN_A_RA, CHAN_B_RA);
 Encoder EncoderDEC(CHAN_A_DEC, CHAN_B_DEC);
-WiFlySerial WiFly(XBEE_RX, XBEE_TX);
+AnySerial WiFlySerialPort(Serial3);
+WiFlySerial WiFly(WiFlySerialPort);
 
 long ra_value, dec_value;
 long ra_cps, dec_cps;
 
 void
 setup() {
-    pinMode(XBEE_RESET, INPUT);
+    pinMode(WIFLY_RESET, INPUT);
     Serial.begin(9600);  // USB Serial
     Serial.setTimeout(USER_TIMEOUT);
-    Serial2.begin(XBEE_SERIAL_SPEED); // Xbee Serial 
-    Serial2.setTimeout(XBEE_TIMEOUT);
-    Xbee.begin(Serial2);
 
     // It takes a while for the XBee radio to initialize
-    sleep(XBEE_DELAY);
+    delay(WIFLY_DELAY);
 }
 
 void
@@ -35,7 +41,7 @@ loop() {
         dec_value = EncoderDEC.read();
         process_user_cmd();
     }
-    if (Serial2.available() > 0) {
+    if (SerialWiFly.available() > 0) {
         ra_value = EncoderRA.read();
         dec_value = EncoderDEC.read();
         process_dsc_cmd(ra_value, dec_value);
@@ -53,14 +59,14 @@ process_user_cmd() {
         buff = EncoderValue(ra_value, true);
         Serial.print(buff);
         Serial.print("\t");
-        buff = printEncoderValue(dec_value, true);
+        buff = EncoderValue(dec_value, true);
         Serial.print(buff);
         Serial.print("\r");
     } else if (cmd == 'R') {
         Serial.readBytesUntil('\r', read_buff, 255);
         sscanf(read_buff, "%ld %ld", &ra_cps, &dec_cps);
     } else {
-        Serial2.print("ERR\r");
+        WiFly.print("ERR\r");
     }
 
 
@@ -107,54 +113,23 @@ EncoderValue(long value, bool lead) {
 
     a_value = abs(value);
     if (lead) {
-        sprintf(buff, "%c%05d", sign, a_value);
+        sprintf(buff, "%c%05lu", sign, a_value);
     } else {
-        sprintf(buff, "%05d", a_value);
+        sprintf(buff, "%05lu", a_value);
     }
-    return &buff;
+    return buff;
 }
 
 
 /*
- * Resets the Xbee
+ * Resets the WiFly
  */
 void
-reset_xbee() {
-    serial_printf("\nResetting the Xbee...");
-    pinMode(XBEE_RESET, OUTPUT);
-    digitalWrite(XBEE_RESET, LOW);
-    sleep(100);
-    pinMode(XBEE_RESET, INPUT);
-    serial_printf("Done!\n");
-}
-
-
-/*
- * printf to the HW serial port, useful for debugging.  Note 128char limit!
- */
-void 
-serial_printf(const char *fmt, ...) {
-    char tmp[128]; // resulting string limited to 128 chars
-    va_list args;
-    va_start(args, fmt);
-    vsnprintf(tmp, 128, fmt, args);
-    va_end(args);
-    Serial.print(tmp);
-}
-
-/*
- * printf to HW serial port, if we have debugging enabled
- */
-void
-dbg_serial_printf(const char *fmt, ...) {
-#ifdef DEBUG
-    char tmp[128]; // resulting string limited to 128 chars
-    va_list args;
-    va_start(args, fmt);
-    vsnprintf(tmp, 128, fmt, args);
-    va_end(args);
-    Serial.print(tmp);
-#else
-    return;
-#endif
+reset_wifly() {
+    Serial.write("\nResetting the Xbee...  ");
+    pinMode(WIFLY_RESET, OUTPUT);
+    digitalWrite(WIFLY_RESET, LOW);
+    delay(100);
+    pinMode(WIFLY_RESET, INPUT);
+    Serial.write("Done!\n");
 }
