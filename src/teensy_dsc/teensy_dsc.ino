@@ -20,8 +20,6 @@
 #include <Streaming.h>
 #define ENCODER_OPTIMIZE_INTERRUPTS
 #include <Encoder.h>
-// #include <AltSoftSerial.h>
-// #include <SoftwareSerial.h>
 #include <AnySerial.h>
 #include <WiFlySerial.h>
 
@@ -30,9 +28,12 @@
 #include "wifly.h"
 #include "utils.h"
 
+/*
+ * Init our Encoders & WiFlySerial port
+ */
 Encoder EncoderRA(CHAN_A_RA, CHAN_B_RA);
 Encoder EncoderDEC(CHAN_A_DEC, CHAN_B_DEC);
-AnySerial WiFlySerialPort(&Serial3);
+AnySerial WiFlySerialPort(&SerialWiFly);
 WiFlySerial WiFly(WiFlySerialPort);
 
 long ra_value, dec_value;
