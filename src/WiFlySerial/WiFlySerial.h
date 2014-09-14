@@ -2,39 +2,39 @@
 #define __WIFLYSERIAL_H__
 
 /*
-Arduino/Teensy WiFly Device Driver
-Driver for Roving Network's WiFly GSX (c) (tm) b/g WiFi device
- using a simple Tx/Rx serial connection.
- 4-wires needed: Power, Gnd, Rx, Tx
+   Arduino/Teensy WiFly Device Driver
+   Driver for Roving Network's WiFly GSX (c) (tm) b/g WiFi device
+   using a simple Tx/Rx serial connection.
+   4-wires needed: Power, Gnd, Rx, Tx
 
-Provides moderately-generic WiFi device interface.
-Compatible with Arduino 1.0 and Teensy
-Version 1.00
+   Provides moderately-generic WiFi device interface.
+   Compatible with Arduino 1.0 and Teensy
+   Version 1.00
 
-- WiFlyGSX is a relatively intelligent peer.
-- WiFlyGSX may have awoken in a valid configured state while Arduino asleep; 
-    initialization and configuration to be polite and obtain state
-- WiFlyGSX hardware CTS/RTS not enabled yet
-- Can listen on multiple ports, only one at a time.
-- most settings assumed volatile; fetched from WiFly where reasonable.
+   - WiFlyGSX is a relatively intelligent peer.
+   - WiFlyGSX may have awoken in a valid configured state while Arduino asleep; 
+   initialization and configuration to be polite and obtain state
+   - WiFlyGSX hardware CTS/RTS not enabled yet
+   - Can listen on multiple ports, only one at a time.
+   - most settings assumed volatile; fetched from WiFly where reasonable.
 
-Expected pattern of use:
-begin
-issue commands, such as set SSID, passphrase etc
-exit command mode / enter data mode
-listen for web activity
-Open a TCP/UDP connection to a peer
-send / receive data
-close connection
+   Expected pattern of use:
+   begin
+   issue commands, such as set SSID, passphrase etc
+   exit command mode / enter data mode
+   listen for web activity
+   Open a TCP/UDP connection to a peer
+   send / receive data
+   close connection
 
-SoftwareSerial is exposed as serial i/o if necessary
+   SoftwareSerial is exposed as serial i/o if necessary
 
 Credits:
-  WiFlySerial      Tom Waldock http://sourceforge.net/projects/arduinowifly/
-  SoftwareSerial   Mikal Hart   http://arduiniana.org/
-  Time             Michael Margolis http://www.arduino.cc/playground/uploads/Code/Time.zip
-  WiFly            Roving Networks   www.rovingnetworks.com
-  and to Massimo and the Arduino team.
+WiFlySerial      Tom Waldock http://sourceforge.net/projects/arduinowifly/
+SoftwareSerial   Mikal Hart   http://arduiniana.org/
+Time             Michael Margolis http://www.arduino.cc/playground/uploads/Code/Time.zip
+WiFly            Roving Networks   www.rovingnetworks.com
+and to Massimo and the Arduino team.
 
 
 This library is free software; you can redistribute it and/or
@@ -177,149 +177,149 @@ uint8_t* BufferToIP_Array(char* pBuffer, uint8_t* pIP)  ;
 
 
 class WiFlySerial : public Stream {
-  public:
-    // Constructors
-    WiFlySerial(AnySerial &port);
-    // Destructor
- 
-    // Initialization
-    boolean begin();  // Initialises this interface Class.
-    
-    // Status
-    
-    // Obtain current device status flags
-    long    getDeviceStatus();  // refreshes device status flags.
-    boolean isAssociated();
-    boolean isTCPConnected();
-    boolean isAuthenticated();
-    boolean isifUp();
-    int     getChannel();
-    boolean isDNSfound();
-    boolean isDNScontacted();
-    boolean isInCommandMode();
-    boolean isConnectionOpen();
-            
-    // Information
-    // Device Info
-    char* showNetworkScan( char* pNetScan, const int buflen);
-    char* getLibraryVersion(char* buf, int buflen);
+    public:
+        // Constructors
+        WiFlySerial(AnySerial &port);
+        // Destructor
 
-// IP info
-    char* getSSID(char* buf, int buflen);
-    char* getDeviceID(char* buf, int buflen);    
-    char* getIP(char* buf, int buflen);
-    char* getNetMask(char* buf, int buflen);
-    char* getGateway(char* buf, int buflen);
-    char* getDNS(char* buf, int buflen);
-    char* getMAC(char* buf, int buflen);
-    char* getNTP(char* buf, int buflen);
-    char* getNTP_Update_Frequency(char* buf, int buflen);
-    unsigned long getTime();
-    char* getRSSI(char* pBuf, int buflen);
-    char* getBattery(char* pBuf, int buflen);
+        // Initialization
+        boolean begin();  // Initialises this interface Class.
 
-    AnySerial uart;
-    // Configuration Generic Wifi methods
-    
-    // Generic Wifi methods
-    boolean setSSID( const char* pSSID);    
-    boolean setPassphrase( const char* pPassphrase);
-    boolean setDeviceID( const char* pHostname);
-    boolean setNTP(const char* pNTP_IP);
-    boolean setNTP_Update_Frequency(const char* pFreq);
-    boolean setNTP_UTC_Offset(float fltUTC_Offset_hours);
-    boolean setIP( const char* pIP);
-    boolean setNetMask( const char* pNM);
-    boolean setGateway( const char* pGW);
-    boolean setDNS( const char* pDNS);
-    boolean setChannel( const char* pChannel);
-    boolean setLocalPort( int iNewLocalPort = WIFLY_DEFAULT_LOCAL_PORT);
-    boolean setRemotePort( int iNewRemotePort = WIFLY_DEFAULT_REMOTE_PORT);
-    boolean setProtocol( unsigned int iProtocol);
-    boolean setAuthMode( int iAuthMode);
-    boolean setJoinMode( int iJoinMode);        
-    boolean setDHCPMode(const int iModeDHCP);
-    
-    // wifi network Association
-    
-    // Joins ssid set with setSSID
-    boolean join();
-    boolean join( char* pSSID);
-    
-    // Leaves current SSID.
-    boolean leave();
-                 
-    // Generic utility
-    boolean StartCommandMode(char* pBuffer = NULL, const int bufSize = COMMAND_BUFFER_SIZE );
-    boolean exitCommandMode();     
-    void    reboot();
-    
-    // Client Connection
-    boolean openConnection(const char* pURL, const unsigned long WaitTime = JOIN_WAIT_TIME  );
-    boolean closeConnection(boolean bSafeClose = true);
-    
-    // Server Connection - waits for a client to connect
-    boolean serveConnection(  const unsigned long reconnectWaitTIme = SERVING_WAIT_TIME );
-    
-    // Open-format for RN 131C/G commands
-    boolean SendInquiry(char *Command, char* pBuffer, const int bufsize = RESPONSE_BUFFER_SIZE );
-    boolean SendInquirySimple(char *Command);
-    boolean SendCommand( char *Command,   char *SuccessIndicator, char* pBuffer, const int bufsize, 
+        // Status
+
+        // Obtain current device status flags
+        long    getDeviceStatus();  // refreshes device status flags.
+        boolean isAssociated();
+        boolean isTCPConnected();
+        boolean isAuthenticated();
+        boolean isifUp();
+        int     getChannel();
+        boolean isDNSfound();
+        boolean isDNScontacted();
+        boolean isInCommandMode();
+        boolean isConnectionOpen();
+
+        // Information
+        // Device Info
+        char* showNetworkScan( char* pNetScan, const int buflen);
+        char* getLibraryVersion(char* buf, int buflen);
+
+        // IP info
+        char* getSSID(char* buf, int buflen);
+        char* getDeviceID(char* buf, int buflen);    
+        char* getIP(char* buf, int buflen);
+        char* getNetMask(char* buf, int buflen);
+        char* getGateway(char* buf, int buflen);
+        char* getDNS(char* buf, int buflen);
+        char* getMAC(char* buf, int buflen);
+        char* getNTP(char* buf, int buflen);
+        char* getNTP_Update_Frequency(char* buf, int buflen);
+        unsigned long getTime();
+        char* getRSSI(char* pBuf, int buflen);
+        char* getBattery(char* pBuf, int buflen);
+
+        AnySerial uart;
+        // Configuration Generic Wifi methods
+
+        // Generic Wifi methods
+        boolean setSSID( const char* pSSID);    
+        boolean setPassphrase( const char* pPassphrase);
+        boolean setDeviceID( const char* pHostname);
+        boolean setNTP(const char* pNTP_IP);
+        boolean setNTP_Update_Frequency(const char* pFreq);
+        boolean setNTP_UTC_Offset(float fltUTC_Offset_hours);
+        boolean setIP( const char* pIP);
+        boolean setNetMask( const char* pNM);
+        boolean setGateway( const char* pGW);
+        boolean setDNS( const char* pDNS);
+        boolean setChannel( const char* pChannel);
+        boolean setLocalPort( int iNewLocalPort = WIFLY_DEFAULT_LOCAL_PORT);
+        boolean setRemotePort( int iNewRemotePort = WIFLY_DEFAULT_REMOTE_PORT);
+        boolean setProtocol( unsigned int iProtocol);
+        boolean setAuthMode( int iAuthMode);
+        boolean setJoinMode( int iJoinMode);        
+        boolean setDHCPMode(const int iModeDHCP);
+
+        // wifi network Association
+
+        // Joins ssid set with setSSID
+        boolean join();
+        boolean join( char* pSSID);
+
+        // Leaves current SSID.
+        boolean leave();
+
+        // Generic utility
+        boolean StartCommandMode(char* pBuffer = NULL, const int bufSize = COMMAND_BUFFER_SIZE );
+        boolean exitCommandMode();     
+        void    reboot();
+
+        // Client Connection
+        boolean openConnection(const char* pURL, const unsigned long WaitTime = JOIN_WAIT_TIME  );
+        boolean closeConnection(boolean bSafeClose = true);
+
+        // Server Connection - waits for a client to connect
+        boolean serveConnection(  const unsigned long reconnectWaitTIme = SERVING_WAIT_TIME );
+
+        // Open-format for RN 131C/G commands
+        boolean SendInquiry(char *Command, char* pBuffer, const int bufsize = RESPONSE_BUFFER_SIZE );
+        boolean SendInquirySimple(char *Command);
+        boolean SendCommand( char *Command,   char *SuccessIndicator, char* pBuffer, const int bufsize, 
                 const boolean bCollecting = true, const unsigned long WaitTime = DEFAULT_WAIT_TIME , 
                 const boolean bClear = true, const boolean bPromptAfterResult = true );
-    boolean SendCommandSimple( char *Command,   char *SuccessIndicator);
+        boolean SendCommandSimple( char *Command,   char *SuccessIndicator);
 
-    // utilities for collecting results or scanning for indicators.
-    int     ScanForPattern( char* responseBuffer, const int bufsize, const char *pExpectedPrompt, 
+        // utilities for collecting results or scanning for indicators.
+        int     ScanForPattern( char* responseBuffer, const int bufsize, const char *pExpectedPrompt, 
                 const boolean bCapturing = true, const unsigned long WaitTime = DEFAULT_WAIT_TIME, const boolean bPromptAfterResult = true   );
-    char*   ExtractDetail(char* pCommand, char* pDetail, const int buflen, const char* pFrom, const char* pTo);
-    char*   ExtractDetailIdx(const int idxCommand, char* pDetail, int buflen, const int idxSearch, const int idxStop);
-    int     CaptureUntilPrompt( char* responseBuffer, const int bufsize, const char *pExpectedPrompt, const unsigned long WaitTime = DEFAULT_WAIT_TIME  );
+        char*   ExtractDetail(char* pCommand, char* pDetail, const int buflen, const char* pFrom, const char* pTo);
+        char*   ExtractDetailIdx(const int idxCommand, char* pDetail, int buflen, const int idxSearch, const int idxStop);
+        int     CaptureUntilPrompt( char* responseBuffer, const int bufsize, const char *pExpectedPrompt, const unsigned long WaitTime = DEFAULT_WAIT_TIME  );
 
-    int peek();
-    virtual size_t write(uint8_t byte);
-    virtual int read();
-    virtual int available();
-    virtual void flush();
-    
-    int drain ();
-  
-    using Print::write;
+        int peek();
+        virtual size_t write(uint8_t byte);
+        virtual int read();
+        virtual int available();
+        virtual void flush();
 
-    // debug utilities - use Serial : not NewSoftSerial as it will affect incoming stream.
-    // should change these to use stream <<
-    void    setDebugChannel( Print* pDebug);
-    Print*  getDebugChannel( )  { return pDebugChannel; };
-    void    clearDebugChannel();
-    void    DebugPrint( const char* pMessage);
-    void    DebugPrint( const int iNumber);
-    void    DebugPrint( const char ch);
+        int drain ();
+
+        using Print::write;
+
+        // debug utilities - use Serial : not NewSoftSerial as it will affect incoming stream.
+        // should change these to use stream <<
+        void    setDebugChannel( Print* pDebug);
+        Print*  getDebugChannel( )  { return pDebugChannel; };
+        void    clearDebugChannel();
+        void    DebugPrint( const char* pMessage);
+        void    DebugPrint( const int iNumber);
+        void    DebugPrint( const char ch);
 
 
-    
-  private:
-    // internal buffer for command-prompt
-    char    szWiFlyPrompt[INDICATOR_BUFFER_SIZE ];
-    
-    // Internal status flags
-    long    fStatus;        
-    boolean bWiFlyInCommandMode;
-    boolean bWiFlyConnectionOpen;
-    char*   pControl;
-    
-    // Ports for connections
-    int     iRemotePort;
-    int     iLocalPort;
-    long 	lUTC_Offset_seconds;
-    
 
-    boolean GetCmdPrompt();
-    char*   GetBuffer_P(const int StringIndex, char* pBuffer, int bufSize);
-    char*   ExtractLineFromBuffer(const int idString,  char* pBuffer, const int bufsize, const char* pStartPattern, const char* chTerminator);
-    boolean issueSetting( int idxCommand, const char* pParam);
+    private:
+        // internal buffer for command-prompt
+        char    szWiFlyPrompt[INDICATOR_BUFFER_SIZE ];
 
-    // Internal debug channel.
-    Print*  pDebugChannel;
+        // Internal status flags
+        long    fStatus;        
+        boolean bWiFlyInCommandMode;
+        boolean bWiFlyConnectionOpen;
+        char*   pControl;
+
+        // Ports for connections
+        int     iRemotePort;
+        int     iLocalPort;
+        long 	lUTC_Offset_seconds;
+
+
+        boolean GetCmdPrompt();
+        char*   GetBuffer_P(const int StringIndex, char* pBuffer, int bufSize);
+        char*   ExtractLineFromBuffer(const int idString,  char* pBuffer, const int bufsize, const char* pStartPattern, const char* chTerminator);
+        boolean issueSetting( int idxCommand, const char* pParam);
+
+        // Internal debug channel.
+        Print*  pDebugChannel;
 
 };
 
