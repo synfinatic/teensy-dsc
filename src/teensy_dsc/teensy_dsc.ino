@@ -17,6 +17,7 @@
  * 
  */
 
+#include <Arduino.h>
 #include <Streaming.h>
 #define ENCODER_OPTIMIZE_INTERRUPTS
 #include <Encoder.h>
@@ -27,23 +28,32 @@
 #include "teensy_dsc.h"
 #include "wifly.h"
 #include "utils.h"
+#include "cli.h"
 
 /*
- * Init our Encoders & WiFlySerial port
+ * Init our Encoders & Serial ports
  */
 Encoder EncoderRA(CHAN_A_RA, CHAN_B_RA);
 Encoder EncoderDEC(CHAN_A_DEC, CHAN_B_DEC);
+AnySerial UserSerial;
+
 AnySerial WiFlySerialPort(&SerialWiFly);
 WiFlySerial WiFly(WiFlySerialPort);
-
-long ra_value, dec_value;
-long ra_cps, dec_cps;
+cli_ctx *cctx;
 
 void
 setup() {
     pinMode(WIFLY_RESET, INPUT);
-    Serial.begin(9600);  // USB Serial
-    Serial.setTimeout(USER_TIMEOUT);
+
+    // We should be reading the EEPROM config here
+    UserSerial.attach(&SerialDBG);
+    cctx = cli_init_cmd(&UserSerial);
+
+    cctx->ra_cps = 10000;
+    cctx->dec_cps = 10000;
+
+    UserSerial.begin(9600);  // USB Serial
+    UserSerial.setTimeout(USER_TIMEOUT);
 
     // It takes a while for the XBee radio to initialize
     delay(WIFLY_DELAY);
@@ -51,86 +61,34 @@ setup() {
 
 void
 loop() {
-    if (Serial.available() > 0) {
-        ra_value = EncoderRA.read();
-        dec_value = EncoderDEC.read();
-        process_user_cmd();
+    if (UserSerial.available() > 0) {
+        cctx->ra_value = EncoderRA.read();
+        cctx->dec_value = EncoderDEC.read();
+        process_cmd(&UserSerial);
     }
     if (SerialWiFly.available() > 0) {
-        ra_value = EncoderRA.read();
-        dec_value = EncoderDEC.read();
-        process_dsc_cmd(ra_value, dec_value);
+        cctx->ra_value = EncoderRA.read();
+        cctx->dec_value = EncoderDEC.read();
+        process_cmd(&WiFlySerialPort);
     }
 }
 
 void
-process_user_cmd() {
+process_cmd(AnySerial *serial) {
     char cmd;
     char *buff;
     char read_buff[255];
 
-    cmd = Serial.read();
+    cmd = serial->read();
     if (cmd == 'Q') {
-        buff = EncoderValue(ra_value, true);
-        Serial.print(buff);
-        Serial.print("\t");
-        buff = EncoderValue(dec_value, true);
-        Serial.print(buff);
-        Serial.print("\r");
+        cli_proc_cmd(cctx, "Q");
     } else if (cmd == 'R') {
-        Serial.readBytesUntil('\r', read_buff, 255);
-        sscanf(read_buff, "%ld %ld", &ra_cps, &dec_cps);
+        serial->readBytesUntil('\r', &read_buff[1], 255);
+        read_buff[0] = 'R';
+        cli_proc_cmd(cctx, read_buff);
     } else {
         WiFly.print("ERR\r");
     }
-
-
-
-}
-
-void
-process_dsc_cmd(long ra_value, long dec_value) {
-    char cmd;
-    char *buff;
-    char read_buff[255];
-
-    cmd = Serial2.read();
-    if (cmd == 'Q') {
-        buff = EncoderValue(ra_value, true);
-        Serial2.print(buff);
-        Serial2.print("\t");
-        buff = EncoderValue(dec_value, true);
-        Serial2.print(buff);
-        Serial2.print("\r");
-    } else if (cmd == 'R') {
-        Serial2.readBytesUntil('\r', read_buff, 255);
-        sscanf(read_buff, "%ld %ld", &ra_cps, &dec_cps);
-    } else {
-        Serial2.print("ERR\r");
-    }
-}
-
-char *
-EncoderValue(long value, bool lead) {
-    static char buff[BUFF_LEN];
-    char sign;
-    unsigned long a_value;
-
-    if (lead) {
-        if (value < 0) {
-            sign = '-';
-        } else {
-            sign = '+';
-        }
-    }
-
-    a_value = abs(value);
-    if (lead) {
-        sprintf(buff, "%c%05lu", sign, a_value);
-    } else {
-        sprintf(buff, "%05lu", a_value);
-    }
-    return buff;
 }
 
 

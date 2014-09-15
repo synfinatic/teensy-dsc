@@ -14065,6 +14065,7 @@ In this library the device names are the same as the pin names of the symbols, t
 <text x="71.12" y="-2.54" size="3.81" layer="90">Aaron Turner
 http://synfin.net/teensydsc</text>
 <text x="160.02" y="-20.32" size="2.1844" layer="90">v0.3</text>
+<text x="25.4" y="30.48" size="1.778" layer="91">Need to cut VIN/VUSB!</text>
 </plain>
 <instances>
 <instance part="U$1" gate="G$1" x="38.1" y="71.12"/>
