@@ -53,7 +53,7 @@ setup() {
     cctx->dec_cps = 10000;
 
     UserSerial.begin(9600);  // USB Serial
-    UserSerial.setTimeout(USER_TIMEOUT);
+//    UserSerial.setTimeout(USER_TIMEOUT);
 
     // It takes a while for the XBee radio to initialize
     delay(WIFLY_DELAY);
@@ -64,31 +64,92 @@ loop() {
     if (UserSerial.available() > 0) {
         cctx->ra_value = EncoderRA.read();
         cctx->dec_value = EncoderDEC.read();
-        process_cmd(&UserSerial);
+        process_cmd(cctx, &UserSerial);
     }
     if (SerialWiFly.available() > 0) {
         cctx->ra_value = EncoderRA.read();
         cctx->dec_value = EncoderDEC.read();
-        process_cmd(&WiFlySerialPort);
+        process_cmd(cctx, &WiFlySerialPort);
     }
 }
 
-void
-process_cmd(AnySerial *serial) {
-    char cmd;
-    char *buff;
-    char read_buff[255];
+/*
+ * Reads from *serial and trys to execute the given command.
+ * 
+ * Returns a cmd_status based on if we ran a command
+ */
+cmd_status
+process_cmd(cli_ctx *cctx, AnySerial *serial) {
+    static char read_buff[READBUFF_SIZE];
+    static size_t pos = 0;
+    char temp_buff[READBUFF_SIZE], byte;
+    size_t i, len;
+    cmd_status status;
 
-    cmd = serial->read();
-    if (cmd == 'Q') {
-        cli_proc_cmd(cctx, "Q");
-    } else if (cmd == 'R') {
-        serial->readBytesUntil('\r', &read_buff[1], 255);
-        read_buff[0] = 'R';
-        cli_proc_cmd(cctx, read_buff);
-    } else {
-        WiFly.print("ERR\r");
+    // Short cut for one char commands
+    i = 0;
+    if (pos == 0) {
+        byte = serial->peek();
+        while (cctx->one_char_cmds[i] != '\0') {
+            if (byte == cctx->one_char_cmds[i]) {
+                strncpy(read_buff, &byte, 1);
+                status = cli_proc_cmd(cctx, read_buff, 1);
+                serial->read(); // consume the byte
+                return status;
+            }
+            i++;
+        }
     }
+
+    /*
+     * Command is multiple bytes followed by '\r'
+     */
+    len = serial->readBytesUntil('\r', temp_buff, READBUFF_SIZE);
+    if (((strlen(read_buff) + len) > READBUFF_SIZE) ||
+        (len == READBUFF_SIZE)) {
+        // Crap, someone is just sending us crap.  Just eat it.
+        pos = 0;
+        read_buff[0] = '\0';
+        return E_CMD_TOO_LONG;
+    }
+
+    // append the last bytes to any bytes we've read before
+    strcat(read_buff, temp_buff);
+
+    // trim any whitespace on the end
+    if (IS_WORD_END(read_buff[len-1])) {
+        while (IS_WORD_END(read_buff[len-1])) {
+            read_buff[len-1] = '\0';
+        }
+    } else {
+        // We timed out, gotta wait for more input
+        return E_CMD_TOO_SHORT;
+    }
+
+    // At this point we should have a whole command.  Go process it!
+    status = cli_proc_cmd(cctx, read_buff, strlen(read_buff));
+
+    switch (status) {
+        case E_CMD_OK:
+            // Eat what we've been given and return
+            pos = 0;
+            read_buff[0] = '\0';
+            break;
+        case E_CMD_TOO_LONG:
+        case E_CMD_NOT_FOUND:
+        case E_CMD_BAD_ARGS:
+#ifdef DEBUG
+            serial->printf("ERR [%d]: %s\r", (int *)&status, read_buff);
+#endif
+            // Eat what we've been given and return
+            pos = 0;
+            read_buff[0] = '\0';
+            break;
+        case E_CMD_TOO_SHORT:
+            // Keep the buffer for next time 
+            break;
+    }
+    return status;
 }
 
 

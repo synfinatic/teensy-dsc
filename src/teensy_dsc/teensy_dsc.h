@@ -34,6 +34,7 @@
 #define BUFF_LEN 10
 #define USER_TIMEOUT 5000 // 5sec
 #define WIFLY_TIMEOUT 500  // 0.5sec
+#define READBUFF_SIZE 255
 
 #define TEENSY_DSC_VERSION "0.1"
 
