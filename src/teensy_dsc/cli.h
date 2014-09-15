@@ -29,12 +29,6 @@ typedef struct {
     void (*fh)(cli_ctx *, const char *args);
 } cmd_def;
 
-typedef struct {
-    long ra_cps;
-    long dec_cps;
-} dsc_resolution;
-
-
 /* init & entrance */
 cli_ctx *cli_init_cmd(AnySerial *aserial);
 int cli_proc_cmd(cli_ctx *ctx, char *line);
@@ -51,8 +45,5 @@ static const cmd_def COMMANDS[] = {
     { BASIC_DSC, "V", dsc_get_version },
     { NONE, NULL, NULL }
 };
-
-
-
 
 #endif
