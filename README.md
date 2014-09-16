@@ -40,6 +40,7 @@ TeensyDSC requires some additional Arduino libraries to compile/run:
  * [Teensyduino](http://pjrc.com/teensy/td_download.html) - Teensy addon for the Arduino IDE
  * [AnySerial](https://github.com/synfinatic/AnySerial)
  * [WiFlySerial](https://github.com/synfinatic/WiFlySerial) - customized to use AnySerial
+ * [Flash](https://github.com/mikalhart/Flash/)
 
 ## Supported DSC Software
 Please note that I have limited access to software, so this may not be a
