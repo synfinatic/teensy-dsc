@@ -10,27 +10,24 @@
 
 /*
  * Defaults for Wireless.   Feel free to change
- * these as desired
+ * these as desired.  All values need to be stored as strings!
  */
-#define NETWORK "10.0.0.0"
 #define IP_ADDRESS "10.0.0.1"
 #define NETMASK "255.255.255.0"
 #define PORT "4030"
-#define SSID "teensydsc"
+#define SSID "TeensyDSC"
+#define WPA_PASSWORD "teensydsc"
+#define WIFLY_RATE "12"
+#define WIFLY_CHANNEL "1"
+#define TX_POWER "1"
+// #define ENABLE_WPA
 
 
 /*
  * Defaults for serial ports exposed as RJ11 jacks
  */
 #define SERIAL_A_BAUD 9600
-#define SERIAL_A_BITS 8
-#define SERIAL_A_PARITY 'N'
-#define SERIAL_A_STOP 1
-
 #define SERIAL_B_BAUD 9600
-#define SERIAL_B_BITS 8
-#define SERIAL_B_PARITY 'N'
-#define SERIAL_B_STOP 1
 
 /*************************************************************** 
  * Ok, don't be changing anything below this point unless you 
@@ -45,13 +42,13 @@
 #define EEPROM_BUFFER_SIZE 255
 
 typedef struct _network_settings {
-    uint32_t network;
     uint32_t ip_address;
     uint32_t netmask;
     char ssid[30];
     uint16_t port;
     uint8_t channel;
     uint8_t tx_power; 
+    char passphrase[65];
 } network_settings_t;
 
 typedef enum _serial_port {
@@ -61,8 +58,6 @@ typedef enum _serial_port {
 
 typedef struct _serial_settings {
     uint32_t baud;
-    char parity;
-    uint8_t stop_bits;
 } serial_settings_t;
 
 void set_network_defaults(network_settings_t *);

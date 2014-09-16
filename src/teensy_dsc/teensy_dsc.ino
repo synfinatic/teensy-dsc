@@ -23,6 +23,7 @@
 #include <Encoder.h>
 #include <AnySerial.h>
 #include <WiFlySerial.h>
+#include <Flash.h>
 
 #include "defaults.h"
 #include "teensy_dsc.h"
@@ -130,17 +131,14 @@ process_cmd(cli_ctx *cctx, AnySerial *serial) {
     status = cli_proc_cmd(cctx, read_buff, strlen(read_buff));
 
     switch (status) {
-        case E_CMD_OK:
-            // Eat what we've been given and return
-            pos = 0;
-            read_buff[0] = '\0';
-            break;
         case E_CMD_TOO_LONG:
         case E_CMD_NOT_FOUND:
         case E_CMD_BAD_ARGS:
 #ifdef DEBUG
             serial->printf("ERR [%d]: %s\r", (int *)&status, read_buff);
 #endif
+            // fall through
+        case E_CMD_OK:
             // Eat what we've been given and return
             pos = 0;
             read_buff[0] = '\0';

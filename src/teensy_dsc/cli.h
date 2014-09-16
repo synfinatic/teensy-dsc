@@ -17,7 +17,7 @@ static const mode_def MODES[] = {
     { BASIC_DSC , "BDSC" } , 
     { WIFI      , "WIFI" } , 
     { CONFIG    , "CONF" } , 
-    { NONE      , NULL   }
+    { NONE      , ""     }
 };
 
 typedef enum {
@@ -25,7 +25,6 @@ typedef enum {
     E_CMD_NOT_FOUND,
     E_CMD_TOO_SHORT,
     E_CMD_TOO_LONG,
-    E_CMD_EMPTY,
     E_CMD_BAD_ARGS
 } cmd_status;
 

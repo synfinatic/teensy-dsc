@@ -50,7 +50,7 @@ cli_proc_cmd(cli_ctx *ctx, char *line, size_t len) {
     char cmd[READBUFF_SIZE];
     char args[READBUFF_SIZE], byte, *line2;
     size_t pos = 0, line_max;
-    bool success = false, has_args = false, ran = false;
+    bool has_args = false;
 
     /* split the line into the cmd & args */
     byte = line[0];
