@@ -104,10 +104,18 @@ dsc_set_resolution(cli_ctx *ctx, const char *args) {
     int match;
     match = sscanf(args, "%ld %ld", &(ctx->ra_cps), &(ctx->dec_cps));
     if (match == 2) {
-        ctx->serial->printf("New resolution: %ld %ld\n", ctx->ra_cps, ctx->dec_cps);
         return E_CMD_OK;
     }
     return E_CMD_TOO_SHORT;
+}
+
+/*
+ * prints the current encoder resolution
+ */
+cmd_status
+dsc_get_resolution(cli_ctx *ctx, const char *args) {
+    ctx->serial->printf("%ld %ld\r", ctx->ra_cps, ctx->dec_cps);
+    return E_CMD_OK;
 }
 
 /*
