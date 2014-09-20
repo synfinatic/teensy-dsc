@@ -3,7 +3,7 @@
 ## Important Note
 
 As of Sept 14, 2014 this project is still heavily in development.  The PCB 
-design is completely untested so far!  So don't be going and ordering this 
+design & software are completely untested so far!  So don't be going and ordering this 
 board off of OSHPark/etc just yet... unless of course you want to help test!
 If so, then please contact me first and I can work with you.
 
@@ -13,10 +13,11 @@ The main goals were:
 
  * Support for at least 16K resolution via quadurature decoding 
  * Built in WiFi access point to allow wirelessly interfacing to an Apple iPad or Android tablet
- * Supporting at least SkySafari Plus/Pro
- * Powered via USB connection or external 7-36V battery source
+ * Supporting at least [SkySafari Plus/Pro](http://www.skysafariastronomy.com/)
+ * Powered via USB connection or external 7-24V battery source
  * Using industry standard RJ45 connection to encoders
  * Open source software & PCB design (GPLv3)
+    * PCB Design done in [Eagle PCB](http://www.cadsoftusa.com/eagle-pcb-design-software/?language=en)
     * PCB's available from [OshPark](http://www.oshpark.com)
  * Small 2"x3"x1" enclosure
  * Inexpensive!  All the components should be available for < $100.
@@ -38,9 +39,9 @@ TeensyDSC requires some additional Arduino libraries to compile/run:
 
  * [Arduino IDE v1.0.5](http://arduino.cc/en/Main/Software) - Beta version is not yet supported!
  * [Teensyduino](http://pjrc.com/teensy/td_download.html) - Teensy addon for the Arduino IDE
- * [AnySerial](https://github.com/synfinatic/AnySerial)
+ * [AnySerial](https://github.com/synfinatic/AnySerial) - Serial port abstraction layer for Arduino
  * [WiFlySerial](https://github.com/synfinatic/WiFlySerial) - customized to use AnySerial
- * [Flash](https://github.com/mikalhart/Flash/)
+ * [Flash](https://github.com/synfinatic/Flash/) - my repo fixes a bug in the original library
 
 ## Supported DSC Software
 Please note that I have limited access to software, so this may not be a
@@ -51,11 +52,13 @@ together to make it work!
  * SkySafari (OSX, iOS)  = work in progress!
 
 ## Similar Projects
-There are a few very similar projects to TeensyDSC which you should be aware of:
+There are a bunch of similar projects to TeensyDSC which you should be aware of:
 
+ * [Dave Ek's Setting Circles](http://eksfiles.net/digital-setting-circles/)
  * [mrosseel/arduino-dsc](https://github.com/mrosseel/arduino-dsc)
  * [mdw123/arduino-dsc](https://github.com/mdw123/arduino-dsc)
- * [Dave Ek's Setting Circles](http://eksfiles.net/digital-setting-circles/)
+ * [Arduino Bluetooth DSC](http://orlygoingthirty.blogspot.com/2012/01/arduino-bluetooth-digital-setting.html)
+ * [Mike Fulbright's Arduino DSC](http://msfastro.net/articles/arduinodsc/)
 
 ## Similar Commercial Products
 There are also a number of commercial products which share many of the same features of TeensyDSC:
