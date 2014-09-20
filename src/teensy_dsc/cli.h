@@ -51,7 +51,7 @@ typedef struct {
 } cli_ctx;
 
 /* init & entrance */
-cli_ctx *cli_init_cmd(AnySerial *aserial, common_cli_ctx *common);
+cli_ctx *cli_init_cmd(AnySerial *aserial, common_cli_ctx **common);
 cmd_status cli_proc_cmd(cli_ctx *ctx, char *line, size_t len);
 
 /* command hooks */
@@ -59,6 +59,7 @@ cmd_status dsc_set_resolution(cli_ctx *ctx, const char *args);
 cmd_status dsc_get_resolution(cli_ctx *ctx, const char *args);
 cmd_status dsc_get_values(cli_ctx *ctx, const char *args);
 cmd_status dsc_get_version(cli_ctx *ctx, const char *args);
+cmd_status dsc_get_help(cli_ctx *ctx, const char *args);
 cmd_status change_cli_state(cli_ctx *ctx, const char *args);
 
 /* map our supported commands */
@@ -70,13 +71,14 @@ typedef struct {
 } cmd_def;
 
 static const cmd_def COMMANDS[] = {
-    { BASIC_DSC , "Q"    , false , dsc_get_values }     , 
-    { BASIC_DSC , "R"    , false , dsc_set_resolution } , 
+    { BASIC_DSC , "Q"    , false , dsc_get_values     } , 
+    { BASIC_DSC , "R"    , true  , dsc_set_resolution } , 
     { BASIC_DSC , "G"    , false , dsc_get_resolution } , 
-    { BASIC_DSC , "V"    , false , dsc_get_version }    , 
-    { BASIC_DSC , "MODE" , true  , change_cli_state }   , 
-    { WIFI      , "MODE" , true  , change_cli_state }   , 
-    { CONFIG    , "MODE" , true  , change_cli_state }   ,
+    { BASIC_DSC , "V"    , false , dsc_get_version    } , 
+    { BASIC_DSC , "?"    , false , dsc_get_help       } ,
+    { BASIC_DSC , "MODE" , true  , change_cli_state   } , 
+    { WIFI      , "MODE" , true  , change_cli_state   } , 
+    { CONFIG    , "MODE" , true  , change_cli_state   } ,
     { NONE      , NULL   , false , NULL }
 };
 

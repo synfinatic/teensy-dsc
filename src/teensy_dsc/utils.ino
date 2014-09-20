@@ -20,7 +20,7 @@ serial_printf(const char *fmt, ...) {
     va_start(args, fmt);
     vsnprintf(tmp, 128, fmt, args);
     va_end(args);
-    SerialDBG.print(tmp);
+    Serial.print(tmp);
 }
 
 /*
@@ -34,7 +34,8 @@ dbg_serial_printf(const char *fmt, ...) {
     va_start(args, fmt);
     vsnprintf(tmp, 128, fmt, args);
     va_end(args);
-    SerialDBG.print(tmp);
+    Serial.print("DEBUG: ");
+    Serial.print(tmp);
 #else
     return;
 #endif

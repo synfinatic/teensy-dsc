@@ -50,43 +50,62 @@ common_cli_ctx *common;
 /* updates the current encoder value */
 void
 update_encoders() {
+    static int blink = 0;
     common->ra_value = EncoderRA.read();
     common->dec_value = EncoderDEC.read();
+    blink = blink ? 0 : 1;
+    digitalWrite(13, blink);
 }
 
 void
 setup() {
     pinMode(WIFLY_RESET, INPUT);
+    pinMode(13, OUTPUT);
     encoder_settings_t *encoders;
 
     // load the encoder settings stored in the EEPROM
     encoders = get_encoder_settings();
     common = (common_cli_ctx *)malloc(sizeof(common_cli_ctx));
+    bzero(common, sizeof(common_cli_ctx));
     common->ra_cps = encoders->ra_cps;
     common->dec_cps = encoders->dec_cps;
+
+    // Init the USB Serial port & context
+    UserSerial.attach(&USER_SERIAL_PORT);
+    UserSerial.begin(USER_SERIAL_BAUD);
+    delay(1000);
+    uctx = cli_init_cmd(&UserSerial, &common);
 
     MsTimer2::start();
     MsTimer2::set(UPDATE_ENCODER_MS, update_encoders);
 
-    // Init the USB Serial port & context
-    UserSerial.attach(&SerialDBG);
-    UserSerial.begin(9600);
-    uctx = cli_init_cmd(&UserSerial, common);
-
     // Init the WiFly
-    delay(WIFLY_DELAY);   // Wait for it to come up
-    WiFlySerialPort.attach(&SerialWiFly);
-    wctx = cli_init_cmd(&WiFlySerialPort, common);
+//    delay(WIFLY_DELAY);   // Wait for it to come up
+    // load the encoder settings stored in the EEPROM
+//    WiFlySerialPort.attach(&SerialWiFly);
+//    wctx = cli_init_cmd(&WiFlySerialPort, common);
+
+#if DEBUG
+    /*
+     * With Teensy 3.1 it runs so fast that initial write()'s
+     * to the Serial port are lost.  Hence add this delay so 
+     * we will be able to read startup debugging messages
+     */
+    delay(1000);
+#endif
 }
 
 void
 loop() {
+    char byte;
     if (UserSerial.available() > 0) {
         process_cmd(uctx);
     }
+    /*
     if (SerialWiFly.available() > 0) {
         process_cmd(wctx);
     }
+    */
 }
 
 /*
@@ -104,14 +123,16 @@ process_cmd(cli_ctx *ctx) {
     cmd_status status;
 
     // Short cut for one char commands
-    i = 0;
     if (pos == 0) {
+        i = 0;
         byte = serial->peek();
-        while (ctx->one_char_cmds[i] != '\0') {
+        while (ctx->one_char_cmds[i] != NULL) {
             if (byte == ctx->one_char_cmds[i]) {
-                strncpy(read_buff, &byte, 1);
+                read_buff[0] = byte;
+                read_buff[1] = NULL;
                 status = cli_proc_cmd(ctx, read_buff, 1);
                 serial->read(); // consume the byte
+                read_buff[0] = NULL;
                 return status;
             }
             i++;
@@ -126,20 +147,23 @@ process_cmd(cli_ctx *ctx) {
         (len == READBUFF_SIZE)) {
         // Crap, someone is just sending us crap.  Just eat it.
         pos = 0;
-        read_buff[0] = '\0';
+        read_buff[0] = NULL;
         return E_CMD_TOO_LONG;
     }
 
     // append the last bytes to any bytes we've read before
     strcat(read_buff, temp_buff);
+    pos = strlen(read_buff);
+
 
     // trim any whitespace on the end
     if (IS_WORD_END(read_buff[len-1])) {
         while (IS_WORD_END(read_buff[len-1])) {
-            read_buff[len-1] = '\0';
+            read_buff[len-1] = NULL;
         }
-    } else {
-        // We timed out, gotta wait for more input
+    } 
+
+    if (strlen(read_buff) == 0) {
         return E_CMD_TOO_SHORT;
     }
 
@@ -154,10 +178,13 @@ process_cmd(cli_ctx *ctx) {
             serial->printf("ERR [%d]: %s\r", (int *)&status, read_buff);
 #endif
             // fall through
+            pos = 0;
+            read_buff[0] = NULL;
+            break;
         case E_CMD_OK:
             // Eat what we've been given and return
             pos = 0;
-            read_buff[0] = '\0';
+            read_buff[0] = NULL;
             break;
         case E_CMD_TOO_SHORT:
             // Keep the buffer for next time 
@@ -172,12 +199,12 @@ process_cmd(cli_ctx *ctx) {
  */
 void
 reset_wifly() {
-    Serial.write("\nResetting the Xbee...  ");
+    UserSerial.write("\nResetting the Xbee...  ");
     pinMode(WIFLY_RESET, OUTPUT);
     digitalWrite(WIFLY_RESET, LOW);
     delay(100);
     pinMode(WIFLY_RESET, INPUT);
-    Serial.write("Done!\n");
+    UserSerial.write("Done!\n");
 }
 
 /*

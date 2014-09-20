@@ -10,7 +10,8 @@
 #define WIFLY_RESET 2    // Pin to reset the WiFly
 
 /* Serial port for debugging */
-#define SerialDBG Serial
+#define USER_SERIAL_PORT Serial
+#define USER_SERIAL_BAUD 9600
 
 /* RJ11 Serial Ports */
 #define SerialA Serial1  // J1
