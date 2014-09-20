@@ -24,53 +24,68 @@
 #include <AnySerial.h>
 #include <WiFlySerial.h>
 #include <Flash.h>
+#include <MsTimer2.h>
 
 #include "defaults.h"
 #include "teensy_dsc.h"
 #include "wifly.h"
 #include "utils.h"
 #include "cli.h"
+#include "defaults.h"
 
 /*
  * Init our Encoders & Serial ports
  */
 Encoder EncoderRA(CHAN_A_RA, CHAN_B_RA);
 Encoder EncoderDEC(CHAN_A_DEC, CHAN_B_DEC);
-AnySerial UserSerial;
 
-AnySerial WiFlySerialPort(&SerialWiFly);
+AnySerial UserSerial;
+AnySerial WiFlySerialPort;
 WiFlySerial WiFly(WiFlySerialPort);
-cli_ctx *cctx;
+
+/* our global contexts */
+cli_ctx *uctx, *wctx;
+common_cli_ctx *common;
+
+/* updates the current encoder value */
+void
+update_encoders() {
+    common->ra_value = EncoderRA.read();
+    common->dec_value = EncoderDEC.read();
+}
 
 void
 setup() {
     pinMode(WIFLY_RESET, INPUT);
+    encoder_settings_t *encoders;
 
-    // We should be reading the EEPROM config here
+    // load the encoder settings stored in the EEPROM
+    encoders = get_encoder_settings();
+    common = (common_cli_ctx *)malloc(sizeof(common_cli_ctx));
+    common->ra_cps = encoders->ra_cps;
+    common->dec_cps = encoders->dec_cps;
+
+    MsTimer2::start();
+    MsTimer2::set(UPDATE_ENCODER_MS, update_encoders);
+
+    // Init the USB Serial port & context
     UserSerial.attach(&SerialDBG);
-    cctx = cli_init_cmd(&UserSerial);
+    UserSerial.begin(9600);
+    uctx = cli_init_cmd(&UserSerial, common);
 
-    cctx->ra_cps = 10000;
-    cctx->dec_cps = 10000;
-
-    UserSerial.begin(9600);  // USB Serial
-//    UserSerial.setTimeout(USER_TIMEOUT);
-
-    // It takes a while for the XBee radio to initialize
-    delay(WIFLY_DELAY);
+    // Init the WiFly
+    delay(WIFLY_DELAY);   // Wait for it to come up
+    WiFlySerialPort.attach(&SerialWiFly);
+    wctx = cli_init_cmd(&WiFlySerialPort, common);
 }
 
 void
 loop() {
     if (UserSerial.available() > 0) {
-        cctx->ra_value = EncoderRA.read();
-        cctx->dec_value = EncoderDEC.read();
-        process_cmd(cctx, &UserSerial);
+        process_cmd(uctx);
     }
     if (SerialWiFly.available() > 0) {
-        cctx->ra_value = EncoderRA.read();
-        cctx->dec_value = EncoderDEC.read();
-        process_cmd(cctx, &WiFlySerialPort);
+        process_cmd(wctx);
     }
 }
 
@@ -80,7 +95,8 @@ loop() {
  * Returns a cmd_status based on if we ran a command
  */
 cmd_status
-process_cmd(cli_ctx *cctx, AnySerial *serial) {
+process_cmd(cli_ctx *ctx) {
+    AnySerial *serial = ctx->serial;
     static char read_buff[READBUFF_SIZE];
     static size_t pos = 0;
     char temp_buff[READBUFF_SIZE], byte;
@@ -91,10 +107,10 @@ process_cmd(cli_ctx *cctx, AnySerial *serial) {
     i = 0;
     if (pos == 0) {
         byte = serial->peek();
-        while (cctx->one_char_cmds[i] != '\0') {
-            if (byte == cctx->one_char_cmds[i]) {
+        while (ctx->one_char_cmds[i] != '\0') {
+            if (byte == ctx->one_char_cmds[i]) {
                 strncpy(read_buff, &byte, 1);
-                status = cli_proc_cmd(cctx, read_buff, 1);
+                status = cli_proc_cmd(ctx, read_buff, 1);
                 serial->read(); // consume the byte
                 return status;
             }
@@ -128,7 +144,7 @@ process_cmd(cli_ctx *cctx, AnySerial *serial) {
     }
 
     // At this point we should have a whole command.  Go process it!
-    status = cli_proc_cmd(cctx, read_buff, strlen(read_buff));
+    status = cli_proc_cmd(ctx, read_buff, strlen(read_buff));
 
     switch (status) {
         case E_CMD_TOO_LONG:
@@ -162,4 +178,36 @@ reset_wifly() {
     delay(100);
     pinMode(WIFLY_RESET, INPUT);
     Serial.write("Done!\n");
+}
+
+/*
+ * Takes the hard coded settings (see defaults.h) and
+ * writes them to the EEPROM where they will be read
+ * the next time we power on
+ */
+void
+reset_all_settings() {
+    network_settings_t network;
+    serial_settings_t serial;
+    encoder_settings_t encoders;
+
+    strcpy(network.ip_address, IP_ADDRESS);
+    strcpy(network.netmask, NETMASK);
+    strcpy(network.ssid, SSID);
+    strcpy(network.passphrase, WPA_PASSWORD);
+    network.enable_wpa = ENABLE_WPA;
+    network.port = PORT;
+    network.channel = WIFLY_CHANNEL;
+    network.rate = WIFLY_RATE;
+    network.tx_power = TX_POWER;
+    set_network_defaults(&network);
+
+    serial.baud = SERIAL_A_BAUD;
+    set_serial_defaults(SERIAL_A, &serial);
+    serial.baud = SERIAL_B_BAUD;
+    set_serial_defaults(SERIAL_B, &serial);
+
+    encoders.ra_cps = RA_ENCODER_CPS;
+    encoders.dec_cps = DEC_ENCODER_CPS;
+    set_encoder_settings(&encoders);
 }

@@ -14,10 +14,10 @@ typedef struct {
 } mode_def;
 
 static const mode_def MODES[] = {
-    { BASIC_DSC , "BDSC" } , 
-    { WIFI      , "WIFI" } , 
-    { CONFIG    , "CONF" } , 
-    { NONE      , ""     }
+    { BASIC_DSC , "DSC" }    , 
+    { WIFI      , "WIFI" }   , 
+    { CONFIG    , "CONFIG" } , 
+    { NONE      , "" }
 };
 
 typedef enum {
@@ -28,19 +28,30 @@ typedef enum {
     E_CMD_BAD_ARGS
 } cmd_status;
 
+/*
+ * These values are global
+ */
+typedef struct {
+    // Encoder values & resolution
+    long ra_value, dec_value;
+    long ra_cps, dec_cps;
+} common_cli_ctx;
+
+/*
+ * This values are per-Serial port connection
+ */
 typedef struct {
     cli_state state;
+    cli_state prev_state;
     AnySerial *serial;
     // must be big enough to hold max one char commands for a given state
     char one_char_cmds[20]; 
     int longest_cmd;
-    // Encoder values & resolution
-    long ra_value, dec_value;
-    long ra_cps, dec_cps;
+    common_cli_ctx *common;
 } cli_ctx;
 
 /* init & entrance */
-cli_ctx *cli_init_cmd(AnySerial *aserial);
+cli_ctx *cli_init_cmd(AnySerial *aserial, common_cli_ctx *common);
 cmd_status cli_proc_cmd(cli_ctx *ctx, char *line, size_t len);
 
 /* command hooks */
@@ -65,7 +76,7 @@ static const cmd_def COMMANDS[] = {
     { BASIC_DSC , "V"    , false , dsc_get_version }    , 
     { BASIC_DSC , "MODE" , true  , change_cli_state }   , 
     { WIFI      , "MODE" , true  , change_cli_state }   , 
-    { CONFIG    , "MODE" , true  , change_cli_state }   , 
+    { CONFIG    , "MODE" , true  , change_cli_state }   ,
     { NONE      , NULL   , false , NULL }
 };
 

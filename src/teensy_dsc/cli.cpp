@@ -3,14 +3,19 @@
 #include "teensy_dsc.h"
 #include "cli.h"
 #include "utils.h"
+#include "defaults.h"
 
 cli_ctx *
-cli_init_cmd(AnySerial *aserial) {
+cli_init_cmd(AnySerial *aserial, common_cli_ctx *common) {
     cli_ctx *ctx;
+
     ctx = (cli_ctx *)malloc(sizeof(cli_ctx));
+    ctx->common = common;
     bzero(ctx, sizeof(cli_ctx));
     ctx->state = BASIC_DSC;
+    ctx->prev_state = NONE;
     ctx->serial = aserial;
+
     return ctx;
 }
 
@@ -23,7 +28,12 @@ change_state(cli_ctx *ctx, cli_state new_state) {
     int i = 0, j = 0, longest = 0, len;
 
     bzero(ctx->one_char_cmds, sizeof(ctx->one_char_cmds));
+    ctx->prev_state = ctx->state;
     ctx->state = new_state;
+
+    /*
+     * Find all the 1 char commands & the longest command
+     */
     while (COMMANDS[i].state != NONE) {
         if (COMMANDS[i].state == new_state) {
             len = strlen(COMMANDS[i].cmd);
@@ -33,6 +43,7 @@ change_state(cli_ctx *ctx, cli_state new_state) {
             i++;
         }
     }
+    ctx->longest_cmd = longest;
 }
 
 /*
@@ -87,9 +98,9 @@ dsc_get_values(cli_ctx *ctx, const char *args) {
     char buff[36];
     char *value;
 
-    value = EncoderValue(ctx->ra_value, true);
+    value = EncoderValue(ctx->common->ra_value, true);
     sprintf(buff, "%s\t", value);
-    value = EncoderValue(ctx->dec_value, true);
+    value = EncoderValue(ctx->common->dec_value, true);
     strcat(buff, value);
     strcat(buff, "\r");
     ctx->serial->printf("%s\n", buff);
@@ -102,11 +113,17 @@ dsc_get_values(cli_ctx *ctx, const char *args) {
 cmd_status
 dsc_set_resolution(cli_ctx *ctx, const char *args) {
     int match;
-    match = sscanf(args, "%ld %ld", &(ctx->ra_cps), &(ctx->dec_cps));
-    if (match == 2) {
-        return E_CMD_OK;
+    encoder_settings_t encoder_settings;
+    match = sscanf(args, "%ld %ld", &(ctx->common->ra_cps), &(ctx->common->dec_cps));
+    if (match != 2) {
+        return E_CMD_TOO_SHORT;
     }
-    return E_CMD_TOO_SHORT;
+
+    /* write the values to EEPROM for later */
+    encoder_settings.ra_cps = ctx->common->ra_cps;
+    encoder_settings.dec_cps = ctx->common->dec_cps;
+    set_encoder_settings(&encoder_settings);
+    return E_CMD_OK;
 }
 
 /*
@@ -114,7 +131,7 @@ dsc_set_resolution(cli_ctx *ctx, const char *args) {
  */
 cmd_status
 dsc_get_resolution(cli_ctx *ctx, const char *args) {
-    ctx->serial->printf("%ld %ld\r", ctx->ra_cps, ctx->dec_cps);
+    ctx->serial->printf("%ld %ld\r", ctx->common->ra_cps, ctx->common->dec_cps);
     return E_CMD_OK;
 }
 
@@ -127,14 +144,13 @@ dsc_get_version(cli_ctx *ctx, const char *args) {
     return E_CMD_OK;
 }
 
+/*
+ * Change the current CLI state
+ */
 cmd_status
 change_cli_state(cli_ctx *ctx, const char *args) {
     int mode = 0;
     cli_state new_state = NONE;
-
-    // all modes are 4 chars
-    if (strlen(args) < 4)
-        return E_CMD_TOO_SHORT;
 
     while (MODES[mode].state != NONE) {
         if (strcmp(MODES[mode].name, args) == 0) {

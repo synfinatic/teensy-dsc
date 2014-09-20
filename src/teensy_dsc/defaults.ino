@@ -93,6 +93,27 @@ get_serial_defaults(serial_port_t port) {
 }
 
 /*
+ * Retrieves the settings for the encoders
+ */
+encoder_settings_t *
+get_encoder_settings() {
+    char *buffer = NULL;
+    buffer = get_eeprom_data(ENCODER_SETTINGS_OFFSET,
+            sizeof(encoder_settings_t));
+    return (encoder_settings_t *)buffer;
+}
+
+/*
+ * Write the encoder settings to the EEPROM
+ */
+void
+set_encoder_settings(encoder_settings_t *settings) {
+    write_eeprom_data(ENCODER_SETTINGS_OFFSET,
+            sizeof(encoder_settings_t),
+            (char *)settings);
+}
+
+/*
  * Erases the EEPROM and clears all our defaults
  */
 void

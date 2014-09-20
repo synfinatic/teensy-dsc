@@ -38,4 +38,7 @@
 
 #define TEENSY_DSC_VERSION "0.1"
 
+/* poll the encoder values every 100ms */
+#define UPDATE_ENCODER_MS 100
+
 #endif // __TEENSY_DSC_H__

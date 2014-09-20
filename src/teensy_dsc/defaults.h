@@ -8,19 +8,23 @@
  * will write values in the EEPROM.
  */
 
+// Default encoder CPS
+#define RA_ENCODER_CPS 10000
+#define DEC_ENCODER_CPS 10000
+
 /*
  * Defaults for Wireless.   Feel free to change
  * these as desired.  All values need to be stored as strings!
  */
 #define IP_ADDRESS "10.0.0.1"
 #define NETMASK "255.255.255.0"
-#define PORT "4030"
+#define PORT 4030
 #define SSID "TeensyDSC"
 #define WPA_PASSWORD "teensydsc"
-#define WIFLY_RATE "12"
-#define WIFLY_CHANNEL "1"
-#define TX_POWER "1"
-// #define ENABLE_WPA
+#define WIFLY_RATE 12
+#define WIFLY_CHANNEL 1
+#define TX_POWER 1
+#define ENABLE_WPA 0
 
 
 /*
@@ -41,33 +45,43 @@
  */
 #define EEPROM_BUFFER_SIZE 255
 
-typedef struct _network_settings {
-    uint32_t ip_address;
-    uint32_t netmask;
+typedef struct {
+    char ip_address[16];
+    char netmask[16];
     char ssid[30];
     uint16_t port;
     uint8_t channel;
     uint8_t tx_power; 
+    uint8_t rate;
+    uint8_t enable_wpa;
     char passphrase[65];
 } network_settings_t;
 
-typedef enum _serial_port {
+typedef enum {
     SERIAL_A,
     SERIAL_B,
 } serial_port_t;
 
-typedef struct _serial_settings {
+typedef struct {
     uint32_t baud;
 } serial_settings_t;
+
+typedef struct {
+    long ra_cps;
+    long dec_cps;
+} encoder_settings_t;
 
 void set_network_defaults(network_settings_t *);
 network_settings_t *get_network_defaults();
 void set_serial_defaults(serial_port_t, serial_settings_t *);
 serial_settings_t *get_serial_defaults(serial_port_t);
+void set_encoder_settings(encoder_settings_t *);
+encoder_settings_t *get_encoder_settings();
 void clear_all_defaults();
 
 #define NETWORK_SETTINGS_OFFSET 0
 #define SERIAL_A_SETTINGS_OFFSET (sizeof(network_settings_t))
 #define SERIAL_B_SETTINGS_OFFSET (SERIAL_A_SETTINGS_OFFSET + sizeof(serial_settings_t))
+#define ENCODER_SETTINGS_OFFSET (SERIAL_B_SETTINGS_OFFSET + sizeof(serial_settings_t))
 
 #endif
