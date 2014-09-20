@@ -37,7 +37,7 @@
 #define WIFLY_TIMEOUT 500  // 0.5sec
 #define READBUFF_SIZE 255
 
-#define TEENSY_DSC_VERSION "0.1"
+#define TEENSY_DSC_VERSION "0.2"
 
 /* poll the encoder values every 100ms */
 #define UPDATE_ENCODER_MS 100
