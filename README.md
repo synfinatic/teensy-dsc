@@ -42,6 +42,7 @@ TeensyDSC requires some additional Arduino libraries to compile/run:
  * [AnySerial](https://github.com/synfinatic/AnySerial) - Serial port abstraction layer for Arduino
  * [WiFlySerial](https://github.com/synfinatic/WiFlySerial) - customized to use AnySerial
  * [Flash](https://github.com/synfinatic/Flash/) - my repo fixes a bug in the original library
+ * [MsTimer2](https://github.com/PaulStoffregen/MsTimer2) - MsTimer2 with Teensy3.x support
 
 ## Supported DSC Software
 Please note that I have limited access to software, so this may not be a
