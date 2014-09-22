@@ -48,13 +48,13 @@
 typedef struct {
     char ip_address[16];
     char netmask[16];
-    char ssid[30];
+    char ssid[32];
+    char passphrase[68];
     uint16_t port;
     uint8_t channel;
     uint8_t tx_power; 
     uint8_t rate;
     uint8_t enable_wpa;
-    char passphrase[65];
 } network_settings_t;
 
 typedef enum {

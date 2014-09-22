@@ -4,7 +4,7 @@
 #define DEBUG 1         // Enable printing out debug info
 
 /* WiFly connections */
-#define SerialWiFly Serial3
+#define WIFLY_SERIAL_PORT Serial3
 #define WIFLY_SERIAL_SPEED 115200
 #define WIFLY_DELAY 5000
 #define WIFLY_RESET 2    // Pin to reset the WiFly

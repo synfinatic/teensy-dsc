@@ -19,7 +19,7 @@
 
 #include <Arduino.h>
 #include <Streaming.h>
-#define ENCODER_OPTIMIZE_INTERRUPTS
+// #define ENCODER_OPTIMIZE_INTERRUPTS
 #include <Encoder.h>
 #include <AnySerial.h>
 #include <WiFlySerial.h>
@@ -39,8 +39,8 @@
 Encoder EncoderRA(CHAN_A_RA, CHAN_B_RA);
 Encoder EncoderDEC(CHAN_A_DEC, CHAN_B_DEC);
 
-AnySerial UserSerial;
-AnySerial WiFlySerialPort;
+AnySerial UserSerial(&USER_SERIAL_PORT);
+AnySerial WiFlySerialPort(&WIFLY_SERIAL_PORT);
 WiFlySerial WiFly(WiFlySerialPort);
 
 /* our global contexts */
@@ -50,62 +50,59 @@ common_cli_ctx *common;
 /* updates the current encoder value */
 void
 update_encoders() {
+#if DEBUG
     static int blink = 0;
-    common->ra_value = EncoderRA.read();
-    common->dec_value = EncoderDEC.read();
     blink = blink ? 0 : 1;
     digitalWrite(13, blink);
+#endif
+    common->ra_value = EncoderRA.read();
+    common->dec_value = EncoderDEC.read();
 }
 
 void
 setup() {
     pinMode(WIFLY_RESET, INPUT);
-    pinMode(13, OUTPUT);
+    pinMode(13, OUTPUT); // blink pin
     encoder_settings_t *encoders;
+    common = (common_cli_ctx *)malloc(sizeof(common_cli_ctx));
+
+    UserSerial.begin(USER_SERIAL_BAUD);
+    delay(1000);
 
     // load the encoder settings stored in the EEPROM
     encoders = get_encoder_settings();
-    common = (common_cli_ctx *)malloc(sizeof(common_cli_ctx));
-    bzero(common, sizeof(common_cli_ctx));
     common->ra_cps = encoders->ra_cps;
     common->dec_cps = encoders->dec_cps;
+    common->network = get_network_defaults();
+
+    // Start reading the encoders
+    MsTimer2::set(UPDATE_ENCODER_MS, update_encoders);
+    MsTimer2::start();
 
     // Init the USB Serial port & context
-    UserSerial.attach(&USER_SERIAL_PORT);
-    UserSerial.begin(USER_SERIAL_BAUD);
-    delay(1000);
-    uctx = cli_init_cmd(&UserSerial, &common);
-
-    MsTimer2::start();
-    MsTimer2::set(UPDATE_ENCODER_MS, update_encoders);
-
+    Serial.printf("Waiting %ums for WiFly...", WIFLY_DELAY);
     // Init the WiFly
-//    delay(WIFLY_DELAY);   // Wait for it to come up
-    // load the encoder settings stored in the EEPROM
-//    WiFlySerialPort.attach(&SerialWiFly);
-//    wctx = cli_init_cmd(&WiFlySerialPort, common);
+    delay(WIFLY_DELAY);   // Wait for it to come up
+    Serial.printf("  OK!\n");
 
-#if DEBUG
-    /*
-     * With Teensy 3.1 it runs so fast that initial write()'s
-     * to the Serial port are lost.  Hence add this delay so 
-     * we will be able to read startup debugging messages
-     */
-    delay(1000);
-#endif
+    Serial.printf("Initializing CLI's...");
+    // load the encoder settings stored in the EEPROM
+    WiFly.begin();
+    wctx = cli_init_cmd(&WiFlySerialPort, common, NULL);
+
+    uctx = cli_init_cmd(&UserSerial, common, &WiFly);
+    Serial.printf("  OK!\n");
 }
 
 void
 loop() {
-    char byte;
     if (UserSerial.available() > 0) {
         process_cmd(uctx);
     }
-    /*
-    if (SerialWiFly.available() > 0) {
+
+    if (WiFly.available() > 0) {
         process_cmd(wctx);
     }
-    */
 }
 
 /*
@@ -175,7 +172,7 @@ process_cmd(cli_ctx *ctx) {
         case E_CMD_NOT_FOUND:
         case E_CMD_BAD_ARGS:
 #ifdef DEBUG
-            serial->printf("ERR [%d]: %s\r", (int *)&status, read_buff);
+            serial->printf("ERR [%d]: %s\n", status, read_buff);
 #endif
             // fall through
             pos = 0;

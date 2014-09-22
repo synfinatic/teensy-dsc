@@ -2,6 +2,7 @@
 #define __WIFLY_H__
 
 #include <Flash.h>
+#include <WiFlySerial.h>
 #include "defaults.h"
 
 #define PAUSE_DURATION 100
@@ -16,14 +17,6 @@ void wifi_initial_setup(WiFlySerial *, network_settings_t *);
 void wifi_setup_comms(WiFlySerial *);
 void wifi_setup_network(WiFlySerial *, network_settings_t *);
 void wifi_setup_wireless(WiFlySerial *, network_settings_t *);
-
-FLASH_STRING(wifi_comms_cmds,
-	"set uart mode 0x13\r"
-	"set comm close " PORT_CLOSE "\r"
-	"set comm open " PORT_OPEN "\r"
-	"set comm remote 0\r"
-	"set comm size %d\r"
-	"set comm time %d\r"
-	);
+void wifi_get_config(WiFlySerial *, AnySerial *);
 
 #endif

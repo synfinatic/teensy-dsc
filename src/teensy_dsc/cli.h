@@ -1,3 +1,5 @@
+#include "wifly.h"
+
 #ifndef __CLI_H__
 #define __CLI_H__
 
@@ -33,17 +35,19 @@ typedef enum {
  */
 typedef struct {
     // Encoder values & resolution
-    long ra_value, dec_value;
-    long ra_cps, dec_cps;
+    volatile int32_t ra_value, dec_value;
+    int32_t ra_cps, dec_cps;
+    network_settings_t *network;
 } common_cli_ctx;
 
 /*
  * This values are per-Serial port connection
  */
-typedef struct {
+typedef struct cli_ctx_s {
     cli_state state;
     cli_state prev_state;
     AnySerial *serial;
+    WiFlySerial *wifly;
     // must be big enough to hold max one char commands for a given state
     char one_char_cmds[20]; 
     int longest_cmd;
@@ -51,16 +55,26 @@ typedef struct {
 } cli_ctx;
 
 /* init & entrance */
-cli_ctx *cli_init_cmd(AnySerial *aserial, common_cli_ctx **common);
-cmd_status cli_proc_cmd(cli_ctx *ctx, char *line, size_t len);
+cli_ctx *cli_init_cmd(AnySerial *, common_cli_ctx *, WiFlySerial *);
+cmd_status cli_proc_cmd(cli_ctx *, char *, size_t);
 
-/* command hooks */
-cmd_status dsc_set_resolution(cli_ctx *ctx, const char *args);
-cmd_status dsc_get_resolution(cli_ctx *ctx, const char *args);
-cmd_status dsc_get_values(cli_ctx *ctx, const char *args);
-cmd_status dsc_get_version(cli_ctx *ctx, const char *args);
-cmd_status dsc_get_help(cli_ctx *ctx, const char *args);
-cmd_status change_cli_state(cli_ctx *ctx, const char *args);
+/* dsc commands */
+cmd_status dsc_set_resolution(cli_ctx *, const char *);
+cmd_status dsc_get_resolution(cli_ctx *, const char *);
+cmd_status dsc_get_values(cli_ctx *, const char *);
+cmd_status dsc_get_version(cli_ctx *, const char *);
+cmd_status dsc_get_help(cli_ctx *, const char *);
+cmd_status change_cli_state(cli_ctx *, const char *);
+
+/* wifi mode */
+void wifi_interactive(cli_ctx *);
+
+/* config commands */
+cmd_status wifi_ap_commands(cli_ctx *, const char *);
+cmd_status wifi_get_help(cli_ctx *, const char *);
+cmd_status wifi_get_option(cli_ctx *, const char *);
+cmd_status wifi_set_option(cli_ctx *, const char *);
+cmd_status wifi_save_settings(cli_ctx *, const char *);
 
 /* map our supported commands */
 typedef struct {
@@ -71,15 +85,27 @@ typedef struct {
 } cmd_def;
 
 static const cmd_def COMMANDS[] = {
-    { BASIC_DSC , "Q"    , false , dsc_get_values     } , 
-    { BASIC_DSC , "R"    , true  , dsc_set_resolution } , 
-    { BASIC_DSC , "G"    , false , dsc_get_resolution } , 
-    { BASIC_DSC , "V"    , false , dsc_get_version    } , 
-    { BASIC_DSC , "?"    , false , dsc_get_help       } ,
-    { BASIC_DSC , "MODE" , true  , change_cli_state   } , 
-    { WIFI      , "MODE" , true  , change_cli_state   } , 
-    { CONFIG    , "MODE" , true  , change_cli_state   } ,
-    { NONE      , NULL   , false , NULL }
+    { BASIC_DSC , "Q"     , false , dsc_get_values     } , 
+    { BASIC_DSC , "R"     , true  , dsc_set_resolution } , 
+    { BASIC_DSC , "G"     , false , dsc_get_resolution } , 
+    { BASIC_DSC , "V"     , false , dsc_get_version    } , 
+    { BASIC_DSC , "?"     , false , dsc_get_help       } , 
+    { BASIC_DSC , "MODE"  , true  , change_cli_state   } , 
+    { WIFI      , "MODE"  , true  , change_cli_state   } , 
+    { CONFIG    , "MODE"  , true  , change_cli_state   } ,
+    { CONFIG    , "AP"    , true  , wifi_ap_commands   } , 
+    { CONFIG    , "?"     , false , wifi_get_help      } ,
+    { CONFIG    , "SET"   , true  , wifi_set_option    } ,
+    { CONFIG    , "GET"   , true  , wifi_get_option    } ,
+    { CONFIG    , "SAVE"  , false , wifi_save_settings } ,
+    /*
+    { CONFIG    , "SETUP" , false , wifi_initial_setup } , 
+    { CONFIG    , "SAVE"  , false , wifi_save_settings } , 
+    { CONFIG    , "SHOW"  , false , wifi_get_config    } , 
+    { CONFIG    , "SET"   , true  , wifi_set_option    } , 
+    { CONFIG    , "GET"   , true  , wifi_get_option    } , 
+    */
+    { NONE      , NULL    , false , NULL }
 };
 
 
