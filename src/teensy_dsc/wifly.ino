@@ -71,7 +71,7 @@ wifi_setup_wireless(WiFlySerial *WiFly, network_settings_t *network) {
 
     if (network->enable_wpa) {
 	WiFly->setPassphrase(network->passphrase);
-	WiFly->setAuthMode(4);
+	WiFly->setAuthMode(network->enable_wpa);
     }
 }
 
@@ -88,18 +88,17 @@ wifi_setup_comms(WiFlySerial *WiFly) {
 }
 
 void
-wifi_save_settings(WiFlySerial *WiFly) { WiFly->print("save\r");
+wifi_save_settings(WiFlySerial *WiFly) {
+    WiFly->print("save\r");
     delay(PAUSE_DURATION);
     WiFly->print("reboot\r");
     delay(LONG_PAUSE_DURATION);
 }
 
 #define REQUEST_BUFFER_SIZE 120
-#define BODY_BUFFER_SIZE 255
 void
 wifi_get_config(WiFlySerial *WiFly, AnySerial *serial) {
     char bufRequest[REQUEST_BUFFER_SIZE];
-    char bufBody[BODY_BUFFER_SIZE];
 
     WiFly->getIP(bufRequest, REQUEST_BUFFER_SIZE);
     *serial << F("IP: ") << bufRequest << endl;

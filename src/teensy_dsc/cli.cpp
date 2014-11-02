@@ -306,6 +306,7 @@ wifi_ap_commands(cli_ctx *ctx, const char *args) {
         wifi_initial_setup(ctx->wifly, ctx->common->network);
     } else if (strcmp(args, "OFF") == 0) {
         // TODO: do something
+        ctx->serial->printf("Doh, this command doesn't do anything yet!\n");
     } else if (strcmp(args, "SHOW") == 0) {
         wifi_get_config(ctx->wifly, ctx->serial);
     } else {
