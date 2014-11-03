@@ -8,6 +8,7 @@ Desktop="Desktop"
 [Globals]
 AutoSaveProject=1
 UsedLibrary="/Applications/EAGLE-7.1.0/lbr/frames.lbr"
+UsedLibrary="/Applications/EAGLE-7.1.0/lbr/resistor.lbr"
 UsedLibrary="/Applications/EAGLE-7.1.0/lbr/supply2.lbr"
 UsedLibrary="/Users/aturner/GIT/synfin_eaglelibs/synfinatic.lbr"
 UsedLibrary="/Users/aturner/Dropbox/Eagle/plbr/SparkFun-Aesthetics.lbr"
@@ -39,10 +40,10 @@ UsedLibrary="/Users/aturner/GIT/Eagle-Libraries/Power-in.lbr"
 
 [Win_1]
 Type="Control Panel"
-Loc="318 1102 1255 1576"
+Loc="318 1418 1255 1892"
 State=2
 Number=0
 
 [Desktop]
-Screen="4000 1440"
+Screen="2560 1440"
 Window="Win_1"
