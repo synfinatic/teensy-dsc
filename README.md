@@ -2,13 +2,17 @@
 
 ## Important Note
 
-As of Sept 14, 2014 this project is still heavily in development.  The PCB 
-design & software are completely untested so far!  So don't be going and ordering this 
-board off of OSHPark/etc just yet... unless of course you want to help test!
-If so, then please contact me first and I can work with you.
+As of Nov 16, 2014 I've been able to order a PCB from OSHPark using the 
+[Simple-DSC](https://github.com/synfinatic/teensy-dsc/tree/simple-dsc/eagle)
+design and with the latest code from 
+[master](https://github.com/synfinatic/teensy-dsc/commit/1c4c6b0b567ba3cc21cd7ba83029384eee6130e7).
+I seem to have a working solution using SkySafari Pro on my iPad with 
+[US Digital S2-2500](http://www.usdigital.com/products/encoders/incremental/rotary/shaft/S2)
+10,000 "click" optical encoders.
 
 ## Basic Features
-I wanted to do my own digital setting circles (DSC) for my [Apertura AD12](http://www.opticsmart.com/telescopes/dobsonian-telescopes/apertura-ad12-dobsonian-reflector-telescope.html).
+I wanted to do my own digital setting circles (DSC) for my 
+[Apertura AD12](http://www.opticsmart.com/telescopes/dobsonian-telescopes/apertura-ad12-dobsonian-reflector-telescope.html).
 The main goals were:
 
  * Support for at least 16K resolution via quadurature decoding 
@@ -40,7 +44,7 @@ TeensyDSC requires some additional Arduino libraries to compile/run:
  * [Arduino IDE v1.0.5](http://arduino.cc/en/Main/Software) - Beta version is not yet supported!
  * [Teensyduino](http://pjrc.com/teensy/td_download.html) - Teensy addon for the Arduino IDE
  * [AnySerial](https://github.com/synfinatic/AnySerial) - Serial port abstraction layer for Arduino
- * [WiFlySerial](https://github.com/synfinatic/WiFlySerial) - customized to use AnySerial
+ * [WiFly_Shield](https://github.com/synfinatic/WiFly_Shield) - Customized to use AnySerial
  * [Flash](https://github.com/mikalhart/Flash) - Easy access to EEPROM flash memory
  * [MsTimer2](https://github.com/PaulStoffregen/MsTimer2) - MsTimer2 with Teensy3.x support
 
@@ -50,7 +54,7 @@ complete list.  If you have tested TeensyDSC with some software, I'd love
 to hear if it worked or not.  If it did not work, hopefully we can work
 together to make it work!
 
- * SkySafari (OSX, iOS)  = work in progress!
+ * SkySafari (OSX, iOS)  = Use "Orion Intelliscope"
 
 ## Similar Projects
 There are a bunch of similar projects to TeensyDSC which you should be aware of:
