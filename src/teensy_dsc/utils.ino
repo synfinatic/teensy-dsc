@@ -141,12 +141,12 @@ get_word_r(AnySerial *port, uint16_t wait_ms, char *buff) {
 }
 
 char *
-EncoderValue(long value, bool lead) {
+EncoderValue(long value, bool printsign) {
     static char buff[BUFF_LEN];
     char sign;
     unsigned long a_value;
 
-    if (lead) {
+    if (printsign) {
         if (value < 0) {
             sign = '-';
         } else {
@@ -155,7 +155,7 @@ EncoderValue(long value, bool lead) {
     }
 
     a_value = abs(value);
-    if (lead) {
+    if (printsign) {
         sprintf(buff, "%c%05lu", sign, a_value);
     } else {
         sprintf(buff, "%05lu", a_value);
@@ -163,3 +163,14 @@ EncoderValue(long value, bool lead) {
     return buff;
 }
 
+char * 
+HexEncoderValue(long value) {
+  char low, high;
+  static char buff[3];
+
+  high = value / 256;
+  low = value - high * 256;
+  sprintf(buff, "%02x%02x", low, high);
+
+  return buff;
+}

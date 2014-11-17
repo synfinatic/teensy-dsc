@@ -19,19 +19,20 @@
 
 #include <Arduino.h>
 #include <Streaming.h>
-// #define ENCODER_OPTIMIZE_INTERRUPTS
+#define ENCODER_OPTIMIZE_INTERRUPTS
 #include <Encoder.h>
 #include <AnySerial.h>
-#include <WiFlySerial.h>
+#include <WiFly.h>
 #include <Flash.h>
 #include <MsTimer2.h>
 
 #include "defaults.h"
 #include "teensy_dsc.h"
-#include "wifly.h"
+#include "network.h"
 #include "utils.h"
 #include "cli.h"
 #include "defaults.h"
+
 
 /*
  * Init our Encoders & Serial ports
@@ -41,7 +42,7 @@ Encoder EncoderDEC(CHAN_A_DEC, CHAN_B_DEC);
 
 AnySerial UserSerial(&USER_SERIAL_PORT);
 AnySerial WiFlySerialPort(&WIFLY_SERIAL_PORT);
-WiFlySerial WiFly(WiFlySerialPort);
+WiFly _WiFly(WiFlySerialPort);
 
 /* our global contexts */
 cli_ctx *uctx, *wctx;
@@ -51,9 +52,14 @@ common_cli_ctx *common;
 void
 update_encoders() {
 #if DEBUG
-    static int blink = 0;
-    blink = blink ? 0 : 1;
-    digitalWrite(13, blink);
+    static int blink = 1;
+    static int onoff = 0;
+    if (blink == BLINK_RATE) {
+        blink = 1;
+        onoff = onoff ? 0 : 1;
+    }
+    blink += 1;
+    digitalWrite(13, onoff);
 #endif
     common->ra_value = EncoderRA.read();
     common->dec_value = EncoderDEC.read();
@@ -64,9 +70,15 @@ setup() {
     pinMode(WIFLY_RESET, INPUT);
     pinMode(13, OUTPUT); // blink pin
     encoder_settings_t *encoders;
+    float ver;
+
+    pinMode(WIFLY_RESET, INPUT);
+
     common = (common_cli_ctx *)malloc(sizeof(common_cli_ctx));
 
     UserSerial.begin(USER_SERIAL_BAUD);
+    WiFlySerialPort.begin(WIFLY_SERIAL_SPEED);
+
     delay(1000);
 
     // load the encoder settings stored in the EEPROM
@@ -80,18 +92,26 @@ setup() {
     MsTimer2::start();
 
     // Init the USB Serial port & context
-    Serial.printf("Waiting %ums for WiFly...", WIFLY_DELAY);
+    UserSerial.printf("Waiting %ums for WiFly...\n", WIFLY_DELAY);
     // Init the WiFly
     delay(WIFLY_DELAY);   // Wait for it to come up
-    Serial.printf("  OK!\n");
 
-    Serial.printf("Initializing CLI's...");
-    // load the encoder settings stored in the EEPROM
-    WiFly.begin();
+    UserSerial.print("WiFly Version: ");
+    ver = _WiFly.version();
+    UserSerial.println(ver);
+    if (ver < 2.45) {
+        Serial.println("Warning! The WiFly's firmware probably doesn't support AP mode.");
+        Serial.println("Update the WiFly's firmware with wifly_update example");
+    }
+
+    UserSerial.printf("Initializing CLI's...");
     wctx = cli_init_cmd(&WiFlySerialPort, common, NULL);
+    uctx = cli_init_cmd(&UserSerial, common, &_WiFly);
+    UserSerial.printf("  OK!\n");
 
-    uctx = cli_init_cmd(&UserSerial, common, &WiFly);
-    Serial.printf("  OK!\n");
+    // Debug mode
+    WiFlySerialPort.attach_debug(&UserSerial);
+    WiFlySerialPort.debug(0);
 }
 
 void
@@ -100,7 +120,7 @@ loop() {
         process_cmd(uctx);
     }
 
-    if (WiFly.available() > 0) {
+    if (_WiFly.available() > 0) {
         process_cmd(wctx);
     }
 }
@@ -128,7 +148,7 @@ process_cmd(cli_ctx *ctx) {
                 read_buff[0] = byte;
                 read_buff[1] = NULL;
                 status = cli_proc_cmd(ctx, read_buff, 1);
-                serial->read(); // consume the byte
+                serial->read(); // consume the byte 
                 read_buff[0] = NULL;
                 return status;
             }
@@ -172,7 +192,9 @@ process_cmd(cli_ctx *ctx) {
         case E_CMD_NOT_FOUND:
         case E_CMD_BAD_ARGS:
 #ifdef DEBUG
-            serial->printf("ERR [%d]: %s\n", status, read_buff);
+            if (! ctx->eat_errors) {
+                serial->printf("ERR [%d]: %s\n", status, read_buff);
+            }
 #endif
             // fall through
             pos = 0;
@@ -235,3 +257,4 @@ reset_all_settings() {
     encoders.dec_cps = DEC_ENCODER_CPS;
     set_encoder_settings(&encoders);
 }
+

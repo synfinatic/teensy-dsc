@@ -5,8 +5,8 @@
 
 /* WiFly connections */
 #define WIFLY_SERIAL_PORT Serial3
-#define WIFLY_SERIAL_SPEED 115200
-#define WIFLY_DELAY 5000
+#define WIFLY_SERIAL_SPEED 9600
+#define WIFLY_DELAY 3000
 #define WIFLY_RESET 2    // Pin to reset the WiFly
 
 /* Serial port for debugging */
@@ -37,9 +37,10 @@
 #define WIFLY_TIMEOUT 500  // 0.5sec
 #define READBUFF_SIZE 255
 
-#define TEENSY_DSC_VERSION "0.2"
+#define TEENSY_DSC_VERSION "0.3"
 
-/* poll the encoder values every 100ms */
-#define UPDATE_ENCODER_MS 100
+/* poll the encoder values every 50ms */
+#define UPDATE_ENCODER_MS 50 
+#define BLINK_RATE 4
 
 #endif // __TEENSY_DSC_H__
