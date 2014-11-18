@@ -25,6 +25,8 @@ The main goals were:
 That will be version 1.0.  Future versions will hopefully support other features,
 but for now that will be enough for it to work for me.
 
+Want to [build your own](https://github.com/synfinatic/teensy-dsc/wiki/Building-your-own-Teensy-DSC)?
+
 ## Why Teensy 3.1
 Why the [Teensy 3.1](http://pjrc.com/store/teensy31.html) and not Arduino?
 
@@ -50,7 +52,7 @@ complete list.  If you have tested TeensyDSC with some software, I'd love
 to hear if it worked or not.  If it did not work, hopefully we can work
 together to make it work!
 
- * SkySafari (OSX, iOS)  = work in progress!
+ * SkySafari (OSX, iOS) pick "Orion Intelliscope" as your scope type
 
 ## Similar Projects
 There are a bunch of similar projects to TeensyDSC which you should be aware of:
