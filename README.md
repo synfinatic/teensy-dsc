@@ -8,7 +8,7 @@ design and with the latest code from
 [master](https://github.com/synfinatic/teensy-dsc/commit/1c4c6b0b567ba3cc21cd7ba83029384eee6130e7).
 I seem to have a working solution using SkySafari Pro on my iPad with 
 [US Digital S2-2500](http://www.usdigital.com/products/encoders/incremental/rotary/shaft/S2)
-10,000 "click" optical encoders.
+10,000 step optical encoders.
 
 ## Basic Features
 I wanted to do my own digital setting circles (DSC) for my 
