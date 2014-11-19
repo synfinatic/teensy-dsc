@@ -10,6 +10,8 @@ I seem to have a working solution using SkySafari Pro on my iPad with
 [US Digital S2-2500](http://www.usdigital.com/products/encoders/incremental/rotary/shaft/S2)
 10,000 step optical encoders.
 
+For more information, please see the [TeensyDSC Wiki](https://github.com/synfinatic/teensy-dsc/wiki)
+
 ## Basic Features
 I wanted to do my own digital setting circles (DSC) for my 
 [Apertura AD12](http://www.opticsmart.com/telescopes/dobsonian-telescopes/apertura-ad12-dobsonian-reflector-telescope.html).
