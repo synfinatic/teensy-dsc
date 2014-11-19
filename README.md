@@ -12,6 +12,8 @@ I seem to have a working solution using SkySafari Pro on my iPad with
 
 For more information, please see the [TeensyDSC Wiki](https://github.com/synfinatic/teensy-dsc/wiki)
 
+There is also this thread on [CloudyNights](http://www.cloudynights.com/topic/482436-yet-another-diy-digital-setting-circles-project-teensydsc/)
+
 ## Basic Features
 I wanted to do my own digital setting circles (DSC) for my 
 [Apertura AD12](http://www.opticsmart.com/telescopes/dobsonian-telescopes/apertura-ad12-dobsonian-reflector-telescope.html).
