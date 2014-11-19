@@ -1,4 +1,4 @@
-# Digital Setting Circles for Teensy 3.1
+# TeensyDSC: WiFi enabled Digital Setting Circles
 
 ## Important Note
 
@@ -36,7 +36,7 @@ but for now that will be enough for it to work for me.
 ## Why Teensy 3.1
 Why the [Teensy 3.1](http://pjrc.com/store/teensy31.html) and not Arduino?
 
- * It is *much* faster then the Arduino Uno (72Mhz vs 16Mhz)
+ * It is *much* faster then the Arduino Uno (32bit 72Mhz CPU vs 16bit 16Mhz)
  * It supports interrupts on all digital pins which allows for higher resolution encoders
  * Has 3 hardware serial ports which allows interfacing with GoTo hardware, etc
  * It is cheaper ($20/ea) and smaller
