@@ -18600,9 +18600,9 @@ Source: AVX .. aphvc.pdf</description>
 <approved hash="104,1,83.82,91.44,U$1,VIN,5V,,,"/>
 <approved hash="204,1,83.82,86.36,U$1,VBAT,,,,"/>
 <approved hash="204,1,83.82,93.98,U$1,VUSB,,,,"/>
-<approved hash="104,1,-121.92,30.48,M1,VCC,3.3V,,,"/>
-<approved hash="202,1,-121.92,71.12,M1,DTR/SLEEP_RQ/DI8,,,,"/>
-<approved hash="202,1,-175.26,58.42,M1,VREF,,,,"/>
+<approved hash="104,1,-121.92,30.48,U$5,VCC,3.3V,,,"/>
+<approved hash="202,1,-121.92,71.12,U$5,DTR/SLEEP_RQ/DI8,,,,"/>
+<approved hash="202,1,-175.26,58.42,U$5,VREF,,,,"/>
 <approved hash="104,1,-22.86,172.72,U$3,IN,5V,,,"/>
 <approved hash="104,1,-2.54,172.72,U$3,+3V3,3.3V,,,"/>
 <approved hash="110,1,27.94,76.2,XBEE_IN,P2,,,,"/>
