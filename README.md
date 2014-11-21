@@ -36,10 +36,11 @@ but for now that will be enough for it to work for me.
 ## Why Teensy 3.1
 Why the [Teensy 3.1](http://pjrc.com/store/teensy31.html) and not Arduino?
 
- * It is *much* faster then the Arduino Uno (32bit 72Mhz CPU vs 16bit 16Mhz)
+ * It is *much* faster then the Arduino Uno or Mega (32bit 72Mhz CPU vs 16bit 16Mhz)
+ * Small footprint and only costs $20!
+ * Runs at 3.3V, but handles 5V just fine which simplifies talking to WiFi chipsets and encoders
  * It supports interrupts on all digital pins which allows for higher resolution encoders
  * Has 3 hardware serial ports which allows interfacing with GoTo hardware, etc
- * It is cheaper ($20/ea) and smaller
  * More memory & flash allows for a lot more features
 
 ## Required Libraries & Software
