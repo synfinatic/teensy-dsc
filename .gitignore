@@ -1,6 +1,7 @@
 .DS_Store
 *.s#[0-9]
 *.b#[0-9]
+*.b##
 *.job
 *.pro
 eagle.epf
