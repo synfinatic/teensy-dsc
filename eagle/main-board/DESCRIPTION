@@ -1,0 +1,8 @@
+TeenyDSC Wireless Digital Setting Circles
+<br>
+Copyright 2014 Aaron Turner
+<b>
+Licensed under the GPLv3
+<br>
+<br>
+This board provides the "brains" for the TeensyDSC and allows connecting it to your telescope encoders and/or goto/tracking computer via serial.  All of this functionality is exposed via a WiFi network which the board creates for you which allows computers, iPad/iPhone or Android devices to connect to it.
