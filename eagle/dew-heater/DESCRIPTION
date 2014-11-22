@@ -1,0 +1,8 @@
+TeensyDSC Dew Heater Controller
+<br>
+Copyright 2014 Aaron Turner
+<br>
+Licensed under the GPLv3
+<br>
+<br>
+The TeensyDSC Dew Heater Controller is a 4 channel dew heater controller with active temperature monitoring.  Each channel uses a MOSFET for variable power in 10% increments and has a manual override.  We also support remote temperature sensors so that we dynamically change the power as the air temperature drops/stabilizes to use the least amount of power necessary.
