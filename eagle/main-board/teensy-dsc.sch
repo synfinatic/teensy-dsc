@@ -14457,7 +14457,7 @@ Source: AVX .. aphvc.pdf</description>
 <label x="114.3" y="58.42" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="P32" class="0">
+<net name="D32" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="32/T/PWM"/>
 <pinref part="JP2" gate="G$1" pin="10"/>
@@ -14475,7 +14475,7 @@ Source: AVX .. aphvc.pdf</description>
 <label x="114.3" y="53.34" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="D_BUTTON" class="0">
+<net name="D30/A19" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="30/A19/SDA1"/>
 <pinref part="JP2" gate="G$1" pin="12"/>
@@ -14484,7 +14484,7 @@ Source: AVX .. aphvc.pdf</description>
 <label x="114.3" y="50.8" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="C_BUTTON" class="0">
+<net name="D29/A18" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="29/A18/SCL1"/>
 <pinref part="JP2" gate="G$1" pin="13"/>
@@ -14493,22 +14493,13 @@ Source: AVX .. aphvc.pdf</description>
 <label x="114.3" y="48.26" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="D2" class="0">
+<net name="BACK" class="0">
 <segment>
 <pinref part="U$1" gate="G$1" pin="28/A17"/>
 <pinref part="JP2" gate="G$1" pin="14"/>
 <wire x1="83.82" y1="38.1" x2="99.06" y2="45.72" width="0.1524" layer="91"/>
 <wire x1="99.06" y1="45.72" x2="132.08" y2="45.72" width="0.1524" layer="91"/>
 <label x="114.3" y="45.72" size="1.778" layer="95"/>
-</segment>
-</net>
-<net name="D1" class="0">
-<segment>
-<pinref part="U$1" gate="G$1" pin="27/A16"/>
-<pinref part="JP2" gate="G$1" pin="15"/>
-<wire x1="83.82" y1="35.56" x2="99.06" y2="43.18" width="0.1524" layer="91"/>
-<wire x1="99.06" y1="43.18" x2="132.08" y2="43.18" width="0.1524" layer="91"/>
-<label x="114.3" y="43.18" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="SCK" class="0">
@@ -14676,7 +14667,7 @@ Source: AVX .. aphvc.pdf</description>
 <label x="99.06" y="99.06" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
-<net name="C1" class="0">
+<net name="ENC_C1" class="0">
 <segment>
 <pinref part="JP1" gate="G$1" pin="3"/>
 <wire x1="-30.48" y1="45.72" x2="-20.32" y2="45.72" width="0.1524" layer="91"/>
@@ -14688,7 +14679,7 @@ Source: AVX .. aphvc.pdf</description>
 <label x="93.98" y="30.48" size="1.778" layer="95" xref="yes"/>
 </segment>
 </net>
-<net name="C2" class="0">
+<net name="ENC_C2" class="0">
 <segment>
 <pinref part="JP1" gate="G$1" pin="4"/>
 <wire x1="-30.48" y1="48.26" x2="-27.94" y2="48.26" width="0.1524" layer="91"/>
@@ -14719,6 +14710,22 @@ Source: AVX .. aphvc.pdf</description>
 <pinref part="JP1" gate="G$1" pin="16"/>
 <wire x1="15.24" y1="78.74" x2="-30.48" y2="78.74" width="0.1524" layer="91"/>
 <label x="-22.86" y="78.74" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="ENTER" class="0">
+<segment>
+<pinref part="U$1" gate="G$1" pin="27/A16"/>
+<pinref part="JP2" gate="G$1" pin="15"/>
+<wire x1="83.82" y1="35.56" x2="99.06" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="99.06" y1="43.18" x2="132.08" y2="43.18" width="0.1524" layer="91"/>
+<label x="114.3" y="43.18" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="WIZFI_DR" class="0">
+<segment>
+<pinref part="U$5" gate="G$1" pin="GPIO19_CLK-44M"/>
+<wire x1="-139.7" y1="15.24" x2="-139.7" y2="7.62" width="0.1524" layer="91"/>
+<label x="-139.7" y="7.62" size="1.778" layer="95" rot="R270" xref="yes"/>
 </segment>
 </net>
 </nets>
