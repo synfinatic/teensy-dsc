@@ -1,4 +1,4 @@
-#include "wifly.h"
+#include "network.h"
 
 #ifndef __CLI_H__
 #define __CLI_H__
@@ -47,15 +47,16 @@ typedef struct cli_ctx_s {
     cli_state state;
     cli_state prev_state;
     AnySerial *serial;
-    WiFlySerial *wifly;
+    WiFly *wifly;
     // must be big enough to hold max one char commands for a given state
     char one_char_cmds[20]; 
     int longest_cmd;
+    bool eat_errors;
     common_cli_ctx *common;
 } cli_ctx;
 
 /* init & entrance */
-cli_ctx *cli_init_cmd(AnySerial *, common_cli_ctx *, WiFlySerial *);
+cli_ctx *cli_init_cmd(AnySerial *, common_cli_ctx *, WiFly *);
 cmd_status cli_proc_cmd(cli_ctx *, char *, size_t);
 
 /* dsc commands */

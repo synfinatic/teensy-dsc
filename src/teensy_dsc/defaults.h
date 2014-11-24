@@ -25,6 +25,7 @@
 #define WIFLY_CHANNEL 1
 #define TX_POWER 1
 #define ENABLE_WPA 0
+#define ENABLE_AP 1
 
 
 /*
@@ -55,6 +56,7 @@ typedef struct {
     uint8_t tx_power; 
     uint8_t rate;
     uint8_t enable_wpa;
+    uint8_t enable_ap;
 } network_settings_t;
 
 typedef enum {

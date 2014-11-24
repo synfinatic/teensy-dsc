@@ -4,7 +4,7 @@
 #include "cli.h"
 #include "utils.h"
 #include "defaults.h"
-#include "wifly.h"
+#include "network.h"
 
 void setup_commands(cli_ctx *ctx);
 
@@ -12,7 +12,7 @@ void setup_commands(cli_ctx *ctx);
  * Initalizer for a CLI context
  */
 cli_ctx *
-cli_init_cmd(AnySerial *aserial, common_cli_ctx *common, WiFlySerial *wifly) {
+cli_init_cmd(AnySerial *aserial, common_cli_ctx *common, WiFly *wifly) {
     cli_ctx *ctx;
 
     ctx = (cli_ctx *)malloc(sizeof(cli_ctx));
@@ -22,6 +22,11 @@ cli_init_cmd(AnySerial *aserial, common_cli_ctx *common, WiFlySerial *wifly) {
     ctx->prev_state = NONE;
     ctx->serial = aserial;
     ctx->wifly = wifly;
+    if (wifly == NULL) {
+        ctx->eat_errors = true;
+    } else {
+        ctx->eat_errors = false;
+    }
     setup_commands(ctx);
 
     return ctx;
@@ -257,7 +262,9 @@ wifi_interactive(cli_ctx *ctx) {
                 if (pos == READBUFF_SIZE) {
                     line[0] = NULL;
                     pos = 0;
-                    ctx->serial->printf("ERR: command too long\n");
+                    if (! ctx->eat_errors) {
+                        ctx->serial->printf("ERR: command too long\n");
+                    }
                 }
             }
         }
@@ -302,13 +309,15 @@ setup_commands(cli_ctx *ctx) {
  */
 cmd_status
 wifi_ap_commands(cli_ctx *ctx, const char *args) {
-    if (strcmp(args, "ON") == 0) {
-        wifi_initial_setup(ctx->wifly, ctx->common->network);
-    } else if (strcmp(args, "OFF") == 0) {
-        // TODO: do something
-        ctx->serial->printf("Doh, this command doesn't do anything yet!\n");
+    if (strcmp(args, "SAVE") == 0) {
+        wifi_configure(ctx->wifly, ctx->common->network);
+        ctx->serial->printf("OK\n");
     } else if (strcmp(args, "SHOW") == 0) {
         wifi_get_config(ctx->wifly, ctx->serial);
+        ctx->serial->printf("OK\n");
+    } else if (strcmp(args, "RESET") == 0) {
+        ctx->wifly->reset();
+        ctx->serial->printf("OK\n");
     } else {
         return E_CMD_NOT_FOUND;
     }
@@ -321,18 +330,26 @@ wifi_ap_commands(cli_ctx *ctx, const char *args) {
 cmd_status
 wifi_get_help(cli_ctx *ctx, const char *args) {
     ctx->serial->printf(
-F("AP ON                 => Turn on the WiFi access point\n" \
-"AP OFF                => Turn off the WiFi access point\n"  \
+F("AP SAVE               => Save WiFi access point config\n" \
 "AP SHOW               => Shows the WiFi configuration\n"    \
+"AP RESET              => Reset WiFi to factory defaults\n"  \
 "SET SSID <ssid>       => Set the WiFi SSID\n"               \
 "SET PASS <pass>       => Set the WiFi passphrase\n"         \
 "SET IP <x.x.x.x>      => Set the WiFi IP address\n"         \
 "SET MASK <x.x.x.x>    => Set the WiFi netmask\n"            \
 "SET CHAN <x>          => Set the WiFi channel [0-12]\n"     \
 "SET PORT <x>          => Set the TCP PORT [1-65535]\n"      \
+"SET RATE <x>          => Set the WiFi rate [0-15]\n"        \
+"SET TXP <x>           => Set the WiFi TX Power [0-12]\n"    \
 "SET AUTH [WPA2|OPEN]  => Enable WPA2-PSK or no security\n"  \
+"SET MODE [AP|CLIENT]  => Enable AP or client mode\n"        \
+"SET ALT xxxx          => set ALT encoder resolution\n"      \
+"SET AZ xxxx           => set AZ encoder resolution\n"       \
 "GET <OPTION>          => Get a config option\n"             \
-"SAVE                  => Save Wifi settings to flash\n"     \
+"GET IPA               => Get IP of WiFi AP\n"               \
+"GET ALL               => Get all saved EEPROM settings\n"   \
+"SAVE                  => Save settings to EEPROM\n"         \
+"CLEAR                 => Clear all EEPROM settings\n"       \
 "?                     => Help\n"                            \
 "MODE [DSC|WIFI]       => Change CLI mode\n")
     );
@@ -368,22 +385,16 @@ wifi_set_option(cli_ctx *ctx, const char *args) {
         }
     }
     value[j] = '\0';
-
     if (strcmp("SSID", option) == 0) {
-        ctx->wifly->setSSID(value);
         strncpy(network->ssid, value, 30);
         ctx->serial->printf("OK: %s\n", value);
     } else if (strcmp("PASS", option) == 0) {
-        ctx->wifly->setPassphrase(value);
         strncpy(network->passphrase, value, 64);
         ctx->serial->printf("OK: %s\n", value);
     } else if (strcmp("IP", option) == 0) {
-        ctx->wifly->setIP(value);
-        ctx->wifly->setGateway(value);
         strncpy(network->ip_address, value, 15);
         ctx->serial->printf("OK: %s\n", value);
     } else if (strcmp("MASK", option) == 0) {
-        ctx->wifly->setNetMask(value);
         strncpy(network->netmask, value, 15);
         ctx->serial->printf("OK: %s\n", value);
     } else if (strcmp("CHAN", option) == 0) {
@@ -392,7 +403,6 @@ wifi_set_option(cli_ctx *ctx, const char *args) {
             ctx->serial->printf("Invalid channel: %d\n", i);
             return E_CMD_BAD_ARGS;
         }
-        ctx->wifly->setChannel(value);
         network->channel = (uint8_t)i;
         ctx->serial->printf("OK: %d\n", i);
     } else if (strcmp("PORT", option) == 0) {
@@ -401,24 +411,57 @@ wifi_set_option(cli_ctx *ctx, const char *args) {
             ctx->serial->printf("Invalid port: %d\n", i);
             return E_CMD_BAD_ARGS;
         }
-        ctx->wifly->setLocalPort(i);
         network->port = (uint16_t)i;
         ctx->serial->printf("OK: %d\n", i);
     } else if (strcmp("AUTH", option) == 0) {
         if (strcmp("OPEN", value) == 0) {
-            ctx->wifly->setAuthMode(0);
             network->enable_wpa = 0;
             ctx->serial->printf("OK: %d\n", 0);
         } else if (strcmp("WPA2", value) == 0) {
-            ctx->wifly->setAuthMode(4);
             network->enable_wpa = 4;
-        ctx->serial->printf("OK: %d\n", 4);
         } else {
             ctx->serial->printf("Invalid auth mode: %s\n", value);
             return E_CMD_BAD_ARGS;
         }
+    } else if (strcmp("MODE", option) == 0) {
+        if (strcmp("AP", value) == 0) {
+            network->enable_ap = 7;
+            ctx->serial->printf("OK: %d\n", 7);
+        } else if (strcmp("CLIENT", value) == 0) {
+            network->enable_ap = 1;
+            ctx->serial->printf("OK: %d\n", 1);
+        } else {
+            ctx->serial->printf("Invalid Wifi mode: %d\n", value);
+            return E_CMD_BAD_ARGS;
+        }
+    } else if (strcmp("RATE", option) == 0) {
+        i = atoi(value);
+        if (i < 0 || i > 15) {
+            ctx->serial-printf("Invalid rate: %d\n", i);
+            return E_CMD_BAD_ARGS;
+        }
+        network->rate = i;
+        ctx->serial->printf("OK: %d\n", i);
+    } else if (strcmp("TXP", option) == 0) {
+        i = atoi(value);
+        if (i < 0 || 0 > 12) {
+            ctx->serial-printf("Invalid TX Power: %d\n", i);
+            return E_CMD_BAD_ARGS;
+        }
+        network->tx_power = i;
+        ctx->serial->printf("OK: %d\n", i);
+    } else if (strcmp("ALT", option) == 0) {
+        i = atoi(value);
+        ctx->common->dec_value = i;
+        ctx->serial->printf("OK: %d\n", i);
+    } else if (strcmp("AZ", option) == 0) {
+        i = atoi(value);
+        ctx->common->ra_value = i;
+        ctx->serial->printf("OK: %d\n", i);
+    } else {
+        ctx->serial->printf("Unknown command: %s\n", option);
+        return E_CMD_NOT_FOUND;
     }
-
     return E_CMD_OK;
 }
 
@@ -429,37 +472,99 @@ cmd_status
 wifi_get_option(cli_ctx *ctx, const char *args) {
     AnySerial *serial = ctx->serial;
     network_settings_t *network = ctx->common->network;
+    char c, *value;
 
     if (strcmp("SSID", args) == 0) {
-        serial->printf("%s\n", network->ssid);
+        serial->printf("SSID: %s\n", network->ssid);
     } else if (strcmp("PASS", args) == 0) {
-        serial->printf("%s\n", network->passphrase);
+        serial->printf("PASS: %s\n", network->passphrase);
     } else if (strcmp("IP", args) == 0) {
-        serial->printf("%s\n", network->ip_address);
+        serial->printf("IP: %s\n", network->ip_address);
     } else if (strcmp("MASK", args) == 0) {
-        serial->printf("%s\n", network->netmask);
+        serial->printf("MASK: %s\n", network->netmask);
     } else if (strcmp("CHAN", args) == 0) {
-        serial->printf("%d\n", network->channel);
+        serial->printf("CHAN: %d\n", network->channel);
     } else if (strcmp("PORT", args) == 0) {
-        serial->printf("%d\n", network->port);
+        serial->printf("PORT: %d\n", network->port);
     } else if (strcmp("AUTH", args) == 0) {
         switch (network->enable_wpa) {
             case 0:
-                serial->printf(F("OPEN\n"));
+                serial->printf(F("AUTH: OPEN\n"));
                 break;
             case 4:
-                serial->printf(F("WPA2\n"));
+                serial->printf(F("AUTH: WPA2\n"));
                 break;
             default:
-                serial->printf(F("Unknown value: %d\n"), network->enable_wpa);
+                serial->printf(F("AUTH: Unknown value: %d\n"), network->enable_wpa);
         }
+    } else if (strcmp("MODE", args) == 0) {
+        switch (network->enable_ap) {
+            case 7:
+                serial->printf("MODE: AP\n");
+                break;
+            case 1:
+                serial->printf("MODE: WiFi Client\n");
+                break;
+            default:
+                serial->printf("Mode: Unknown: %d\n", network->enable_ap);
+        }
+    } else if (strcmp("RATE", args) == 0) {
+        serial->printf("RATE: %d\n", network->rate);
+    } else if (strcmp("TXP", args) == 0) {
+        serial->printf("TXP: %d\n", network->tx_power);
+    } else if (strcmp("IPA", args) == 0) {
+        ctx->wifly->sendCommand("get ip a\r");
+        serial->print("IPA: ");
+        while (ctx->wifly->receive((uint8_t *)&c, 1, 300)) {
+            serial->print((char)c);
+        }
+        ctx->wifly->dataMode();
+    } else if (strcmp("ALT", args) == 0) {
+        value = EncoderValue(ctx->common->dec_value, true);
+        serial->printf("ALT: %s\n", value);
+    } else if (strcmp("AZ", args) == 0) {
+        value = EncoderValue(ctx->common->ra_value, true);
+        serial->printf("AZ: %s\n", value);
+    } else if (strcmp("ALL", args) == 0) {
+        serial->printf("SSID: %s\n", network->ssid);
+        serial->printf("PASS: %s\n", network->passphrase);
+        serial->printf("IP: %s\n", network->ip_address);
+        serial->printf("MASK: %s\n", network->netmask);
+        serial->printf("CHAN: %d\n", network->channel);
+        serial->printf("PORT: %d\n", network->port);
+        switch (network->enable_wpa) {
+            case 0:
+                serial->printf(F("AUTH: OPEN\n"));
+                break;
+            case 4:
+                serial->printf(F("AUTH: WPA2\n"));
+                break;
+            default:
+                serial->printf(F("AUTH: Unknown value: %d\n"), network->enable_wpa);
+        }
+        switch (network->enable_ap) {
+            case 7:
+                serial->printf("MODE: AP\n");
+                break;
+            case 1:
+                serial->printf("MODE: WiFi Client\n");
+                break;
+            default:
+                serial->printf("Mode: Unknown: %d\n", network->enable_ap);
+        }
+        serial->printf("RATE: %d\n", network->rate);
+        serial->printf("TXP: %d\n", network->tx_power);
+        value = EncoderValue(ctx->common->dec_value, true);
+        serial->printf("ALT: %s\n", value);
+        value = EncoderValue(ctx->common->ra_value, true);
+        serial->printf("AZ: %s\n", value);
     }
 
     return E_CMD_OK;
 }
 
 /*
- * Save Wifi Settings
+ * Save Wifi Settings to EEPROM
  */
 cmd_status 
 wifi_save_settings(cli_ctx *ctx, const char *args) {
