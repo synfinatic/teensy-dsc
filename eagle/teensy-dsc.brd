@@ -130,19 +130,19 @@
 <wire x1="73.8" y1="6.5" x2="73.8" y2="42.5" width="0" layer="20"/>
 <hole x="16.0782" y="25.527" drill="2.286"/>
 <hole x="60.5282" y="25.527" drill="2.286"/>
-<text x="49.149" y="22.098" size="1.016" layer="22" rot="MR180">TeensyDSC v0.5.1
+<text x="34.417" y="27.432" size="1.016" layer="22" rot="MR180">TeensyDSC v0.5.1
 http://synfin.net/teensydsc
 2014116</text>
 <text x="72.136" y="10.414" size="1.016" layer="26" rot="MR0">S/N:</text>
 <rectangle x1="54.61" y1="9.906" x2="68.58" y2="14.986" layer="26" rot="R180"/>
-<text x="26.67" y="10.16" size="1.016" layer="25">U$4</text>
+<text x="26.67" y="10.16" size="1.27" layer="25">U$4</text>
 <wire x1="67.945" y1="46.8" x2="6.5" y2="46.8" width="0" layer="20"/>
 <wire x1="0.2" y1="42.5" x2="0.2" y2="6.5" width="0" layer="20"/>
 <wire x1="0.2" y1="42.5" x2="6.5" y2="42.5" width="0" layer="20"/>
 <wire x1="6.5" y1="42.5" x2="6.5" y2="46.8" width="0" layer="20"/>
 <wire x1="67.945" y1="46.8" x2="67.945" y2="42.5" width="0" layer="20"/>
 <wire x1="67.945" y1="42.5" x2="73.8" y2="42.5" width="0" layer="20"/>
-<text x="30.48" y="39.37" size="0.635" layer="21">J3</text>
+<text x="27.94" y="39.37" size="1.27" layer="21">J3</text>
 </plain>
 <libraries>
 <library name="resistor">
@@ -1681,28 +1681,32 @@ design rules under a new name.</description>
 </autorouter>
 <elements>
 <element name="C1" library="resistor" package="C0805" value="1.0uF" x="41.91" y="20.32" smashed="yes" rot="MR0">
-<attribute name="NAME" x="41.8465" y="22.352" size="0.4064" layer="26" rot="MR180"/>
+<attribute name="NAME" x="40.5765" y="22.86" size="1.27" layer="26" rot="MR180"/>
 </element>
 <element name="C2" library="resistor" package="C0805" value="4.7uF" x="40.64" y="12.7" smashed="yes" rot="MR90">
-<attribute name="NAME" x="38.9255" y="12.7" size="0.4064" layer="26" rot="MR90"/>
+<attribute name="NAME" x="38.1635" y="11.684" size="1.27" layer="26" rot="MR90"/>
 </element>
 <element name="C8" library="resistor" package="C0805" value="10uF" x="26.67" y="17.78" smashed="yes" rot="MR180">
-<attribute name="NAME" x="24.511" y="16.51" size="1.27" layer="26" rot="MR180"/>
+<attribute name="NAME" x="25.273" y="16.51" size="1.27" layer="26" rot="MR180"/>
 </element>
 <element name="C9" library="resistor" package="C0805" value="10uF" x="31.75" y="17.78" smashed="yes" rot="MR0">
-<attribute name="NAME" x="32.004" y="15.113" size="1.27" layer="26" rot="MR0"/>
+<attribute name="NAME" x="32.512" y="15.367" size="1.27" layer="26" rot="MR0"/>
 </element>
-<element name="D5" library="adafruit" package="SOD-123" value="10V Z" x="68.326" y="24.638" rot="MR0"/>
+<element name="D5" library="adafruit" package="SOD-123" value="10V Z" x="68.326" y="24.638" smashed="yes" rot="MR0">
+<attribute name="NAME" x="69.426" y="21.828" size="1.27" layer="26" rot="MR0"/>
+</element>
 <element name="J3" library="SparkFun-Connectors" package="RJ45-8" value="RJ45-8PTH" x="29.21" y="41.148" rot="R180"/>
-<element name="J2" library="SparkFun-Connectors" package="POWER_JACK_PTH" value="POWER_JACKPTH" x="45.212" y="49.53" rot="R180">
+<element name="J2" library="SparkFun-Connectors" package="POWER_JACK_PTH" value="POWER_JACKPTH" x="45.212" y="49.53" smashed="yes" rot="R180">
 <attribute name="PROD_ID" value="PRT-00119" x="45.212" y="49.53" size="1.778" layer="27" rot="R180" display="off"/>
+<attribute name="NAME" x="47.752" y="45.72" size="1.27" layer="25" rot="R180"/>
 </element>
-<element name="J1" library="SparkFun-Connectors" package="USB-B-PTH" value="USB-B" x="60.452" y="36.83" rot="R270">
+<element name="J1" library="SparkFun-Connectors" package="USB-B-PTH" value="USB-B" x="60.452" y="36.83" smashed="yes" rot="R270">
 <attribute name="PROD_ID" value="CONN-08278" x="60.452" y="36.83" size="1.778" layer="27" rot="R270" display="off"/>
+<attribute name="NAME" x="60.452" y="41.91" size="1.27" layer="25"/>
 </element>
 <element name="M1" library="xbee_r1" package="RX-VN" value="XBEERX-VN" x="53.34" y="16.891" rot="R270"/>
 <element name="Q1" library="synfinatic" package="SOT23" value="IRLML6344" x="67.31" y="29.21" smashed="yes" rot="MR0">
-<attribute name="NAME" x="65.405" y="26.797" size="1.27" layer="26" rot="MR0"/>
+<attribute name="NAME" x="65.405" y="28.067" size="1.27" layer="26" rot="MR0"/>
 </element>
 <element name="R15" library="resistor" package="M0805" value="13.3k" x="70.485" y="31.75" smashed="yes" rot="MR90">
 <attribute name="NAME" x="71.501" y="30.734" size="1.27" layer="26" rot="MR90"/>
@@ -1711,7 +1715,7 @@ design rules under a new name.</description>
 <attribute name="NAME" x="15.367" y="10.541" size="1.27" layer="25" font="vector" rot="R180"/>
 </element>
 <element name="U$3" library="SteelCaveRobotics-Power" package="SOT-223" value="MCP1825SOT-223-3" x="48.26" y="15.24" smashed="yes" rot="MR90">
-<attribute name="NAME" x="46.26" y="11.24" size="0.6096" layer="26" rot="MR180"/>
+<attribute name="NAME" x="46.26" y="11.24" size="1.27" layer="26" rot="MR180"/>
 </element>
 <element name="U$4" library="synfinatic" package="OKI-78SR-H" value="OKI-78SR" x="34.163" y="24.13" rot="R180"/>
 </elements>
