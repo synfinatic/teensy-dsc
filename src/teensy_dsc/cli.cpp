@@ -4,7 +4,7 @@
 #include "cli.h"
 #include "utils.h"
 #include "defaults.h"
-#include "network.h"
+#include "rnxv.h"
 
 void setup_commands(cli_ctx *ctx);
 
@@ -310,10 +310,10 @@ setup_commands(cli_ctx *ctx) {
 cmd_status
 wifi_ap_commands(cli_ctx *ctx, const char *args) {
     if (strcmp(args, "SAVE") == 0) {
-        wifi_configure(ctx->wifly, ctx->common->network);
+        rnxv_configure(ctx->wifly, ctx->common->network);
         ctx->serial->printf("OK\n");
     } else if (strcmp(args, "SHOW") == 0) {
-        wifi_get_config(ctx->wifly, ctx->serial);
+        rnxv_get_config(ctx->wifly, ctx->serial);
         ctx->serial->printf("OK\n");
     } else if (strcmp(args, "RESET") == 0) {
         ctx->wifly->reset();

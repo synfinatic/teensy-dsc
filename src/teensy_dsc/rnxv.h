@@ -14,11 +14,7 @@
 #define COMM_SIZE 1420
 #define COMM_TIME_MS 5
 
-void wifi_initial_setup(WiFly *, network_settings_t *);
-void wifi_configure(WiFly *, network_settings_t *);
-void wifi_setup_comms(WiFly *);
-void wifi_setup_network(WiFly *, network_settings_t *);
-void wifi_setup_wireless(WiFly *, network_settings_t *);
-void wifi_get_config(WiFly *, AnySerial *);
+void rnxv_configure(WiFly *, network_settings_t *);
+void rnxv_get_config(WiFly *, AnySerial *);
 
 #endif
