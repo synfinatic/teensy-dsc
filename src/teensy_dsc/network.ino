@@ -135,7 +135,13 @@ wifi_configure(WiFly *wifly, network_settings_t *network) {
     char buff[30];
 
 
-    sprintf(buff, "set w j %d i\r", network->enable_ap);
+    if (network->enable_ap) {
+        // AP mode
+        sprintf(buff, "set w j 7 i\r");
+    } else {
+        // Client mode
+        sprintf(buff, "set w j 1 i\r");
+    }
     wifly->sendCommand(buff, "AOK");        // Enable AP mode
     if (network->enable_ap == 7) {
         wifly->sendCommand("set i d 4\r", "AOK");        // Enable DHCP server

@@ -349,7 +349,7 @@ F("AP SAVE               => Save WiFi access point config\n" \
 "GET IPA               => Get IP of WiFi AP\n"               \
 "GET ALL               => Get all saved EEPROM settings\n"   \
 "SAVE                  => Save settings to EEPROM\n"         \
-"CLEAR                 => Clear all EEPROM settings\n"       \
+"RESET                 => Reset all EEPROM settings\n"       \
 "?                     => Help\n"                            \
 "MODE [DSC|WIFI]       => Change CLI mode\n")
     );
@@ -425,7 +425,7 @@ wifi_set_option(cli_ctx *ctx, const char *args) {
         }
     } else if (strcmp("MODE", option) == 0) {
         if (strcmp("AP", value) == 0) {
-            network->enable_ap = 7;
+            network->enable_ap = 1;
             ctx->serial->printf("OK: %d\n", 7);
         } else if (strcmp("CLIENT", value) == 0) {
             network->enable_ap = 1;
@@ -452,12 +452,16 @@ wifi_set_option(cli_ctx *ctx, const char *args) {
         ctx->serial->printf("OK: %d\n", i);
     } else if (strcmp("ALT", option) == 0) {
         i = atoi(value);
-        ctx->common->dec_value = i;
+        ctx->common->dec_cps = i;
         ctx->serial->printf("OK: %d\n", i);
     } else if (strcmp("AZ", option) == 0) {
         i = atoi(value);
-        ctx->common->ra_value = i;
+        ctx->common->ra_cps = i;
         ctx->serial->printf("OK: %d\n", i);
+    } else if (strcmp("DEBUG", option) == 0) {
+        i = atoi(value);
+        ctx->common->network->debug_wifly = i;
+        ctx->serial->printf("OK: %d (please save & reboot!)\n");
     } else {
         ctx->serial->printf("Unknown command: %s\n", option);
         return E_CMD_NOT_FOUND;
@@ -520,11 +524,15 @@ wifi_get_option(cli_ctx *ctx, const char *args) {
         }
         ctx->wifly->dataMode();
     } else if (strcmp("ALT", args) == 0) {
-        value = EncoderValue(ctx->common->dec_value, true);
-        serial->printf("ALT: %s\n", value);
+        serial->printf("ALT/Dec: %ld\n", ctx->common->dec_cps);
     } else if (strcmp("AZ", args) == 0) {
-        value = EncoderValue(ctx->common->ra_value, true);
-        serial->printf("AZ: %s\n", value);
+        serial->printf("AZ/RA: %ld\n", ctx->common->ra_cps);
+    } else if (strcmp("DEBUG", args) == 0) {
+        if (network->debug_wifly) {
+            serial->printf("Debuging: enabled\n");
+        } else {
+            serial->printf("Debuging: disabled\n");
+        }
     } else if (strcmp("ALL", args) == 0) {
         serial->printf("SSID: %s\n", network->ssid);
         serial->printf("PASS: %s\n", network->passphrase);
@@ -554,10 +562,8 @@ wifi_get_option(cli_ctx *ctx, const char *args) {
         }
         serial->printf("RATE: %d\n", network->rate);
         serial->printf("TXP: %d\n", network->tx_power);
-        value = EncoderValue(ctx->common->dec_value, true);
-        serial->printf("ALT: %s\n", value);
-        value = EncoderValue(ctx->common->ra_value, true);
-        serial->printf("AZ: %s\n", value);
+        serial->printf("ALT/Dec: %ld\n", ctx->common->dec_cps);
+        serial->printf("AZ/RA: %ld\n", ctx->common->ra_cps);
     }
 
     return E_CMD_OK;
@@ -568,7 +574,17 @@ wifi_get_option(cli_ctx *ctx, const char *args) {
  */
 cmd_status 
 wifi_save_settings(cli_ctx *ctx, const char *args) {
-    set_network_defaults(ctx->common->network);
+    set_network_settings(ctx->common->network);
+    ctx->serial->printf("OK\n");
+    return E_CMD_OK;
+}
+
+/*
+ * Reset settings to our defaults in the EEPROM
+ */
+cmd_status
+eeprom_reset_settings(cli_ctx *ctx, const char *args) {
+    reset_all_defaults();
     ctx->serial->printf("OK\n");
     return E_CMD_OK;
 }
