@@ -11,7 +11,7 @@
 
 /* Serial port for debugging */
 #define USER_SERIAL_PORT Serial
-#define USER_SERIAL_BAUD 9600
+#define USER_SERIAL_SPEED 9600
 
 /* RJ11 Serial Ports */
 #define SerialA Serial1  // J1

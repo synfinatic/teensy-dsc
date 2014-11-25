@@ -1,6 +1,7 @@
 #ifndef __DEFAULTS_H__
 #define __DEFAULTS_H__
 
+
 /*
  * These are all the hard coded defaults for new
  * devices.  You can change them here or override
@@ -10,7 +11,7 @@
 
 // Default encoder CPS
 #define RA_ENCODER_CPS 10000
-#define DEC_ENCODER_CPS 10000
+#define DEC_ENCODER_CPS -10000
 
 /*
  * Defaults for Wireless.   Feel free to change
@@ -26,13 +27,13 @@
 #define TX_POWER 1
 #define ENABLE_WPA 0
 #define ENABLE_AP 1
-
+#define DEBUG_WIFLY 0
 
 /*
  * Defaults for serial ports exposed as RJ11 jacks
  */
-#define SERIAL_A_BAUD 9600
-#define SERIAL_B_BAUD 9600
+#define SERIAL_A_SPEED 9600
+#define SERIAL_B_SPEED 9600
 
 /*************************************************************** 
  * Ok, don't be changing anything below this point unless you 
@@ -57,15 +58,13 @@ typedef struct {
     uint8_t rate;
     uint8_t enable_wpa;
     uint8_t enable_ap;
+    uint8_t debug_wifly;
 } network_settings_t;
 
-typedef enum {
-    SERIAL_A,
-    SERIAL_B,
-} serial_port_t;
-
 typedef struct {
-    uint32_t baud;
+    uint32_t wifly_baud;
+    uint32_t seriala_baud;
+    uint32_t serialb_baud;
 } serial_settings_t;
 
 typedef struct {
@@ -73,17 +72,20 @@ typedef struct {
     long dec_cps;
 } encoder_settings_t;
 
-void set_network_defaults(network_settings_t *);
-network_settings_t *get_network_defaults();
-void set_serial_defaults(serial_port_t, serial_settings_t *);
-serial_settings_t *get_serial_defaults(serial_port_t);
+void set_network_settings(network_settings_t *);
+network_settings_t *get_network_settings();
+
+void set_serial_settings(serial_settings_t *);
+serial_settings_t *get_serial_settings();
+
 void set_encoder_settings(encoder_settings_t *);
 encoder_settings_t *get_encoder_settings();
+
 void clear_all_defaults();
+void reset_all_defaults();
 
 #define NETWORK_SETTINGS_OFFSET 0
-#define SERIAL_A_SETTINGS_OFFSET (sizeof(network_settings_t))
-#define SERIAL_B_SETTINGS_OFFSET (SERIAL_A_SETTINGS_OFFSET + sizeof(serial_settings_t))
-#define ENCODER_SETTINGS_OFFSET (SERIAL_B_SETTINGS_OFFSET + sizeof(serial_settings_t))
+#define SERIAL_SETTINGS_OFFSET (sizeof(network_settings_t))
+#define ENCODER_SETTINGS_OFFSET (SERIAL_SETTINGS_OFFSET + sizeof(serial_settings_t))
 
 #endif

@@ -76,6 +76,7 @@ cmd_status wifi_get_help(cli_ctx *, const char *);
 cmd_status wifi_get_option(cli_ctx *, const char *);
 cmd_status wifi_set_option(cli_ctx *, const char *);
 cmd_status wifi_save_settings(cli_ctx *, const char *);
+cmd_status eeprom_reset_settings(cli_ctx *, const char *);
 
 /* map our supported commands */
 typedef struct {
@@ -99,6 +100,7 @@ static const cmd_def COMMANDS[] = {
     { CONFIG    , "SET"   , true  , wifi_set_option    } ,
     { CONFIG    , "GET"   , true  , wifi_get_option    } ,
     { CONFIG    , "SAVE"  , false , wifi_save_settings } ,
+    { CONFIG    , "RESET" , false , eeprom_reset_settings },
     /*
     { CONFIG    , "SETUP" , false , wifi_initial_setup } , 
     { CONFIG    , "SAVE"  , false , wifi_save_settings } , 

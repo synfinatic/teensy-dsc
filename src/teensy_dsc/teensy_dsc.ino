@@ -70,14 +70,16 @@ setup() {
     pinMode(WIFLY_RESET, INPUT);
     pinMode(13, OUTPUT); // blink pin
     encoder_settings_t *encoders;
+    serial_settings_t *serial;
     float ver;
 
+    UserSerial.begin(USER_SERIAL_SPEED);
     pinMode(WIFLY_RESET, INPUT);
 
     common = (common_cli_ctx *)malloc(sizeof(common_cli_ctx));
 
-    UserSerial.begin(USER_SERIAL_BAUD);
-    WiFlySerialPort.begin(WIFLY_SERIAL_SPEED);
+    serial = get_serial_settings();
+    WiFlySerialPort.begin(serial->wifly_baud);
 
     delay(1000);
 
@@ -85,7 +87,7 @@ setup() {
     encoders = get_encoder_settings();
     common->ra_cps = encoders->ra_cps;
     common->dec_cps = encoders->dec_cps;
-    common->network = get_network_defaults();
+    common->network = get_network_settings();
 
     // Start reading the encoders
     MsTimer2::set(UPDATE_ENCODER_MS, update_encoders);
@@ -110,8 +112,14 @@ setup() {
     UserSerial.printf("  OK!\n");
 
     // Debug mode
-    WiFlySerialPort.attach_debug(&UserSerial);
-    WiFlySerialPort.debug(0);
+    if (common->network->debug_wifly) {
+        WiFlySerialPort.attach_debug(&UserSerial);
+        WiFlySerialPort.debug(1);
+    }
+
+    // don't need this anymore
+    free(serial);
+    free(encoders);
 }
 
 void
@@ -224,37 +232,5 @@ reset_wifly() {
     delay(100);
     pinMode(WIFLY_RESET, INPUT);
     UserSerial.write("Done!\n");
-}
-
-/*
- * Takes the hard coded settings (see defaults.h) and
- * writes them to the EEPROM where they will be read
- * the next time we power on
- */
-void
-reset_all_settings() {
-    network_settings_t network;
-    serial_settings_t serial;
-    encoder_settings_t encoders;
-
-    strcpy(network.ip_address, IP_ADDRESS);
-    strcpy(network.netmask, NETMASK);
-    strcpy(network.ssid, SSID);
-    strcpy(network.passphrase, WPA_PASSWORD);
-    network.enable_wpa = ENABLE_WPA;
-    network.port = PORT;
-    network.channel = WIFLY_CHANNEL;
-    network.rate = WIFLY_RATE;
-    network.tx_power = TX_POWER;
-    set_network_defaults(&network);
-
-    serial.baud = SERIAL_A_BAUD;
-    set_serial_defaults(SERIAL_A, &serial);
-    serial.baud = SERIAL_B_BAUD;
-    set_serial_defaults(SERIAL_B, &serial);
-
-    encoders.ra_cps = RA_ENCODER_CPS;
-    encoders.dec_cps = DEC_ENCODER_CPS;
-    set_encoder_settings(&encoders);
 }
 
