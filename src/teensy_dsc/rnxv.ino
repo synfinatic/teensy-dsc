@@ -2,116 +2,10 @@
 #include <avr/pgmspace.h>
 #include <AnySerial.h>
 #include "teensy_dsc.h"
-#include "network.h"
-
-/* need to put this in the .cpp so it's only available once */
-FLASH_STRING(wifi_comms_cmds,
-	"set uart mode 0x13\r"
-	"set comm close " PORT_CLOSE "\r"
-	"set comm open " PORT_OPEN "\r"
-	"set comm remote 0\r"
-	"set comm size %d\r"
-	"set comm time %d\r"
-	);
-
-/*
- * Initialize the WiFly board
- */
-void 
-wifi_initial_setup(WiFly *wifly, network_settings_t *network) {
-    int ret = false; 
-/*
-    while (! ret) {
-        dbg_serial_printf("getting device status...\n");
-        ret = WiFly->getDeviceStatus();
-        delay(100);
-    }
-
-    // reset to factory defaults
-    dbg_serial_printf("factory RESET...\n");
-    WiFly->uart.print("factory RESET\r");
-    delay(LONG_PAUSE_DURATION);
-    dbg_serial_printf("setup_comms...\n");
-    wifi_setup_comms(WiFly);
-    dbg_serial_printf("setup_wifi...\n");
-    wifi_setup_wireless(WiFly, network);
-    dbg_serial_printf("setup_network...\n");
-    wifi_setup_network(WiFly, network);
-//     WiFly->closeConnection();
-
-    // clear out prior requests.
-    WiFly->flush();
-    dbg_serial_printf("clearing buffer...");
-    while (WiFly->available())
-        serial_printf("%c", WiFly->read());
-    serial_printf("\n");
-    dbg_serial_printf("Done!\n");
-    */
-}
-
-/*
- * Configure IPv4 Networking
- */
-void
-wifi_setup_network(WiFly *wifly, network_settings_t *network) {
-    /*
-    dbg_serial_printf("setIP\n");
-    WiFly->setIP(network->ip_address);
-    delay(100);
-    WiFly->setGateway(network->ip_address);
-    delay(100);
-    dbg_serial_printf("netmask\n");
-    WiFly->setNetMask(network->netmask);
-    delay(100);
-    dbg_serial_printf("port\n");
-    WiFly->setLocalPort(network->port);
-    delay(100);
-    dbg_serial_printf("DHCP Mode\n");
-    WiFly->setDHCPMode(4);
-    delay(100);
-    dbg_serial_printf("DNS\n");
-//    WiFly->setProtocol(2);
-    WiFly->setDNS(network->ip_address);
-    */
-}
-
-/*
- * Configure wireless
- */
-void
-wifi_setup_wireless(WiFly *wifly, network_settings_t *network) {
-/*
-    char buff[300];
-    char indicator[INDICATOR_BUFFER_SIZE];
-    WiFly->setJoinMode(7);
-    sprintf(buff, "%d", network->channel);
-    WiFly->setChannel(buff);
-    dbg_serial_printf("SSID: %s\n", network->ssid);
-    WiFly->setSSID(network->ssid);
-    sprintf(buff, "set wlan tx %d", network->tx_power);
-    WiFly->SendCommandSimple(buff, indicator);
-
-    WiFly->setAuthMode(network->enable_wpa);
-    if (network->enable_wpa) {
-	WiFly->setPassphrase(network->passphrase);
-    }
-    */
-}
-
-/*
- * Configure serial comms
- */
-void
-wifi_setup_comms(WiFly *wifly) {
-    char buff[300];
-    wifi_comms_cmds.copy(buff, 300);
-    wifly->printf(buff,
-	    COMM_SIZE,
-	    COMM_TIME_MS);
-}
+#include "rnxv.h"
 
 void
-wifi_save_settings(WiFly *wifly) {
+rnxv_save_settings(WiFly *wifly) {
     wifly->print("save\r");
     delay(PAUSE_DURATION);
     wifly->print("reboot\r");
@@ -119,7 +13,7 @@ wifi_save_settings(WiFly *wifly) {
 }
 
 void
-wifi_get_config(WiFly *wifly, AnySerial *serial) {
+rnxv_get_config(WiFly *wifly, AnySerial *serial) {
     char c;
 
     wifly->sendCommand("get everything\r");
@@ -131,7 +25,7 @@ wifi_get_config(WiFly *wifly, AnySerial *serial) {
 }
 
 void
-wifi_configure(WiFly *wifly, network_settings_t *network) {
+rnxv_configure(WiFly *wifly, network_settings_t *network) {
     char buff[30];
 
 

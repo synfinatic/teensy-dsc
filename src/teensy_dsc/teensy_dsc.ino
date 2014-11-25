@@ -28,7 +28,7 @@
 
 #include "defaults.h"
 #include "teensy_dsc.h"
-#include "network.h"
+#include "rnxv.h"
 #include "utils.h"
 #include "cli.h"
 #include "defaults.h"

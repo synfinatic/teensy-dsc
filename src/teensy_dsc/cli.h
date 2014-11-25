@@ -1,4 +1,4 @@
-#include "network.h"
+#include "rnxv.h"
 
 #ifndef __CLI_H__
 #define __CLI_H__
