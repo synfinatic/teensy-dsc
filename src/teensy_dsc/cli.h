@@ -1,4 +1,5 @@
 #include "rnxv.h"
+#include <Encoder.h>
 
 #ifndef __CLI_H__
 #define __CLI_H__
@@ -53,10 +54,13 @@ typedef struct cli_ctx_s {
     int longest_cmd;
     bool eat_errors;
     common_cli_ctx *common;
+    Encoder *ra;
+    Encoder *dec;
 } cli_ctx;
 
 /* init & entrance */
-cli_ctx *cli_init_cmd(AnySerial *, common_cli_ctx *, WiFly *);
+cli_ctx *cli_init_cmd(AnySerial *, common_cli_ctx *, WiFly *,
+        Encoder *, Encoder *);
 cmd_status cli_proc_cmd(cli_ctx *, char *, size_t);
 
 /* dsc commands */

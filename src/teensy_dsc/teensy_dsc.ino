@@ -24,7 +24,6 @@
 #include <AnySerial.h>
 #include <WiFly.h>
 #include <Flash.h>
-#include <MsTimer2.h>
 
 #include "defaults.h"
 #include "teensy_dsc.h"
@@ -47,23 +46,6 @@ WiFly _WiFly(WiFlySerialPort);
 /* our global contexts */
 cli_ctx *uctx, *wctx;
 common_cli_ctx *common;
-
-/* updates the current encoder value */
-void
-update_encoders() {
-#if DEBUG
-    static int blink = 1;
-    static int onoff = 0;
-    if (blink == BLINK_RATE) {
-        blink = 1;
-        onoff = onoff ? 0 : 1;
-    }
-    blink += 1;
-    digitalWrite(13, onoff);
-#endif
-    common->ra_value = EncoderRA.read();
-    common->dec_value = EncoderDEC.read();
-}
 
 void
 setup() {
@@ -89,10 +71,6 @@ setup() {
     common->dec_cps = encoders->dec_cps;
     common->network = get_network_settings();
 
-    // Start reading the encoders
-    MsTimer2::set(UPDATE_ENCODER_MS, update_encoders);
-    MsTimer2::start();
-
     // Init the USB Serial port & context
     UserSerial.printf("Waiting %ums for WiFly...\n", WIFLY_DELAY);
     // Init the WiFly
@@ -107,8 +85,8 @@ setup() {
     }
 
     UserSerial.printf("Initializing CLI's...");
-    wctx = cli_init_cmd(&WiFlySerialPort, common, NULL);
-    uctx = cli_init_cmd(&UserSerial, common, &_WiFly);
+    wctx = cli_init_cmd(&WiFlySerialPort, common, NULL, &EncoderRA, &EncoderDEC);
+    uctx = cli_init_cmd(&UserSerial, common, &_WiFly, &EncoderRA, &EncoderDEC);
     UserSerial.printf("  OK!\n");
 
     // Debug mode
