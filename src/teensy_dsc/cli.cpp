@@ -270,7 +270,7 @@ wifi_interactive(cli_ctx *ctx) {
                     line[0] = NULL;
                     pos = 0;
                     if (! ctx->eat_errors) {
-                        ctx->serial->printf("ERR: command too long\n");
+                        ctx->serial->printf(F("ERR: command too long\n"));
                     }
                 }
             }
@@ -407,7 +407,7 @@ wifi_set_option(cli_ctx *ctx, const char *args) {
     } else if (strcmp("CHAN", option) == 0) {
         i = atoi(value);
         if (i < 0 || i > 12) {
-            ctx->serial->printf("Invalid channel: %d\n", i);
+            ctx->serial->printf(F("Invalid channel: %d\n"), i);
             return E_CMD_BAD_ARGS;
         }
         network->channel = (uint8_t)i;
@@ -427,7 +427,7 @@ wifi_set_option(cli_ctx *ctx, const char *args) {
         } else if (strcmp("WPA2", value) == 0) {
             network->enable_wpa = 4;
         } else {
-            ctx->serial->printf("Invalid auth mode: %s\n", value);
+            ctx->serial->printf(F("Invalid auth mode: %s\n"), value);
             return E_CMD_BAD_ARGS;
         }
     } else if (strcmp("MODE", option) == 0) {
@@ -438,7 +438,7 @@ wifi_set_option(cli_ctx *ctx, const char *args) {
             network->enable_ap = 1;
             ctx->serial->printf("OK: %d\n", 1);
         } else {
-            ctx->serial->printf("Invalid Wifi mode: %d\n", value);
+            ctx->serial->printf(F("Invalid Wifi mode: %d\n"), value);
             return E_CMD_BAD_ARGS;
         }
     } else if (strcmp("RATE", option) == 0) {
@@ -468,9 +468,9 @@ wifi_set_option(cli_ctx *ctx, const char *args) {
     } else if (strcmp("DEBUG", option) == 0) {
         i = atoi(value);
         ctx->common->network->debug_wifly = i;
-        ctx->serial->printf("OK: %d (please save & reboot!)\n");
+        ctx->serial->printf(F("OK: %d (please save & reboot!)\n"));
     } else {
-        ctx->serial->printf("Unknown command: %s\n", option);
+        ctx->serial->printf(F("Unknown command: %s\n"), option);
         return E_CMD_NOT_FOUND;
     }
     return E_CMD_OK;
@@ -514,10 +514,10 @@ wifi_get_option(cli_ctx *ctx, const char *args) {
                 serial->printf("MODE: AP\n");
                 break;
             case 1:
-                serial->printf("MODE: WiFi Client\n");
+                serial->printf(F("MODE: WiFi Client\n"));
                 break;
             default:
-                serial->printf("Mode: Unknown: %d\n", network->enable_ap);
+                serial->printf(F("Mode: Unknown: %d\n"), network->enable_ap);
         }
     } else if (strcmp("RATE", args) == 0) {
         serial->printf("RATE: %d\n", network->rate);
@@ -536,9 +536,9 @@ wifi_get_option(cli_ctx *ctx, const char *args) {
         serial->printf("AZ/RA: %ld\n", ctx->common->ra_cps);
     } else if (strcmp("DEBUG", args) == 0) {
         if (network->debug_wifly) {
-            serial->printf("Debuging: enabled\n");
+            serial->printf(F("Debuging: enabled\n"));
         } else {
-            serial->printf("Debuging: disabled\n");
+            serial->printf(F("Debuging: disabled\n"));
         }
     } else if (strcmp("ALL", args) == 0) {
         serial->printf("SSID: %s\n", network->ssid);
@@ -562,10 +562,10 @@ wifi_get_option(cli_ctx *ctx, const char *args) {
                 serial->printf("MODE: AP\n");
                 break;
             case 1:
-                serial->printf("MODE: WiFi Client\n");
+                serial->printf(F("MODE: WiFi Client\n"));
                 break;
             default:
-                serial->printf("Mode: Unknown: %d\n", network->enable_ap);
+                serial->printf(F("Mode: Unknown: %d\n"), network->enable_ap);
         }
         serial->printf("RATE: %d\n", network->rate);
         serial->printf("TXP: %d\n", network->tx_power);
