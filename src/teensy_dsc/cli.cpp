@@ -12,7 +12,8 @@ void setup_commands(cli_ctx *ctx);
  * Initalizer for a CLI context
  */
 cli_ctx *
-cli_init_cmd(AnySerial *aserial, common_cli_ctx *common, WiFly *wifly) {
+cli_init_cmd(AnySerial *aserial, common_cli_ctx *common, WiFly *wifly,
+        Encoder *ra, Encoder *dec) {
     cli_ctx *ctx;
 
     ctx = (cli_ctx *)malloc(sizeof(cli_ctx));
@@ -22,6 +23,8 @@ cli_init_cmd(AnySerial *aserial, common_cli_ctx *common, WiFly *wifly) {
     ctx->prev_state = NONE;
     ctx->serial = aserial;
     ctx->wifly = wifly;
+    ctx->ra = ra;
+    ctx->dec = dec;
     if (wifly == NULL) {
         ctx->eat_errors = true;
     } else {
@@ -110,10 +113,14 @@ cmd_status
 dsc_get_values(cli_ctx *ctx, const char *args) {
     char buff[36];
     char *value;
+    int32_t ra, dec;
 
-    value = EncoderValue(ctx->common->ra_value, true);
+    ra = ctx->ra->read();
+    dec = ctx->dec->read();
+
+    value = EncoderValue(ra, true);
     sprintf(buff, "%s\t", value);
-    value = EncoderValue(ctx->common->dec_value, true);
+    value = EncoderValue(dec, true);
     strcat(buff, value);
     strcat(buff, "\r");
     ctx->serial->printf("%s\n", buff);
