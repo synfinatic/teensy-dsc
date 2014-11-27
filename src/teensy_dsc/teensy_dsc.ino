@@ -24,6 +24,7 @@
 #include <AnySerial.h>
 #include <WiFly.h>
 #include <Flash.h>
+#include <MsTimer2.h>
 
 #include "defaults.h"
 #include "teensy_dsc.h"
@@ -47,14 +48,25 @@ WiFly _WiFly(WiFlySerialPort);
 cli_ctx *uctx, *wctx;
 common_cli_ctx *common;
 
+/* blink our LED */
+void
+blink_led() {
+    static int onoff = 0;
+    onoff = onoff == 1 ? 0 : 1;
+    digitalWrite(BLINK_LED, onoff);
+}
+
+
+
 void
 setup() {
     pinMode(WIFLY_RESET, INPUT);
-    pinMode(13, OUTPUT); // blink pin
+    pinMode(BLINK_LED, OUTPUT);
     encoder_settings_t *encoders;
     serial_settings_t *serial;
     float ver;
 
+    digitalWrite(BLINK_LED, HIGH);
     UserSerial.begin(USER_SERIAL_SPEED);
     pinMode(WIFLY_RESET, INPUT);
 
@@ -98,6 +110,11 @@ setup() {
     // don't need this anymore
     free(serial);
     free(encoders);
+
+    // Start reading the encoders
+    MsTimer2::set(BLINK_LED_MS, blink_led);
+    MsTimer2::start();
+
 }
 
 void

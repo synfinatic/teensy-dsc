@@ -39,8 +39,8 @@
 
 #define TEENSY_DSC_VERSION "0.3"
 
-/* poll the encoder values every 50ms */
-#define UPDATE_ENCODER_MS 50 
-#define BLINK_RATE 4
+/* Blink the onboard LED every 1/2 sec */
+#define BLINK_LED_MS 500 
+#define BLINK_LED 13 // pin 13
 
 #endif // __TEENSY_DSC_H__
