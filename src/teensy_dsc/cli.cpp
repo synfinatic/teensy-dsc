@@ -238,46 +238,34 @@ dsc_get_help(cli_ctx *ctx, const char *args) {
 void
 wifi_interactive(cli_ctx *ctx) {
     char byte, line[READBUFF_SIZE];
-    int pos = 0;
+    int pos = -1;
+
+    delay(250);
+    ctx->wifly->write((uint8_t *)"$$$", 3);
+    delay(250);
 
     while (true) {
-        // process user commands
         if (ctx->serial->available()) {
+            pos ++;
             byte = ctx->serial->read();
-
-            // if we have a full line, then process it
-            if (byte == '\r' || byte == '\n') {
-                // change mode??
-                if (strncmp(line, "MODE DSC", 8) == 0) {
+            line[pos] = byte;
+            if (byte == '\r') {
+                line[pos] = '\0';
+                if (strcmp(line, "MODE DSC") == 0) {
+                    ctx->wifly->write((uint8_t *)"exit\r", 5);
                     change_state(ctx, BASIC_DSC);
-                    return; 
-                } else if (strncmp(line, "MODE CONFIG", 11) == 0) {
+                    return;
+                } else if (strcmp(line, "MODE CONFIG") == 0) {
+                    ctx->wifly->write((uint8_t *)"exit\r", 5);
                     change_state(ctx, CONFIG);
                     return;
                 }
-
-                // Must be for the WiFly then...
-                ctx->wifly->printf("%s\n", line);
-                pos = 0;
-                line[0] = NULL;
-            } else {
-                // Just store it for later
-                line[pos] = byte;
-                pos ++;
-
-                // don't overflow our buffer
-                if (pos == READBUFF_SIZE) {
-                    line[0] = NULL;
-                    pos = 0;
-                    if (! ctx->eat_errors) {
-                        ctx->serial->printf(F("ERR: command too long\n"));
-                    }
-                }
+                pos = -1;
             }
+            ctx->wifly->write(byte);
         }
 
-        // process results from Wifly
-        while (ctx->wifly->available()) {
+        if (ctx->wifly->available()) {
             byte = ctx->wifly->read();
             ctx->serial->write(byte);
         }
