@@ -51,6 +51,7 @@ rnxv_configure(WiFly *wifly, network_settings_t *network) {
         wifly->sendCommand(buff, aok); // Specify DNS address
         sprintf(buff, "set w c %d\r", network->channel);
         wifly->sendCommand(buff, aok);        // Specify the channel to create network
+        wifly->sendCommand("set w fmon 0\r", aok); // disable link monitor
     } else {
         wifly->sendCommand("set i d 1\r", aok);        // Enable DHCP client
         // in client mode, don't set the channel
@@ -87,6 +88,8 @@ rnxv_configure(WiFly *wifly, network_settings_t *network) {
     wifly->sendCommand("set comm close 0\r", aok);
     sprintf(buff, "set uart baudrate %d\r", WIFLY_SERIAL_SPEED);
     wifly->sendCommand(buff, aok); 
+
+    wifly->sendCommand("set sys launch_string web_app\r", aok);
 
     // sprintf(buff, "join %s\r", network->ssid, 5000);
     // wifly->sendCommand(buff, aok);
