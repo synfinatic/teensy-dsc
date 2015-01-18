@@ -359,7 +359,11 @@ wifi_set_option(cli_ctx *ctx, const char *args) {
     int i, j;
     bool isOption = true;
     network_settings_t *network = ctx->common->network;
-   
+
+    // make sure values are zeroed out
+    value[0] = '\0';
+    option[0] = '\0';
+
     // split the option & value from args[] 
     j = 0;
     for (i = 0; args[i] != '\0'; i++) {
@@ -420,7 +424,7 @@ wifi_set_option(cli_ctx *ctx, const char *args) {
         }
     } else if (strcmp("MODE", option) == 0) {
         if (strcmp("AP", value) == 0) {
-            network->enable_ap = 1;
+            network->enable_ap = 7;
             ctx->serial->printf("OK: %d\n", 7);
         } else if (strcmp("CLIENT", value) == 0) {
             network->enable_ap = 1;
@@ -569,7 +573,13 @@ wifi_get_option(cli_ctx *ctx, const char *args) {
  */
 cmd_status 
 wifi_save_settings(cli_ctx *ctx, const char *args) {
+    encoder_settings_t encoder;
+
     set_network_settings(ctx->common->network);
+
+    encoder.ra_cps = ctx->common->ra_cps;
+    encoder.dec_cps = ctx->common->dec_cps;
+    set_encoder_settings(&encoder);
     ctx->serial->printf("OK\n");
     return E_CMD_OK;
 }
