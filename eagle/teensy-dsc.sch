@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.2.0">
+<eagle version="7.1.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -12693,9 +12693,9 @@ Metric Code Size 5664</description>
 <wire x1="0" y1="16.5" x2="10.4" y2="16.5" width="0.127" layer="21"/>
 <wire x1="10.4" y1="16.5" x2="10.4" y2="0" width="0.127" layer="21"/>
 <wire x1="10.4" y1="0" x2="0" y2="0" width="0.127" layer="21"/>
-<pad name="P$1" x="7.7" y="1.35" drill="0.8" shape="square"/>
-<pad name="P$3" x="2.7" y="1.35" drill="0.8" shape="square"/>
-<pad name="P$2" x="5.2" y="1.35" drill="0.8" shape="square"/>
+<pad name="P$1" x="7.7" y="1.35" drill="0.9652" shape="square"/>
+<pad name="P$3" x="2.7" y="1.35" drill="0.9652" shape="square"/>
+<pad name="P$2" x="5.2" y="1.35" drill="0.9652" shape="square"/>
 </package>
 </packages>
 <symbols>

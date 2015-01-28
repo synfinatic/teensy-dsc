@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE eagle SYSTEM "eagle.dtd">
-<eagle version="7.1.0">
+<eagle version="7.2.0">
 <drawing>
 <settings>
 <setting alwaysvectorfont="yes"/>
@@ -130,9 +130,9 @@
 <wire x1="73.8" y1="6.5" x2="73.8" y2="42.5" width="0" layer="20"/>
 <hole x="16.0782" y="25.527" drill="2.286"/>
 <hole x="60.5282" y="25.527" drill="2.286"/>
-<text x="34.417" y="27.432" size="1.016" layer="22" rot="MR180">TeensyDSC v0.5.3
+<text x="34.417" y="27.432" size="1.016" layer="22" rot="MR180">TeensyDSC v0.5.4
 http://synfin.net/teensydsc
-20150111</text>
+20150128</text>
 <text x="72.136" y="10.414" size="1.016" layer="26" rot="MR0">S/N:</text>
 <rectangle x1="54.61" y1="9.906" x2="68.58" y2="14.986" layer="26" rot="R180"/>
 <text x="26.67" y="10.16" size="1.27" layer="25">U$4</text>
@@ -1399,9 +1399,9 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <wire x1="0" y1="16.5" x2="10.4" y2="16.5" width="0.127" layer="21"/>
 <wire x1="10.4" y1="16.5" x2="10.4" y2="0" width="0.127" layer="21"/>
 <wire x1="10.4" y1="0" x2="0" y2="0" width="0.127" layer="21"/>
-<pad name="P$1" x="7.7" y="1.35" drill="0.8" shape="square"/>
-<pad name="P$3" x="2.7" y="1.35" drill="0.8" shape="square"/>
-<pad name="P$2" x="5.2" y="1.35" drill="0.8" shape="square"/>
+<pad name="P$1" x="7.7" y="1.35" drill="0.9652" shape="square"/>
+<pad name="P$3" x="2.7" y="1.35" drill="0.9652" shape="square"/>
+<pad name="P$2" x="5.2" y="1.35" drill="0.9652" shape="square"/>
 </package>
 </packages>
 </library>
