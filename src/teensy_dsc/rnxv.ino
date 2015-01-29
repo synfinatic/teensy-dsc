@@ -59,6 +59,8 @@ rnxv_configure(WiFly *wifly, network_settings_t *network) {
         wifly->sendCommand(buff, aok);        // Specify the channel to create network
     }
 
+    sprintf(buff, "set ap s %s\r", network->ssid);
+    wifly->sendCommand(buff, aok); // Set network SSID
     sprintf(buff, "set w s %s\r", network->ssid);
     wifly->sendCommand(buff, aok); // Set network SSID
 
@@ -91,8 +93,8 @@ rnxv_configure(WiFly *wifly, network_settings_t *network) {
 
     wifly->sendCommand("set sys launch_string web_app\r", aok);
 
-    // sprintf(buff, "join %s\r", network->ssid, 5000);
-    // wifly->sendCommand(buff, aok);
+//    sprintf(buff, "join %s\r", network->ssid, 5000);
+//    wifly->sendCommand(buff, aok);
     wifly->sendCommand("save\r", "Storing", 300);  // save
     wifly->sendCommand("reboot\r");
 
