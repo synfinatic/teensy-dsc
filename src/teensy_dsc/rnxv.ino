@@ -74,7 +74,7 @@ rnxv_configure(WiFly *wifly, network_settings_t *network) {
 
     if (network->enable_wpa) {
         wifly->sendCommand("set wlan auth 4\r", aok);
-        sprintf("set wlan phrase %s\r", network->passphrase);
+        sprintf(aok, "set wlan phrase %s\r", network->passphrase);
         wifly->sendCommand(buff, aok);
     } else {
         wifly->sendCommand("set wlan auth 0\r", aok);
