@@ -146,13 +146,13 @@ process_cmd(cli_ctx *ctx) {
     if (pos == 0) {
         i = 0;
         byte = serial->peek();
-        while (ctx->one_char_cmds[i] != NULL) {
+        while (ctx->one_char_cmds[i] != '\0') {
             if (byte == ctx->one_char_cmds[i]) {
                 read_buff[0] = byte;
-                read_buff[1] = NULL;
+                read_buff[1] = '\0';
                 status = cli_proc_cmd(ctx, read_buff, 1);
                 serial->read(); // consume the byte 
-                read_buff[0] = NULL;
+                read_buff[0] = '\0';
                 return status;
             }
             i++;
@@ -167,7 +167,7 @@ process_cmd(cli_ctx *ctx) {
         (len == READBUFF_SIZE)) {
         // Crap, someone is just sending us crap.  Just eat it.
         pos = 0;
-        read_buff[0] = NULL;
+        read_buff[0] = '\0';
         return E_CMD_TOO_LONG;
     }
 
@@ -179,7 +179,7 @@ process_cmd(cli_ctx *ctx) {
     // trim any whitespace on the end
     if (IS_WORD_END(read_buff[len-1])) {
         while (IS_WORD_END(read_buff[len-1])) {
-            read_buff[len-1] = NULL;
+            read_buff[len-1] = '\0';
         }
     } 
 
@@ -201,12 +201,12 @@ process_cmd(cli_ctx *ctx) {
 #endif
             // fall through
             pos = 0;
-            read_buff[0] = NULL;
+            read_buff[0] = '\0';
             break;
         case E_CMD_OK:
             // Eat what we've been given and return
             pos = 0;
-            read_buff[0] = NULL;
+            read_buff[0] = '\0';
             break;
         case E_CMD_TOO_SHORT:
             // Keep the buffer for next time 
