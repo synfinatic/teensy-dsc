@@ -54,7 +54,7 @@ get_network_settings() {
     if (memcmp(buff->ip_address, empty, 16) == 0)
         strcpy(buff->ip_address, IP_ADDRESS);
     if (memcmp(buff->netmask, empty, 16) == 0)
-        strcmp(buff->netmask, NETMASK);
+        strcpy(buff->netmask, NETMASK);
     if (memcmp(buff->ssid, empty, 32) == 0)
         strcpy(buff->ssid, SSID);
     if (memcmp(buff->passphrase, empty, 68) == 0)
@@ -67,6 +67,7 @@ get_network_settings() {
     buff->enable_wpa = buff->enable_wpa == 0xff ? ENABLE_WPA : buff->enable_wpa;
     buff->enable_ap = buff->enable_ap == 0xff ? ENABLE_AP : buff->enable_ap;
     buff->debug_wifly = buff->debug_wifly == 0xff ? DEBUG_WIFLY : buff->debug_wifly;
+    buff->default_dsc_mode = buff->default_dsc_mode == 0xff ? 0 : buff->default_dsc_mode;
     return buff;
 }
 
@@ -114,7 +115,6 @@ get_encoder_settings() {
         RA_ENCODER_CPS : buff->ra_cps;
     buff->dec_cps = (uint32_t)buff->dec_cps == 0xffffffff ?
         DEC_ENCODER_CPS : buff->dec_cps;
-
     return buff;
 }
 
