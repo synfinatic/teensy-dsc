@@ -75,8 +75,8 @@ cli_proc_cmd(cli_ctx *ctx, char *line, size_t len) {
     size_t pos = 0, line_max;
     bool has_args = false;
 
-    cmd[0] = NULL;
-    args[0] = NULL;
+    cmd[0] = '\0';
+    args[0] = '\0';
 
     /* split the line into the cmd & args */
     byte = line[0];
@@ -86,7 +86,7 @@ cli_proc_cmd(cli_ctx *ctx, char *line, size_t len) {
         byte = line[pos];
     }
     if (IS_WORD_END(line[pos])) {
-        line[pos] = NULL;
+        line[pos] = '\0';
         line2 = &(line[pos+1]);
         strncpy(args, line2, 254);
         has_args = true;
@@ -122,8 +122,7 @@ dsc_get_values(cli_ctx *ctx, const char *args) {
     sprintf(buff, "%s\t", value);
     value = EncoderValue(dec, true);
     strcat(buff, value);
-    strcat(buff, "\r");
-    ctx->serial->printf("%s\n", buff);
+    ctx->serial->printf("%s\r\n", buff);
     return E_CMD_OK;
 }
 
@@ -136,7 +135,7 @@ dsc_set_resolution(cli_ctx *ctx, const char *args) {
     long ra, dec;
     encoder_settings_t encoder_settings;
 
-    match = sscanf(args, "%d %d", &ra, &dec);
+    match = sscanf(args, "%ld %ld", &ra, &dec);
     if (match != 2) {
         return E_CMD_TOO_SHORT;
     }
@@ -152,6 +151,42 @@ dsc_set_resolution(cli_ctx *ctx, const char *args) {
 }
 
 /*
+ * BBox set encoder resolution
+ */
+cmd_status
+bbx_set_resolution(cli_ctx *ctx, const char *args) {
+    int match = 0;
+    long ra, dec;
+    encoder_settings_t encoder_settings;
+
+    /* there may be a \r\n here to parse as well??? */
+    match = sscanf(args, "%ld %ld", &ra, &dec);
+    if (match != 2) {
+        return E_CMD_TOO_SHORT;
+    }
+
+    ctx->common->ra_cps = ra;
+    ctx->common->dec_cps = dec;
+
+    /* write the values to EEPROM for later */
+    encoder_settings.ra_cps = ctx->common->ra_cps;
+    encoder_settings.dec_cps = ctx->common->dec_cps;
+    set_encoder_settings(&encoder_settings);
+    ctx->serial->printf("*");
+    return E_CMD_OK;
+}
+
+/*
+ * BBox get status
+ */
+cmd_status
+bbx_get_status(cli_ctx *ctx, const char *args) {
+    // no errors, battery OK
+    ctx->serial->printf("001\r\n");
+    return E_CMD_OK;
+}
+ 
+/*
  * prints the current encoder resolution
  */
 cmd_status
@@ -162,11 +197,11 @@ dsc_get_resolution(cli_ctx *ctx, const char *args) {
     ra = abs(ctx->common->ra_cps);
     dec = abs(ctx->common->dec_cps);
 
-    ra_pos[1] = dec_pos[1] = NULL;
-    ra_pos[0] = ra == ctx->common->ra_cps ? NULL : '-';
-    dec_pos[0] = dec == ctx->common->dec_cps ? NULL : '-';
+    ra_pos[1] = dec_pos[1] = '\0';
+    ra_pos[0] = ra == ctx->common->ra_cps ? '+' : '-';
+    dec_pos[0] = dec == ctx->common->dec_cps ? '+' : '-';
 
-    ctx->serial->printf("%s%05ld %s%05ld\n", ra_pos, ra, dec_pos, dec);
+    ctx->serial->printf("%s%05ld\t%s%05ld\r\n", ra_pos, ra, dec_pos, dec);
     return E_CMD_OK;
 }
 
@@ -217,8 +252,11 @@ dsc_get_help(cli_ctx *ctx, const char *args) {
     ctx->serial->printf(F("\n" \
 "Q                      => get encoder values\n" \
 "R xxxx xxxx            => set encoder resolution\n" \
+"Z +xxxxx +xxxxx        => set encoder resolution (BBox)\n" \
 "G                      => get encoder resolution\n" \
+"H                      => get encoder resolution (BBox)\n" \
 "V                      => get TeensyDSC version\n" \
+"P                      => get status (BBox)\n" \
 "?                      => Help\n" \
 "MODE [WIFI|CONFIG]     => change CLI mode\n"));
 
@@ -436,7 +474,7 @@ wifi_set_option(cli_ctx *ctx, const char *args) {
     } else if (strcmp("RATE", option) == 0) {
         i = atoi(value);
         if (i < 0 || i > 15) {
-            ctx->serial-printf("Invalid rate: %d\n", i);
+            ctx->serial->printf("Invalid rate: %d\n", i);
             return E_CMD_BAD_ARGS;
         }
         network->rate = i;
@@ -444,7 +482,7 @@ wifi_set_option(cli_ctx *ctx, const char *args) {
     } else if (strcmp("TXP", option) == 0) {
         i = atoi(value);
         if (i < 0 || 0 > 12) {
-            ctx->serial-printf("Invalid TX Power: %d\n", i);
+            ctx->serial->printf("Invalid TX Power: %d\n", i);
             return E_CMD_BAD_ARGS;
         }
         network->tx_power = i;
@@ -475,7 +513,7 @@ cmd_status
 wifi_get_option(cli_ctx *ctx, const char *args) {
     AnySerial *serial = ctx->serial;
     network_settings_t *network = ctx->common->network;
-    char c, *value;
+    char c;
 
     if (strcmp("SSID", args) == 0) {
         serial->printf("SSID: %s\n", network->ssid);

@@ -67,7 +67,6 @@ get_network_settings() {
     buff->enable_wpa = buff->enable_wpa == 0xff ? ENABLE_WPA : buff->enable_wpa;
     buff->enable_ap = buff->enable_ap == 0xff ? ENABLE_AP : buff->enable_ap;
     buff->debug_wifly = buff->debug_wifly == 0xff ? DEBUG_WIFLY : buff->debug_wifly;
-    buff->default_dsc_mode = buff->default_dsc_mode == 0xff ? 0 : buff->default_dsc_mode;
     return buff;
 }
 

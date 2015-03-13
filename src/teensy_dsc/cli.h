@@ -70,6 +70,8 @@ cmd_status dsc_get_values(cli_ctx *, const char *);
 cmd_status dsc_get_version(cli_ctx *, const char *);
 cmd_status dsc_get_help(cli_ctx *, const char *);
 cmd_status change_cli_state(cli_ctx *, const char *);
+cmd_status bbx_set_resolution(cli_ctx *, const char *);
+cmd_status bbx_get_status(cli_ctx *, const char *);
 
 /* wifi mode */
 void wifi_interactive(cli_ctx *);
@@ -93,7 +95,10 @@ typedef struct {
 static const cmd_def COMMANDS[] = {
     { BASIC_DSC , "Q"     , false , dsc_get_values     } , 
     { BASIC_DSC , "R"     , true  , dsc_set_resolution } , 
+    { BASIC_DSC , "Z"     , true  , bbx_set_resolution } , 
+    { BASIC_DSC , "P"     , true  , bbx_get_status     } , 
     { BASIC_DSC , "G"     , false , dsc_get_resolution } , 
+    { BASIC_DSC , "H"     , false , dsc_get_resolution } , 
     { BASIC_DSC , "V"     , false , dsc_get_version    } , 
     { BASIC_DSC , "?"     , false , dsc_get_help       } , 
     { BASIC_DSC , "MODE"  , true  , change_cli_state   } , 
