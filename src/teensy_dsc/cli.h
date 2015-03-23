@@ -96,7 +96,7 @@ static const cmd_def COMMANDS[] = {
     { BASIC_DSC , "Q"     , false , dsc_get_values     } , 
     { BASIC_DSC , "R"     , true  , dsc_set_resolution } , 
     { BASIC_DSC , "Z"     , true  , bbx_set_resolution } , 
-    { BASIC_DSC , "P"     , true  , bbx_get_status     } , 
+    { BASIC_DSC , "P"     , false , bbx_get_status     } , 
     { BASIC_DSC , "G"     , false , dsc_get_resolution } , 
     { BASIC_DSC , "H"     , false , dsc_get_resolution } , 
     { BASIC_DSC , "V"     , false , dsc_get_version    } , 
