@@ -19,7 +19,8 @@ I wanted to do my own digital setting circles (DSC) for my
 [Apertura AD12](http://www.opticsmart.com/telescopes/dobsonian-telescopes/apertura-ad12-dobsonian-reflector-telescope.html).
 The main goals were:
 
- * Support for at least 16K resolution via quadurature decoding 
+ * Tested to support 40,000 resolution via quadurature decoding using [US Digital S2-10000-250-IE-D-D encoders](http://usdigital.com/products/encoders/incremental/rotary/shaft/S2)
+ * Should support resolutions in excess of 100K
  * Built in WiFi access point to allow wirelessly interfacing to an Apple iPad or Android tablet
  * Supporting at least [SkySafari Plus/Pro](http://www.skysafariastronomy.com/)
  * Powered via USB connection or external 7-24V battery source
@@ -46,7 +47,7 @@ Why the [Teensy 3.1](http://pjrc.com/store/teensy31.html) and not Arduino?
 ## Required Libraries & Software
 TeensyDSC requires some additional Arduino libraries to compile/run:
 
- * [Arduino IDE v1.0.5](http://arduino.cc/en/Main/Software) - Beta version is not yet supported!
+ * [Arduino IDE v1.6.x](http://arduino.cc/en/Main/Software)
  * [Teensyduino](http://pjrc.com/teensy/td_download.html) - Teensy addon for the Arduino IDE
  * [AnySerial](https://github.com/synfinatic/AnySerial) - Serial port abstraction layer for Arduino
  * [WiFly_Shield](https://github.com/synfinatic/WiFly_Shield) - Customized to use AnySerial
@@ -59,7 +60,9 @@ complete list.  If you have tested TeensyDSC with some software, I'd love
 to hear if it worked or not.  If it did not work, hopefully we can work
 together to make it work!
 
- * SkySafari (OSX, iOS)  = Use "Orion Intelliscope"
+ * SkySafari (OSX, iOS)  
+   * Scope Type: Basic Encoder System
+   * For "Encoder Steps per Revolution" click "Get Automatically"
 
 ## Similar Projects
 There are a bunch of similar projects to TeensyDSC which you should be aware of:
