@@ -16,6 +16,7 @@ char *ftoa(char *a, double f, int precision);
 char *get_word(AnySerial *port, uint16_t wait_ms);
 char *get_word_r(AnySerial *port, uint16_t wait_ms, char *buff);
 char *EncoderValue(long value, bool lead);
+int32_t ngc_convert_encoder_value(int32_t encoder, long resolution);
 
 
 #define IS_WORD_END(x) (((x) == ' ') || ((x) == '\r') || ((x) == '\t') || ((x) == '\n'))

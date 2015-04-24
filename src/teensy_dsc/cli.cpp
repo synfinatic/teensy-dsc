@@ -108,6 +108,9 @@ cli_proc_cmd(cli_ctx *ctx, char *line, size_t len) {
 
 /*
  * Prints the current encoder values
+ *
+ * each value is signed 6 values, delimited by a tab and 
+ * terminted with a \r
  */
 cmd_status
 dsc_get_values(cli_ctx *ctx, const char *args) {
@@ -118,6 +121,9 @@ dsc_get_values(cli_ctx *ctx, const char *args) {
     ra = ctx->ra->read();
     dec = ctx->dec->read();
 
+    ra = ngc_convert_encoder_value(ra, ctx->common->ra_cps);
+    dec = ngc_convert_encoder_value(dec, ctx->common->dec_cps);
+
     value = EncoderValue(ra, true);
     sprintf(buff, "%s\t", value);
     value = EncoderValue(dec, true);
@@ -125,6 +131,7 @@ dsc_get_values(cli_ctx *ctx, const char *args) {
     ctx->serial->printf("%s\r\n", buff);
     return E_CMD_OK;
 }
+
 
 /*
  * Allows the user to set the Encoder resolution

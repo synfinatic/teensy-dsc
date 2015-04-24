@@ -140,6 +140,9 @@ get_word_r(AnySerial *port, uint16_t wait_ms, char *buff) {
     }
 }
 
+/*
+ * Converts a 'long' into a encoder value string
+ */
 char *
 EncoderValue(long value, bool printsign) {
     static char buff[BUFF_LEN];
@@ -173,4 +176,51 @@ HexEncoderValue(long value) {
   sprintf(buff, "%02x%02x", low, high);
 
   return buff;
+}
+
+/*
+ * Follows the NGC-Max/etc spec
+ *
+ * If the encoder resolutions are <= 32768, the 
+ * output is transmitted as a signed number. For example, if 4000 
+ * count encoders are used, the range of output is -2000 to 
+ * +1999. If the encoder resolutions are > 32768, the outputs are transmitted 
+ * as an unsigned numbers. For example, if the resolution was 
+ * set to 40000, the range of output would be +00000 to +39999.  For -40000, 
+ * output is +00000 to -39999.
+ */
+int32_t
+ngc_convert_encoder_value(int32_t encoder, long resolution) {
+    int32_t ret, half_res;
+    half_res = resolution / 2;
+
+    // Different math if resolution can be stored in int16_t
+    if ((resolution < 32768) && (resolution >= -32768)) {
+        ret = encoder % resolution;
+        if (ret > half_res-1) {
+            // need to wrap around negative
+            ret = -half_res + ret - half_res;
+        } else if (ret < -half_res) {
+            // need to wrap around positive
+            ret = half_res - 1 + ret - half_res;
+        }
+    } else {
+        // Nope, uint16_t, so wrap it between 0 and resolution -1
+        if (resolution > 0) {
+            // always return 0 -> resolution -1
+            if (encoder >= 0) {
+                ret = encoder % (resolution - 1);
+            } else {
+                ret = (encoder % (resolution - 1)) + resolution - 1;
+            }
+        } else {
+            // always return 0 -> resolution + 1
+            if (encoder <= 0) {
+                ret = encoder % (resolution + 1);
+            } else {
+                ret = resolution + 1 + abs(encoder % (resolution + 1));
+            }
+        }
+    }
+    return ret;
 }
