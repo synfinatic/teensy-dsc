@@ -179,47 +179,44 @@ HexEncoderValue(long value) {
 }
 
 /*
- * Follows the NGC-Max/etc spec
+ * Looks like NGC uses 16bits to store the encoder value.
+ * So depending on the resolution, it either returns a 
+ * uint16_t value or int16_t value.
  *
- * If the encoder resolutions are <= 32768, the 
- * output is transmitted as a signed number. For example, if 4000 
- * count encoders are used, the range of output is -2000 to 
- * +1999. If the encoder resolutions are > 32768, the outputs are transmitted 
- * as an unsigned numbers. For example, if the resolution was 
- * set to 40000, the range of output would be +00000 to +39999.  For -40000, 
- * output is +00000 to -39999.
+ * So if you have a resolution < 2^15, then the range is:
+ * -resolution to (resolution-1)
+ *
+ * If your resolution is larger, then the range is:
+ * 0 to 2^16-1
+ *
+ * It's so far undocumented how encoders mounted backwards
+ * with a negative resolution should be handled for the
+ * latter situation.  I decided to do the semi-obvious thing
+ * of wrapping between 0-(Resolution - 1)
  */
+
 int32_t
 ngc_convert_encoder_value(int32_t encoder, long resolution) {
     int32_t ret, half_res;
     half_res = resolution / 2;
 
     // Different math if resolution can be stored in int16_t
-    if ((resolution < 32768) && (resolution >= -32768)) {
+    if ((resolution < INT16_MAX) && (resolution >= INT16_MIN)) {
         ret = encoder % resolution;
-        if (ret > half_res-1) {
-            // need to wrap around negative
-            ret = -half_res + ret - half_res;
+        if (ret > (half_res-1)) {
+            ret = ret - (half_res - 1) - half_res;
         } else if (ret < -half_res) {
-            // need to wrap around positive
-            ret = half_res - 1 + ret - half_res;
+            ret = ret + (half_res * 2);
         }
     } else {
-        // Nope, uint16_t, so wrap it between 0 and resolution -1
-        if (resolution > 0) {
-            // always return 0 -> resolution -1
-            if (encoder >= 0) {
-                ret = encoder % (resolution - 1);
-            } else {
-                ret = (encoder % (resolution - 1)) + resolution - 1;
-            }
-        } else {
-            // always return 0 -> resolution + 1
-            if (encoder <= 0) {
-                ret = encoder % (resolution + 1);
-            } else {
-                ret = resolution + 1 + abs(encoder % (resolution + 1));
-            }
+	// use UNIT_MAX resolution
+        ret = encoder % abs(resolution);
+        // if encoder value is out of range of the resolution,
+        // then wrap it
+        if ((ret < 0) && (resolution > 0)) {
+            ret = resolution + ret;
+        } else if ((ret > 0) && (resolution < 0)) { 
+            ret = resolution - ret;
         }
     }
     return ret;
