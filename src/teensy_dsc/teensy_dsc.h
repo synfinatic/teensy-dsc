@@ -43,4 +43,7 @@
 #define BLINK_LED_MS 500 
 #define BLINK_LED 13 // pin 13
 
+/* How often to print the values in test mode */
+#define TEST_MODE_DELAY 100  // msec
+
 #endif // __TEENSY_DSC_H__

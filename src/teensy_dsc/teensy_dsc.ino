@@ -47,6 +47,7 @@ WiFly _WiFly(WiFlySerialPort);
 /* our global contexts */
 cli_ctx *uctx, *wctx;
 common_cli_ctx *common;
+uint32_t test_mode_wait;
 
 /* blink our LED */
 void
@@ -65,6 +66,8 @@ setup() {
     encoder_settings_t *encoders;
     serial_settings_t *serial;
     float ver;
+
+    test_mode_wait = 0;
 
     digitalWrite(BLINK_LED, HIGH);
     UserSerial.begin(USER_SERIAL_SPEED);
@@ -117,14 +120,21 @@ setup() {
 
 }
 
+
 void
 loop() {
+    uint32_t now = millis();
     if (UserSerial.available() > 0) {
         process_cmd(uctx);
     }
 
     if (_WiFly.available() > 0) {
         process_cmd(wctx);
+    }
+
+    if (uctx->common->test_mode && test_mode_wait <= now) {
+        dsc_get_values(uctx, NULL);
+        test_mode_wait = now + TEST_MODE_DELAY;
     }
 }
 

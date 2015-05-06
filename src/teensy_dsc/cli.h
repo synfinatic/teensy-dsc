@@ -39,6 +39,7 @@ typedef struct {
     volatile int32_t ra_value, dec_value;
     int32_t ra_cps, dec_cps;
     network_settings_t *network;
+    bool test_mode;
 } common_cli_ctx;
 
 /*
@@ -69,6 +70,7 @@ cmd_status dsc_get_resolution(cli_ctx *, const char *);
 cmd_status dsc_get_values(cli_ctx *, const char *);
 cmd_status dsc_get_version(cli_ctx *, const char *);
 cmd_status dsc_get_help(cli_ctx *, const char *);
+cmd_status dsc_test_mode(cli_ctx *, const char *);
 cmd_status change_cli_state(cli_ctx *, const char *);
 cmd_status bbx_set_resolution(cli_ctx *, const char *);
 cmd_status bbx_get_status(cli_ctx *, const char *);
@@ -93,18 +95,19 @@ typedef struct {
 } cmd_def;
 
 static const cmd_def COMMANDS[] = {
-    { BASIC_DSC , "Q"     , false , dsc_get_values     } , 
-    { BASIC_DSC , "R"     , true  , dsc_set_resolution } , 
-    { BASIC_DSC , "Z"     , true  , bbx_set_resolution } , 
-    { BASIC_DSC , "P"     , false , bbx_get_status     } , 
-    { BASIC_DSC , "G"     , false , dsc_get_resolution } , 
-    { BASIC_DSC , "H"     , false , dsc_get_resolution } , 
-    { BASIC_DSC , "V"     , false , dsc_get_version    } , 
-    { BASIC_DSC , "?"     , false , dsc_get_help       } , 
-    { BASIC_DSC , "MODE"  , true  , change_cli_state   } , 
-    { WIFI      , "MODE"  , true  , change_cli_state   } , 
+    { BASIC_DSC , "Q"     , false , dsc_get_values     } ,
+    { BASIC_DSC , "R"     , true  , dsc_set_resolution } ,
+    { BASIC_DSC , "Z"     , true  , bbx_set_resolution } ,
+    { BASIC_DSC , "P"     , false , bbx_get_status     } ,
+    { BASIC_DSC , "G"     , false , dsc_get_resolution } ,
+    { BASIC_DSC , "H"     , false , dsc_get_resolution } ,
+    { BASIC_DSC , "V"     , false , dsc_get_version    } ,
+    { BASIC_DSC , "T"     , false , dsc_test_mode      } ,
+    { BASIC_DSC , "?"     , false , dsc_get_help       } ,
+    { BASIC_DSC , "MODE"  , true  , change_cli_state   } ,
+    { WIFI      , "MODE"  , true  , change_cli_state   } ,
     { CONFIG    , "MODE"  , true  , change_cli_state   } ,
-    { CONFIG    , "AP"    , true  , wifi_ap_commands   } , 
+    { CONFIG    , "AP"    , true  , wifi_ap_commands   } ,
     { CONFIG    , "?"     , false , wifi_get_help      } ,
     { CONFIG    , "SET"   , true  , wifi_set_option    } ,
     { CONFIG    , "GET"   , true  , wifi_get_option    } ,

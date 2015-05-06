@@ -19,6 +19,7 @@ cli_init_cmd(AnySerial *aserial, common_cli_ctx *common, WiFly *wifly,
     ctx = (cli_ctx *)malloc(sizeof(cli_ctx));
     bzero(ctx, sizeof(cli_ctx));
     ctx->common = common;
+    ctx->common->test_mode = false;
     ctx->state = BASIC_DSC;
     ctx->prev_state = NONE;
     ctx->serial = aserial;
@@ -158,6 +159,16 @@ dsc_set_resolution(cli_ctx *ctx, const char *args) {
 }
 
 /*
+ * Toggle test mode on/off
+ */
+cmd_status
+dsc_test_mode(cli_ctx *ctx, const char *args) {
+    // flip the bit
+    ctx->common->test_mode = ctx->common->test_mode ? false : true;
+    return E_CMD_OK;
+}
+
+/*
  * BBox set encoder resolution
  */
 cmd_status
@@ -264,6 +275,7 @@ dsc_get_help(cli_ctx *ctx, const char *args) {
 "H                      => get encoder resolution (BBox)\n" \
 "V                      => get TeensyDSC version\n" \
 "P                      => get status (BBox)\n" \
+"T                      => Toggle Test Mode\n" \
 "?                      => Help\n" \
 "MODE [WIFI|CONFIG]     => change CLI mode\n"));
 
