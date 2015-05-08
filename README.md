@@ -50,7 +50,7 @@ TeensyDSC requires some additional Arduino libraries to compile/run:
  * [Arduino IDE v1.6.x](http://arduino.cc/en/Main/Software)
  * [Teensyduino](http://pjrc.com/teensy/td_download.html) - Teensy addon for the Arduino IDE
  * [AnySerial](https://github.com/synfinatic/AnySerial) - Serial port abstraction layer for Arduino
- * [WiFly_Shield](https://github.com/synfinatic/WiFly_Shield) - Customized to use AnySerial
+ * [WiFi_Shield](https://github.com/synfinatic/WiFi_Shield) - Customized to use AnySerial
  * [Flash](https://github.com/mikalhart/Flash) - Easy access to EEPROM flash memory
  * [MsTimer2](https://github.com/PaulStoffregen/MsTimer2) - MsTimer2 with Teensy3.x support
 
