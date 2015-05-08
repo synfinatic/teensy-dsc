@@ -20,6 +20,7 @@ cli_init_cmd(AnySerial *aserial, common_cli_ctx *common, WiFly *wifly,
     bzero(ctx, sizeof(cli_ctx));
     ctx->common = common;
     ctx->common->test_mode = false;
+    ctx->common->alignment = false;
     ctx->state = BASIC_DSC;
     ctx->prev_state = NONE;
     ctx->serial = aserial;
@@ -150,6 +151,7 @@ dsc_set_resolution(cli_ctx *ctx, const char *args) {
 
     ctx->common->ra_cps = ra;
     ctx->common->dec_cps = dec;
+    ctx->common->alignment = false;
 
     /* write the values to EEPROM for later */
     encoder_settings.ra_cps = ctx->common->ra_cps;
@@ -268,6 +270,8 @@ cmd_status
 dsc_get_help(cli_ctx *ctx, const char *args) {
 
     ctx->serial->printf(F("\n" \
+"A                      => set alignment\n" \
+"a                      => get alignment\n" \
 "Q                      => get encoder values\n" \
 "R xxxx xxxx            => set encoder resolution\n" \
 "Z +xxxxx +xxxxx        => set encoder resolution (BBox)\n" \
@@ -648,5 +652,21 @@ cmd_status
 eeprom_reset_settings(cli_ctx *ctx, const char *args) {
     reset_all_defaults();
     ctx->serial->printf("OK\n");
+    return E_CMD_OK;
+}
+
+cmd_status 
+dsc_get_alignment(cli_ctx *ctx, const char *args) {
+    if (ctx->common->alignment) {
+        ctx->serial->printf("Y");
+    } else {
+        ctx->serial->printf("N");
+    }
+    return E_CMD_OK;
+}
+
+cmd_status 
+dsc_set_alignment(cli_ctx *ctx, const char *args) {
+    ctx->common->alignment = true;
     return E_CMD_OK;
 }

@@ -37,10 +37,10 @@
 #define WIFLY_TIMEOUT 500  // 0.5sec
 #define READBUFF_SIZE 255
 
-#define TEENSY_DSC_VERSION "0.3"
+#define TEENSY_DSC_VERSION "0.4"
 
-/* Blink the onboard LED every 1/2 sec */
-#define BLINK_LED_MS 500 
+/* Blink the onboard LED every 1/4 sec */
+#define BLINK_LED_MS 250 
 #define BLINK_LED 13 // pin 13
 
 /* How often to print the values in test mode */

@@ -40,6 +40,7 @@ typedef struct {
     int32_t ra_cps, dec_cps;
     network_settings_t *network;
     bool test_mode;
+    bool alignment;
 } common_cli_ctx;
 
 /*
@@ -65,6 +66,8 @@ cli_ctx *cli_init_cmd(AnySerial *, common_cli_ctx *, WiFly *,
 cmd_status cli_proc_cmd(cli_ctx *, char *, size_t);
 
 /* dsc commands */
+cmd_status dsc_get_alignment(cli_ctx *, const char *);
+cmd_status dsc_set_alignment(cli_ctx *, const char *);
 cmd_status dsc_set_resolution(cli_ctx *, const char *);
 cmd_status dsc_get_resolution(cli_ctx *, const char *);
 cmd_status dsc_get_values(cli_ctx *, const char *);
@@ -95,6 +98,8 @@ typedef struct {
 } cmd_def;
 
 static const cmd_def COMMANDS[] = {
+    { BASIC_DSC , "A"     , false , dsc_set_alignment  } ,
+    { BASIC_DSC , "a"     , false , dsc_get_alignment  } ,
     { BASIC_DSC , "Q"     , false , dsc_get_values     } ,
     { BASIC_DSC , "R"     , true  , dsc_set_resolution } ,
     { BASIC_DSC , "Z"     , true  , bbx_set_resolution } ,
