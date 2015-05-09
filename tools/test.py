@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 __doc__ = """Simple benchmarking script for TeensyDSC"""
-
 import socket
 import sys
 import time
@@ -12,6 +11,7 @@ loop = True
 
 
 def stop(a, b):
+    """SIGALRM callback"""
     global loop
     loop = False
 
@@ -39,8 +39,7 @@ def test_run(ip, port, runtime, timeout, verbose=False, delay=False):
     """Connects to the TeensyDSC and does the test run for the given
        period of time
 
-        Returns the total completed queries
-       """
+       Returns the total completed queries"""
     minimum = 1000
     maximum = 0
     count = 0
@@ -89,11 +88,11 @@ if __name__ == '__main__':
 
     signal.signal(signal.SIGALRM, stop)
     count, minimum, maximum = test_run(args.ip,
-                     args.port,
-                     args.seconds,
-                     args.timeout,
-                     args.verbose,
-                     args.delay)
+                                       args.port,
+                                       args.seconds,
+                                       args.timeout,
+                                       args.verbose,
+                                       args.delay)
     if count > 0:
         rate = float(count) / args.seconds
         avg = float(args.seconds) / count
