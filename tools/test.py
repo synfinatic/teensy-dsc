@@ -35,7 +35,8 @@ def query(sock, print_result=False):
     return 1
 
 
-def test_run(ip, port, runtime, timeout, verbose=False, delay=False):
+def test_run(ip, port, runtime, timeout, warn_timeout,
+             verbose=False, delay=False):
     """Connects to the TeensyDSC and does the test run for the given
        period of time
 
@@ -43,6 +44,8 @@ def test_run(ip, port, runtime, timeout, verbose=False, delay=False):
     minimum = 1000
     maximum = 0
     count = 0
+    warns = 0
+    start = time.time()
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(timeout)
@@ -58,16 +61,22 @@ def test_run(ip, port, runtime, timeout, verbose=False, delay=False):
             delta = now - last
             if (delta < minimum):
                 minimum = delta
-            if (delta > maximum):
+            elif (delta > maximum):
                 maximum = delta
+            if (delta >= warn_timeout):
+                warns += 1
             last = now
     except socket.error:
         # we'll likely throw this error when the timer goes off
         pass
+    except KeyboardInterrupt:
+        runtime = time.time() - start
+        return (count, minimum, maximum, warns, runtime)
 
     finally:
         sock.close()
-    return (count, minimum, maximum)
+    runtime = time.time() - start
+    return (count, minimum, maximum, warns, runtime)
 
 
 if __name__ == '__main__':
@@ -84,20 +93,24 @@ if __name__ == '__main__':
                         help="socket timeout")
     parser.add_argument('-d', '--delay', default=None, type=float,
                         help="sec.frac delay between queries")
+    parser.add_argument('-w', '--warn', default=0.3, type=float,
+                        help="sec.frac to warn on")
     args = parser.parse_args()
 
     signal.signal(signal.SIGALRM, stop)
-    count, minimum, maximum = test_run(args.ip,
-                                       args.port,
-                                       args.seconds,
-                                       args.timeout,
-                                       args.verbose,
-                                       args.delay)
+    count, minimum, maximum, warns, runtime = test_run(args.ip,
+                                                       args.port,
+                                                       args.seconds,
+                                                       args.timeout,
+                                                       args.warn,
+                                                       args.verbose,
+                                                       args.delay)
     if count > 0:
-        rate = float(count) / args.seconds
-        avg = float(args.seconds) / count
-        print "We queried the TeensyDSC an average of %.2f times per sec" \
-            % (rate,)
-        print "Min = %f\t\tMax = %f\t\tAvg = %f" % (minimum, maximum, avg)
+        rate = float(count) / runtime
+        avg = runtime / count
+        print("We queried the TeensyDSC an average of %.2f times per sec"
+              " over %fsec" % (rate, runtime))
+        print "Min = %f\t\tMax = %f\t\tAvg = %f\t\tWarns = %d" \
+            % (minimum, maximum, avg, warns)
     else:
         print "Failure: no results"
