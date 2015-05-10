@@ -11,14 +11,25 @@
  * \<some text\> = a variable length string like this description
 
 #### Commands:
-
+ * A
+   * Returns: <nothing>
+   * Action: Set aligned flag = True
+ * a
+   * Returns: Y or N
+   * Action: Returns if the scope has been aligned or not
  * Q 
    * Returns: [+|-]XXXXX\t[+|-]XXXXX\r
    * Action: Get encoder DSC values (RA, DEC)
  * R XXXXX XXXXX\r
    * Returns: \<nothing\>
    * Action: Set encoder resolution (RA, DEC)
+ * Z XXXXX XXXXX\r
+   * Returns: *
+   * Action: Set encoder resolution (RA, DEC)
  * G
+   * Returns: [+|-]XXXXX\t[+|-]XXXXX\r
+   * Action: Get encoder resolution (RA, DEC)
+ * H
    * Returns: [+|-]XXXXX\t[+|-]XXXXX\r
    * Action: Get encoder resolution (RA, DEC)
  * V
@@ -28,8 +39,8 @@
    * Returns: XXXXX\r
    * Action: Get the error count
  * T
-   * Returns: XXXXX,XXXXX,XXXXX\r
-   * Action: Test mode.  Encoder resolutions & error count
+   * Returns: XXXXX,XXXXX\r
+   * Action: Toggle Test mode.  Prints encoder resolutions every 100ms
  * P
    * Returns: P
    * Action: Pretends to "power up" the encoders

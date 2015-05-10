@@ -144,6 +144,7 @@ dsc_set_resolution(cli_ctx *ctx, const char *args) {
     long ra, dec;
     encoder_settings_t encoder_settings;
 
+    /* there may be a \r\n here to parse as well??? */
     match = sscanf(args, "%ld %ld", &ra, &dec);
     if (match != 2) {
         return E_CMD_TOO_SHORT;
@@ -175,23 +176,7 @@ dsc_test_mode(cli_ctx *ctx, const char *args) {
  */
 cmd_status
 bbx_set_resolution(cli_ctx *ctx, const char *args) {
-    int match = 0;
-    long ra, dec;
-    encoder_settings_t encoder_settings;
-
-    /* there may be a \r\n here to parse as well??? */
-    match = sscanf(args, "%ld %ld", &ra, &dec);
-    if (match != 2) {
-        return E_CMD_TOO_SHORT;
-    }
-
-    ctx->common->ra_cps = ra;
-    ctx->common->dec_cps = dec;
-
-    /* write the values to EEPROM for later */
-    encoder_settings.ra_cps = ctx->common->ra_cps;
-    encoder_settings.dec_cps = ctx->common->dec_cps;
-    set_encoder_settings(&encoder_settings);
+    dsc_set_resolution(ctx, args);
     ctx->serial->printf("*");
     return E_CMD_OK;
 }
