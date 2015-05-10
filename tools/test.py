@@ -16,7 +16,7 @@ def stop(a, b):
     loop = False
 
 
-def query(sock, print_result=False):
+def query(sock, verbose=False):
     """Single query/reponse from the TeensyDSC
 
     Returns 0 for failure, 1 for success
@@ -28,7 +28,7 @@ def query(sock, print_result=False):
         chunk = sock.recv(100)
         if chunk == '':
             raise RuntimeError("recv() socket connection broken")
-        if print_result:
+        if verbose and verbose >= 2:
             sys.stdout.write(chunk)
     except socket.timeout:
         return 0
@@ -49,7 +49,12 @@ def test_run(ip, port, runtime, timeout, warn_timeout,
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(timeout)
-    sock.connect((ip, port))
+    try:
+        sock.connect((ip, port))
+    except socket.error as e:
+        print "Unable to connect to %s:%d (%s)" % (ip, port, e)
+        sys.exit(-1)
+
     signal.alarm(runtime)
     try:
         last = time.time()
@@ -65,52 +70,64 @@ def test_run(ip, port, runtime, timeout, warn_timeout,
                 maximum = delta
             if (delta >= warn_timeout):
                 warns += 1
+                if verbose:
+                    print "[%d] %f @ %s" % (count, delta, now)
             last = now
     except socket.error:
         # we'll likely throw this error when the timer goes off
         pass
     except KeyboardInterrupt:
+        # Ctrl-C
         runtime = time.time() - start
-        return (count, minimum, maximum, warns, runtime)
-
+        return {
+            'count': count,
+            'min': minimum,
+            'max': maximum,
+            'warns': warns,
+            'runtime': runtime
+        }
     finally:
         sock.close()
+
     runtime = time.time() - start
-    return (count, minimum, maximum, warns, runtime)
+    return {
+        'count': count,
+        'min': minimum,
+        'max': maximum,
+        'warns': warns,
+        'runtime': runtime
+    }
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('-s', '--seconds', default=30, type=int,
-                        help='How many seconds to run for')
-    parser.add_argument('-v', '--verbose', default=False, action='store_true',
-                        help="Prints out responses from TeensyDSC")
+                        help='How many seconds to run for [%(default)s]')
+    parser.add_argument('-v', '--verbose', default=False, action='count',
+                        help='Prints out responses from TeensyDSC')
     parser.add_argument('-i', '--ip', default='10.0.0.1',
-                        help="IP address of TeensyDSC")
+                        help='IP address of TeensyDSC [%(default)s]')
     parser.add_argument('-p', '--port', default=4030, type=int,
-                        help="Port of TeensyDSC")
+                        help='Port of TeensyDSC [%(default)s]')
     parser.add_argument('-t', '--timeout', default=3, type=int,
-                        help="socket timeout")
+                        help='socket timeout in seconds [%(default)s]')
     parser.add_argument('-d', '--delay', default=None, type=float,
-                        help="sec.frac delay between queries")
+                        help='sec.frac delay between queries [%(default)s]')
     parser.add_argument('-w', '--warn', default=0.3, type=float,
-                        help="sec.frac to warn on")
+                        help='sec.frac to warn on [%(default)s]')
     args = parser.parse_args()
 
     signal.signal(signal.SIGALRM, stop)
-    count, minimum, maximum, warns, runtime = test_run(args.ip,
-                                                       args.port,
-                                                       args.seconds,
-                                                       args.timeout,
-                                                       args.warn,
-                                                       args.verbose,
-                                                       args.delay)
-    if count > 0:
-        rate = float(count) / runtime
-        avg = runtime / count
-        print("We queried the TeensyDSC an average of %.2f times per sec"
-              " over %fsec" % (rate, runtime))
-        print "Min = %f\t\tMax = %f\t\tAvg = %f\t\tWarns = %d" \
-            % (minimum, maximum, avg, warns)
+    result = test_run(args.ip, args.port, args.seconds,
+                      args.timeout, args.warn, args.verbose, args.delay)
+    if result['count'] > 0:
+        rate = float(result['count']) / result['runtime']
+        avg = result['runtime'] / result['count']
+        print "Rate: %.3f/sec over a period of %.2f seconds" % (
+            rate, result['runtime'])
+        print "Min: %f\t\tMax: %f\t\tAvg: %f" % (
+            result['min'], result['max'], avg)
+        print "%d queries took longer then %f seconds" % (
+            result['warns'], args.warn)
     else:
         print "Failure: no results"
