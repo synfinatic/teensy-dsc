@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "defaults.h"
 #include "rnxv.h"
+#include "dsc.h"
 
 void setup_commands(cli_ctx *ctx);
 
