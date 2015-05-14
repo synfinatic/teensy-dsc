@@ -1,6 +1,6 @@
 /*
  * Teensy 3.1 Digital Setting Circles
- * Copyright (C) 2014 Aaron Turner
+ * Copyright (C) 2014-2015 Aaron Turner
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
