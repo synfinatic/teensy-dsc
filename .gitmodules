@@ -4,9 +4,6 @@
 [submodule "libraries/Flash"]
 	path = libraries/Flash
 	url = git@github.com:mikalhart/Flash.git
-[submodule "libraries/MsTimer2"]
-	path = libraries/MsTimer2
-	url = git@github.com:PaulStoffregen/MsTimer2.git
 [submodule "libraries/WiFi_Sheild"]
 	path = libraries/WiFi_Sheild
 	url = git@github.com:synfinatic/WiFi_Shield.git

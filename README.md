@@ -56,7 +56,6 @@ will need to import them into the Arduino IDE:
  * [AnySerial](https://github.com/synfinatic/AnySerial) - Serial port abstraction layer for Arduino
  * [WiFi_Shield](https://github.com/synfinatic/WiFi_Shield) - Customized to use AnySerial
  * [Flash](https://github.com/mikalhart/Flash) - Easy access to EEPROM flash memory
- * [MsTimer2](https://github.com/PaulStoffregen/MsTimer2) - MsTimer2 with Teensy3.x support
 
 ## Supported DSC Software
 Please note that I have limited access to software, so this may not be a
