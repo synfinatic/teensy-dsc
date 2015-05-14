@@ -49,6 +49,10 @@ TeensyDSC requires some additional Arduino libraries to compile/run:
 
  * [Arduino IDE v1.6.x](http://arduino.cc/en/Main/Software)
  * [Teensyduino](http://pjrc.com/teensy/td_download.html) - Teensy addon for the Arduino IDE
+
+The following libraries are included with the TeensyDSC source code, but you
+will need to import them into the Arduino IDE:
+
  * [AnySerial](https://github.com/synfinatic/AnySerial) - Serial port abstraction layer for Arduino
  * [WiFi_Shield](https://github.com/synfinatic/WiFi_Shield) - Customized to use AnySerial
  * [Flash](https://github.com/mikalhart/Flash) - Easy access to EEPROM flash memory
