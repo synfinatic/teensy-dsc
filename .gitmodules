@@ -3,7 +3,7 @@
 	url = git@github.com:synfinatic/AnySerial.git
 [submodule "libraries/Flash"]
 	path = libraries/Flash
-	url = git@github.com:mikalhart/Flash.git
+	url = git@github.com:synfinatic/Flash.git
 [submodule "libraries/WiFi_Sheild"]
 	path = libraries/WiFi_Sheild
 	url = git@github.com:synfinatic/WiFi_Shield.git
