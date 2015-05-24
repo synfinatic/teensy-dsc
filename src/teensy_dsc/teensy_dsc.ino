@@ -18,7 +18,6 @@
  */
 
 #include <Arduino.h>
-#include <Streaming.h>
 #define ENCODER_OPTIMIZE_INTERRUPTS
 #include <Encoder.h>
 #include <AnySerial.h>
