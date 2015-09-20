@@ -70,16 +70,20 @@ together to make it work!
 ## Similar Projects
 There are a bunch of similar projects to TeensyDSC which you should be aware of:
 
- * [Dave Ek's Setting Circles](http://eksfiles.net/digital-setting-circles/)
  * [mrosseel/arduino-dsc](https://github.com/mrosseel/arduino-dsc)
  * [mdw123/arduino-dsc](https://github.com/mdw123/arduino-dsc)
  * [Arduino Bluetooth DSC](http://orlygoingthirty.blogspot.com/2012/01/arduino-bluetooth-digital-setting.html)
  * [Mike Fulbright's Arduino DSC](http://msfastro.net/articles/arduinodsc/)
 
 ## Similar Commercial Products
-There are also a number of commercial products which share many of the same features of TeensyDSC:
+There are two commercial products which shares many of the same features of TeensyDSC:
+
+ * [Astro Devices Nexus](http://www.astrodevices.com/products/Nexus/Nexus.html)
+ * [Dave Ek's Setting Circles](http://eksfiles.net/digital-setting-circles/)
+
+## DSC to WiFi adapters
+These commercial products connect your DSC adapter (Sky Commander, etc) to Sky Safari:
 
  * [Southern Stars/Orion SkyFi](http://www.southernstars.com/products/skyfi/)
- * [Astro Devices Nexus](http://www.astrodevices.com/products/Nexus/Nexus.html)
  * [Astro Devices Nexus-S](http://www.astrodevices.com/products/NexusS/NexusS.html)
 
