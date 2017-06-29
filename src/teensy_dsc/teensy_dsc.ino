@@ -42,6 +42,7 @@ Encoder EncoderDEC(CHAN_A_DEC, CHAN_B_DEC);
 AnySerial UserSerial(&USER_SERIAL_PORT);
 AnySerial WiFlySerialPort(&WIFLY_SERIAL_PORT);
 WiFly _WiFly(WiFlySerialPort);
+cmd_status process_cmd(cli_ctx *ctx);
 
 /* our global contexts */
 cli_ctx *uctx, *wctx;
