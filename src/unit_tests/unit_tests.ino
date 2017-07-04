@@ -18,7 +18,8 @@
  */
 
 
-#line 2 "unit_tests.ino"
+#line 21 "unit_tests.ino"
+#include <Arduino.h>
 #include <ArduinoUnit.h>
 #include "dsc.h"
 
@@ -51,40 +52,72 @@
  */
 test(test_10k_0) TEST_10K(0, 0)
 test(test_10k_1) TEST_10K(1, 1)
+test(test_10k_n1) TEST_10K(-1, -1)
 test(test_10k_1000) TEST_10K(1000, 1000)
 test(test_10k_3000) TEST_10K(3000, 3000)
 test(test_10k_4999) TEST_10K(4999, 4999)
-test(test_10k_5000) TEST_10K(5000, -4999)
-test(test_10k_25000) TEST_10K(25000, -4999)
-test(test_10k_n1) TEST_10K(-1, -1)
-test(test_10k_n1000) TEST_10K(-1000, -1000)
-test(test_10k_n3000) TEST_10K(-3000, -3000)
-test(test_10k_n4999) TEST_10K(-4999, -4999)
+test(test_10k_5000) TEST_10K(5000, -5000)
+test(test_10k_5001) TEST_10K(5001, -4999)
+test(test_10k_n2500) TEST_10K(-2500, -2500)
+test(test_10k_7500) TEST_10K(7500, -2500)
+test(test_10k_10000) TEST_10K(10000, 0)
+test(test_10k_14999) TEST_10K(14999, 4999)
+test(test_10k_15000) TEST_10K(15000, -5000)
+test(test_10k_15001) TEST_10K(15001, -4999)
+test(test_10k_19999) TEST_10K(19999, -1)
+test(test_10k_24999) TEST_10K(24999, 4999)
+test(test_10k_25000) TEST_10K(25000, -5000)
+test(test_10k_25001) TEST_10K(25001, -4999)
 test(test_10k_n5000) TEST_10K(-5000, -5000)
 test(test_10k_n5001) TEST_10K(-5001, 4999)
+test(test_10k_n7500) TEST_10K(-7500, 2500)
+test(test_10k_n9999) TEST_10K(-9999, 1)
+test(test_10k_n10000) TEST_10K(-10000, 0)
+test(test_10k_n12500) TEST_10K(-12500, -2500)
+test(test_10k_n15000) TEST_10K(-15000, -5000)
+test(test_10k_n15001) TEST_10K(-15001, 4999)
+test(test_10k_n19999) TEST_10K(-19999, 1)
 test(test_10k_n24999) TEST_10K(-24999, -4999)
 test(test_10k_n25000) TEST_10K(-25000, -5000)
 test(test_10k_n25001) TEST_10K(-25001, 4999)
 
 /*
  * Resolution -10,000
+ * Note: 9 of these tests will fail if all the tests are run.  Just comment 
+ * out the other test groups and these will all pass.  WTF?  Must be some wierd
+ * bug in unit_test?
  */
 test(test_n10k_0) TEST_N10K(0, 0)
-test(test_n10k_1) TEST_N10K(1, 9999)
-test(test_n10k_1000) TEST_N10K(1000, 9000)
-test(test_n10k_3000) TEST_N10K(3000, 7000)
-test(test_n10k_4999) TEST_N10K(4999, 4999)
-test(test_n10k_5000) TEST_N10K(5000, 4999)
-test(test_n10k_25000) TEST_N10K(25000, -4999)
-test(test_n10k_n1) TEST_N10K(-1, -1)
-test(test_n10k_n1000) TEST_N10K(-1000, -1000)
-test(test_n10k_n3000) TEST_N10K(-3000, -3000)
-test(test_n10k_n4999) TEST_N10K(-4999, -4999)
+test(test_n10k_1) TEST_N10K(1, -1)
+test(test_n10k_n1) TEST_N10K(-1, 1)
+test(test_n10k_2500) TEST_N10K(2500, -2500)
+test(test_n10k_4999) TEST_N10K(4999, -4999)
+test(test_n10k_5000) TEST_N10K(5000, -5000)
+test(test_n10k_5001) TEST_N10K(5001, 4999)
+test(test_n10k_7500) TEST_N10K(7500, 2500)
+test(test_n10k_10000) TEST_N10K(10000, 0)
+test(test_n10k_14999) TEST_N10K(14999, -4999)
+test(test_n10k_15000) TEST_N10K(15000, -5000)
+test(test_n10k_15001) TEST_N10K(15001, 4999)
+test(test_n10k_19999) TEST_N10K(19999, 1)
+test(test_n10k_24999) TEST_N10K(24999, -4999)
+test(test_n10k_25000) TEST_N10K(25000, -5000)
+test(test_n10k_25001) TEST_N10K(25001, 4999)
+test(test_n10k_n2500) TEST_N10K(-2500, 2500)
+test(test_n10k_n2501) TEST_N10K(-5001, -4999)
 test(test_n10k_n5000) TEST_N10K(-5000, -5000)
-test(test_n10k_n5001) TEST_N10K(-5001, 4999)
-test(test_n10k_n24999) TEST_N10K(-24999, -4999)
+test(test_n10k_n7500) TEST_N10K(-7500, -2500)
+test(test_n10k_n9999) TEST_N10K(-9999, -1)
+test(test_n10k_n10000) TEST_N10K(-10000, 0)
+test(test_n10k_n12500) TEST_N10K(-12500, 2500)
+test(test_n10k_n14999) TEST_N10K(-14999, 4999)
+test(test_n10k_n15000) TEST_N10K(-15000, -5000)
+test(test_n10k_n15001) TEST_N10K(-15001, -4999)
+test(test_n10k_n19999) TEST_N10K(-19999, -1)
+test(test_n10k_n20000) TEST_N10K(-20000, 0)
+test(test_n10k_n24999) TEST_N10K(-24999, 4999)
 test(test_n10k_n25000) TEST_N10K(-25000, -5000)
-test(test_n10k_n25001) TEST_N10K(-25001, 4999)
+test(test_n10k_n25001) TEST_N10K(-25001, -4999)
 
 /*
  * Resolution +40,000

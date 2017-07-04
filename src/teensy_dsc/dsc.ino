@@ -40,30 +40,57 @@
  */
 int32_t
 ngc_convert_encoder_value(int32_t encoder, long resolution) {
-    int32_t ret, half_res;
+    int32_t ret = 0;
+    static int32_t half_res = resolution / 2;
 
     // Different math if resolution can be stored in int16_t
     if ((resolution < INT16_MAX) && (resolution >= INT16_MIN)) {
-        half_res = resolution / 2;
-        ret = encoder % resolution;
-        if (ret > (half_res - 1)) {
-            ret = ret - (half_res - 1) - half_res;
-        } else if (ret < -half_res) {
-            ret = ret + (half_res + 1);
+        if (resolution >= 0) {
+            encoder = encoder % resolution;
+            if (encoder >= 0) {
+                if (encoder <= (half_res -1)) {
+                    ret = encoder;
+                } else {
+                    ret = -half_res - (half_res - encoder);
+                }
+            } else {
+                // encoder is negative
+                if (abs(encoder) <= half_res) {
+                   ret = encoder;
+                } else {
+                    ret = half_res + (half_res + encoder);
+                }
+            }
+        } else {
+            encoder = encoder % abs(resolution);
+            // resolution is negative
+            if (encoder >= 0) {
+                if (encoder <= abs(half_res)) {
+                    ret = -encoder;
+                } else {
+                    ret = abs(half_res) - (encoder % abs(half_res));
+                }
+            } else {
+                if (abs(encoder) < abs(half_res)) {
+                    ret = -encoder;
+                } else {
+                    ret = half_res + (half_res - encoder);
+                }
+            }
         }
     } else {
         if (resolution > 0) {
-            ret = encoder % abs(resolution);
-            // use UNIT_MAX resolution
-            // if encoder value is out of range of the resolution,
-            // then wrap it
-            if (ret < 0) {
-                ret = resolution + ret;
+            if (encoder >= 0) {
+                ret = encoder % resolution;
+            } else {
+                ret = (resolution + (encoder % resolution)) % resolution;
             }
         } else {
-            ret = -encoder % abs(resolution);
-            if (ret < 0) {
-                ret = (resolution * -1) + ret;
+            // resolution is negative
+            if (encoder >= 0) {
+                ret = (-resolution - (encoder % resolution)) % -resolution;
+            } else {
+                ret = ((encoder * -1) % resolution) % resolution;
             }
         }
     }
