@@ -31,67 +31,40 @@
  * -resolution/2 to (resolution/2-1)
  *
  * If your resolution is larger, then the range is:
- * 0 to 2^16-1
+ * 0 to abs(res)-1
  *
- * It's so far undocumented how encoders mounted backwards
- * with a negative resolution should be handled for the
- * latter situation.  I decided to do the semi-obvious thing
- * of counting backwards.
+ * Note that a negative resolution doesn't change how we 
+ * count ticks.  It's purely up to the computer to know that
+ * the counting is backwards!
  */
 int32_t
 ngc_convert_encoder_value(int32_t encoder, long resolution) {
     int32_t ret = 0;
     static int32_t half_res = resolution / 2;
+    long res = abs(resolution);
 
     // Different math if resolution can be stored in int16_t
-    if ((resolution < INT16_MAX) && (resolution >= INT16_MIN)) {
-        if (resolution >= 0) {
-            encoder = encoder % resolution;
-            if (encoder >= 0) {
-                if (encoder <= (half_res -1)) {
-                    ret = encoder;
-                } else {
-                    ret = -half_res - (half_res - encoder);
-                }
+    if (res < INT16_MAX) {
+        encoder = encoder % res;
+        if (encoder >= 0) {
+            if (encoder <= (half_res -1)) {
+                ret = encoder;
             } else {
-                // encoder is negative
-                if (abs(encoder) <= half_res) {
-                   ret = encoder;
-                } else {
-                    ret = half_res + (half_res + encoder);
-                }
+                ret = -half_res - (half_res - encoder);
             }
         } else {
-            encoder = encoder % abs(resolution);
-            // resolution is negative
-            if (encoder >= 0) {
-                if (encoder <= abs(half_res)) {
-                    ret = -encoder;
-                } else {
-                    ret = abs(half_res) - (encoder % abs(half_res));
-                }
+            // encoder is negative
+            if (abs(encoder) <= half_res) {
+                ret = encoder;
             } else {
-                if (abs(encoder) < abs(half_res)) {
-                    ret = -encoder;
-                } else {
-                    ret = half_res + (half_res - encoder);
-                }
+                ret = half_res + (half_res + encoder);
             }
         }
     } else {
-        if (resolution > 0) {
-            if (encoder >= 0) {
-                ret = encoder % resolution;
-            } else {
-                ret = (resolution + (encoder % resolution)) % resolution;
-            }
+        if (encoder >= 0) {
+            ret = encoder % res;
         } else {
-            // resolution is negative
-            if (encoder >= 0) {
-                ret = (-resolution - (encoder % resolution)) % -resolution;
-            } else {
-                ret = ((encoder * -1) % resolution) % resolution;
-            }
+            ret = (res + (encoder % res)) % res;
         }
     }
     return ret;
