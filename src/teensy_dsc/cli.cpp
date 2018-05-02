@@ -37,7 +37,7 @@ cli_init_cmd(AnySerial *aserial, common_cli_ctx *common, WiFly *wifly,
     cli_ctx *ctx;
 
     ctx = (cli_ctx *)malloc(sizeof(cli_ctx));
-    bzero(ctx, sizeof(cli_ctx));
+    memset(ctx, 0, sizeof(cli_ctx));
     ctx->common = common;
     ctx->common->test_mode = false;
     ctx->common->alignment = false;
@@ -344,9 +344,9 @@ wifi_interactive(cli_ctx *ctx) {
  */
 void
 setup_commands(cli_ctx *ctx) {
-    uint i = 0, j = 0, longest = 0, len;
+    uint8_t i = 0, j = 0, longest = 0, len;
 
-    bzero(ctx->one_char_cmds, sizeof(ctx->one_char_cmds));
+    memset(ctx->one_char_cmds, 0, sizeof(ctx->one_char_cmds));
 
     /*
      * Find all the 1 char commands & the longest command
